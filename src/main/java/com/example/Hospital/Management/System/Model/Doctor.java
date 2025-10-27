@@ -10,7 +10,6 @@ public class Doctor extends MedicalStaff{
         this.licenseNumber = licenseNumber;
         this.medicalSpeciality = medicalSpeciality;
     }
-
     public String getLicenseNumber() {
         return licenseNumber;
     }
@@ -19,4 +18,13 @@ public class Doctor extends MedicalStaff{
     }
     public String getMedicalSpeciality() {return medicalSpeciality;}
     public void setMedicalSpeciality(String medicalSpeciality) {this.medicalSpeciality = medicalSpeciality;}
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "licenseNumber='" + licenseNumber + '\'' +
+                ", medicalSpeciality='" + medicalSpeciality + '\'' +
+                ", appointments=" + appointments +
+                '}';
+    }
 }
