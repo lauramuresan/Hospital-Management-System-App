@@ -12,7 +12,7 @@ public class MedicalStaffRepository implements AbstractRepository<MedicalStaff> 
 
     @Override
     public void save(MedicalStaff medicalStaff) {
-        if(medicalStaff==null || medicalStaff.getStaffID().isEmpty())
+        if(medicalStaff.getStaffID()==null || medicalStaff.getStaffID().isEmpty())
             medicalStaff.setStaffID(UUID.randomUUID().toString());
         medicalStaffs.put(medicalStaff.getStaffID(), medicalStaff);
     }
