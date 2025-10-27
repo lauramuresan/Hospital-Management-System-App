@@ -1,5 +1,7 @@
 package com.example.Hospital.Management.System.Model;
 
+import java.util.List;
+
 public class Room {
     private String roomID;
     private String hospitalID;
