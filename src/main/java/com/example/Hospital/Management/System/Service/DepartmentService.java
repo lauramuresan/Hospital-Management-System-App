@@ -13,6 +13,7 @@ public class DepartmentService {
         this.departmentRepository = departmentRepository;
     }
     public void addDepartment(Department department) {
+
         departmentRepository.save(department);
     }
     public void removeDepartment(String departmentId) {
@@ -22,9 +23,11 @@ public class DepartmentService {
         }
     }
     public Department getDepartmentById(String id) {
+
         return departmentRepository.findById(id);
     }
     public List<Department> getAllDepartments() {
+
         return departmentRepository.findAll();
     }
 }
