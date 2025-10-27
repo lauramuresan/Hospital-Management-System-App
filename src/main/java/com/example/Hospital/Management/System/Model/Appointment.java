@@ -66,4 +66,16 @@ public class Appointment {
     public void setMedicalStaffList(List<MedicalStaff> medicalStaffList) {
         this.medicalStaffList = medicalStaffList;
     }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "appointmentID='" + appointmentID + '\'' +
+                ", patientID='" + patientID + '\'' +
+                ", departmentID='" + departmentID + '\'' +
+                ", admissionDate='" + admissionDate + '\'' +
+                ", status='" + status + '\'' +
+                ", medicalStaffList=" + medicalStaffList +
+                '}';
+    }
 }

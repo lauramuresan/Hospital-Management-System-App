@@ -15,4 +15,11 @@ public class Nurse extends MedicalStaff{
     public void setQualificationLevel(String qualificationLevel) {
         this.qualificationLevel = qualificationLevel;
     }
+    @Override
+    public String toString() {
+        return "Nurse{" +
+                "qualificationLevel='" + qualificationLevel + '\'' +
+                ", appointments=" + appointments +
+                '}';
+    }
 }

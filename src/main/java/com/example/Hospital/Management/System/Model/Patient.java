@@ -16,38 +16,39 @@ public class Patient {
         this.pacientEmail = pacientEmail;
         this.patientAge = patientAge;
     }
-
     public String getPatientID() {
         return patientID;
     }
-
     public String getPatientName() {
         return patientName;
     }
-
     public List<Appointment> getAppointmentList() {
         return appointmentList;
     }
-
     public String getPacientEmail() {
         return pacientEmail;
     }
-
     public int getPatientAge() { return  patientAge; }
-
     public void setPatientID(String patientID) {
         this.patientID = patientID;
     }
-
     public void setPatientName(String patientName) {
         this.patientName = patientName;
     }
-
     public void setAppointmentList(List<Appointment> appointmentList) {
         this.appointmentList = appointmentList;
     }
-
     public void setPacientEmail(String pacientEmail) { this.pacientEmail = pacientEmail; }
-
     public void setPatientAge(int patientAge) { this.patientAge = patientAge; }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "patientID='" + patientID + '\'' +
+                ", patientName='" + patientName + '\'' +
+                ", appointmentList=" + appointmentList +
+                ", pacientEmail='" + pacientEmail + '\'' +
+                ", patientAge=" + patientAge +
+                '}';
+    }
 }
