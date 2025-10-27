@@ -1,12 +1,13 @@
 package com.example.Hospital.Management.System.Repository;
 
 import com.example.Hospital.Management.System.Model.MedicalStaff;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
+@Repository
 public class MedicalStaffRepository implements AbstractRepository<MedicalStaff> {
     private final HashMap<String, MedicalStaff> medicalStaffs = new HashMap<>();
 
