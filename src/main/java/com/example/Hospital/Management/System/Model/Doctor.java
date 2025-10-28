@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Doctor extends MedicalStaff{
     private String licenseNumber;
-    private String medicalSpeciality;
-    public Doctor(String staffID, String departmentID, String staffName, List<Appointment> appointments,String staffEmail, String licenseNumber,String medicalSpeciality) {
+    private MedicalSpecialty medicalSpeciality;
+    public Doctor(String staffID, String departmentID, String staffName, List<Appointment> appointments,String staffEmail, String licenseNumber,MedicalSpecialty medicalSpeciality) {
         super(staffID, departmentID, staffName, appointments, staffEmail);
         this.licenseNumber = licenseNumber;
         this.medicalSpeciality = medicalSpeciality;
@@ -16,8 +16,8 @@ public class Doctor extends MedicalStaff{
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }
-    public String getMedicalSpeciality() {return medicalSpeciality;}
-    public void setMedicalSpeciality(String medicalSpeciality) {this.medicalSpeciality = medicalSpeciality;}
+    public MedicalSpecialty getMedicalSpeciality() {return medicalSpeciality;}
+    public void setMedicalSpeciality(MedicalSpecialty medicalSpeciality) {this.medicalSpeciality = medicalSpeciality;}
 
     @Override
     public String toString() {

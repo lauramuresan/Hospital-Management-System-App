@@ -1,20 +1,20 @@
 package com.example.Hospital.Management.System.Model;
-
 import java.util.List;
+import java.time.LocalDate;
 
 public class Patient {
     private String patientID;
     private String patientName;
     private List<Appointment> appointmentList;
     private String pacientEmail;
-    private int patientAge;
-
-    public Patient(String patientID, String patientName, List<Appointment> appointmentList, String pacientEmail, int patientAge) {
+    private LocalDate dateOfBirth;
+//date of birth
+    public Patient(String patientID, String patientName, List<Appointment> appointmentList, String pacientEmail, LocalDate dateOfBirth) {
         this.patientID = patientID;
         this.patientName = patientName;
         this.appointmentList = appointmentList;
         this.pacientEmail = pacientEmail;
-        this.patientAge = patientAge;
+        this.dateOfBirth = dateOfBirth;
     }
     public String getPatientID() {
         return patientID;
@@ -28,7 +28,7 @@ public class Patient {
     public String getPacientEmail() {
         return pacientEmail;
     }
-    public int getPatientAge() { return  patientAge; }
+    public LocalDate getPatientBirthDate() { return  dateOfBirth; }
     public void setPatientID(String patientID) {
         this.patientID = patientID;
     }
@@ -39,7 +39,7 @@ public class Patient {
         this.appointmentList = appointmentList;
     }
     public void setPacientEmail(String pacientEmail) { this.pacientEmail = pacientEmail; }
-    public void setPatientAge(int patientAge) { this.patientAge = patientAge; }
+    public void setPatientBirthAge(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
     @Override
     public String toString() {
@@ -48,7 +48,7 @@ public class Patient {
                 ", patientName='" + patientName + '\'' +
                 ", appointmentList=" + appointmentList +
                 ", pacientEmail='" + pacientEmail + '\'' +
-                ", patientAge=" + patientAge +
+                ", patientDateOfBirth=" + dateOfBirth +
                 '}';
     }
 }

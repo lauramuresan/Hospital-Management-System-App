@@ -7,10 +7,10 @@ public class Room {
     private String hospitalID;
     private double capacity;
     private String number;
-    private String status;
+    private RoomAvailability status;
     private List<Appointment> appointments;
 
-    public Room(String roomID, String hospitalID, double capacity, String number, String status, List<Appointment> appointments) {
+    public Room(String roomID, String hospitalID, double capacity, String number, RoomAvailability status, List<Appointment> appointments) {
         this.roomID = roomID;
         this.hospitalID = hospitalID;
         this.capacity = capacity;
@@ -30,7 +30,7 @@ public class Room {
     public String getNumber() {
         return number;
     }
-    public String getStatus() {
+    public RoomAvailability getStatus() {
         return status;
     }
     public List<Appointment> getAppointments() {
@@ -48,7 +48,7 @@ public class Room {
     public void setNumber(String number) {
         this.number = number;
     }
-    public void setStatus(String status) {
+    public void setStatus(RoomAvailability status) {
         this.status = status;
     }
     public void setAppointments(List<Appointment> appointments) {

@@ -7,10 +7,10 @@ public class Appointment {
     private String patientID;
     private String departmentID;
     private String admissionDate;
-    private String status;
+    private AppointmentStatus status;
     private List<MedicalStaff> medicalStaffList;
 
-    public Appointment(String appointmentID, String patientID, String departmentID, String admissionDate, String status, List<MedicalStaff> medicalStaffList) {
+    public Appointment(String appointmentID, String patientID, String departmentID, String admissionDate, AppointmentStatus status, List<MedicalStaff> medicalStaffList) {
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.departmentID = departmentID;
@@ -35,7 +35,7 @@ public class Appointment {
         return admissionDate;
     }
 
-    public String getStatus() {
+    public AppointmentStatus getStatus() {
         return status;
     }
 
@@ -59,7 +59,7 @@ public class Appointment {
         this.admissionDate = admissionDate;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AppointmentStatus status) {
         this.status = status;
     }
 
