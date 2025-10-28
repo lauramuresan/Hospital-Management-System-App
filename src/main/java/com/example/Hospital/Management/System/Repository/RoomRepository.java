@@ -1,31 +1,14 @@
 package com.example.Hospital.Management.System.Repository;
 import com.example.Hospital.Management.System.Model.Room;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
 @Repository
-public class RoomRepository implements AbstractRepository<Room> {
-    private final HashMap<String, Room> rooms = new HashMap<>();
+public class RoomRepository extends InMemoryRepository<Room> {
     @Override
-    public void save(Room room) {
-        if(room.getRoomID()==null || room.getRoomID().isEmpty()){
-            room.setRoomID(UUID.randomUUID().toString());
-        }
-        rooms.put(room.getRoomID(), room);
+    protected String getId(Room room) {
+        return room.getRoomID();
     }
     @Override
-    public void delete(Room room) {
-        rooms.remove(room.getRoomID());
-    }
-    @Override
-    public Room findById(String id) {
-        return rooms.get(id);
-    }
-    @Override
-    public List<Room> findAll(){
-        return new ArrayList<>(rooms.values());
+    protected void setId(Room room, String id) {
+        room.setRoomID(id);
     }
 }
