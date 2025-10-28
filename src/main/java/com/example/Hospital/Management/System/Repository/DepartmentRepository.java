@@ -1,33 +1,14 @@
 package com.example.Hospital.Management.System.Repository;
 import com.example.Hospital.Management.System.Model.Department;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
 @Repository
-public class DepartmentRepository implements AbstractRepository<Department> {
-    private final HashMap<String, Department> departments = new HashMap<>();
-
+public class DepartmentRepository extends InMemoryRepository<Department> {
     @Override
-    public void save(Department department) {
-        if(department.getDepartmentID()==null || department.getDepartmentID().isEmpty()){
-            department.setDepartmentID(UUID.randomUUID().toString());
-        }
-        departments.put(department.getDepartmentID(), department);
+    protected String getId(Department department) {
+        return department.getDepartmentID();
     }
     @Override
-    public void delete(Department department) {
-        departments.remove(department.getDepartmentID());
-    }
-    @Override
-    public Department findById(String id) {
-        return departments.get(id);
-    }
-    @Override
-    public List<Department> findAll(){
-        return new ArrayList<>(departments.values());
+    protected void setId(Department department, String id) {
+        department.setDepartmentID(id);
     }
 }
