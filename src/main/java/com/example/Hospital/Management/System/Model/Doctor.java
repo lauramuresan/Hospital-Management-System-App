@@ -24,7 +24,7 @@ public class Doctor extends MedicalStaff{
         return "Doctor{" +
                 "licenseNumber='" + licenseNumber + '\'' +
                 ", medicalSpeciality='" + medicalSpeciality + '\'' +
-                ", appointments=" + appointments +
+                ", appointments=" + getAppointments() +
                 '}';
     }
 }

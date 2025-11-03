@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Doctors</title></head>
+<head>
+    <title>Doctors</title>
+</head>
 <body>
 <h1>Doctors</h1>
 <a href="/doctors/new">➕ Add Doctor</a>
+
 <table border="1">
-    <tr><th>ID</th><th>Name</th><th>Specialization</th><th>Department</th><th>Action</th></tr>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>License Number</th>
+        <th>Specialty</th>
+        <th>Department</th>
+        <th>Action</th>
+    </tr>
     <tr th:each="d : ${doctors}">
-        <td th:text="${d.doctorID}"></td>
-        <td th:text="${d.name}"></td>
-        <td th:text="${d.specialization}"></td>
+        <td th:text="${d.staffID}"></td>
+        <td th:text="${d.staffName}"></td>
+        <td th:text="${d.staffEmail}"></td>
+        <td th:text="${d.licenseNumber}"></td>
+        <td th:text="${d.medicalSpeciality}"></td>
         <td th:text="${d.departmentID}"></td>
         <td>
-            <form th:action="@{'/doctors/' + ${d.doctorID} + '/delete'}" method="post">
+            <form th:action="@{'/doctors/' + ${d.staffID} + '/delete'}" method="post">
                 <button type="submit">❌ Delete</button>
             </form>
         </td>
     </tr>
 </table>
 </body>
-</html>>
+</html>

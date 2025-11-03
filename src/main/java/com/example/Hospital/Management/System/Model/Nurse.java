@@ -19,7 +19,7 @@ public class Nurse extends MedicalStaff{
     public String toString() {
         return "Nurse{" +
                 "qualificationLevel='" + qualificationLevel + '\'' +
-                ", appointments=" + appointments +
+                ", appointments=" + getAppointments() +
                 '}';
     }
 }

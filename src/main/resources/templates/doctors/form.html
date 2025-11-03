@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Add Doctor</title></head>
+<head>
+    <title>Add Doctor</title>
+</head>
 <body>
 <h1>New Doctor</h1>
+
 <form th:action="@{/doctors}" th:object="${doctor}" method="post">
-    <label>ID:</label><input th:field="*{doctorID}"><br>
-    <label>Name:</label><input th:field="*{name}"><br>
-    <label>Specialization:</label><input th:field="*{specialization}"><br>
-    <label>Department ID:</label><input th:field="*{departmentID}"><br>
+    <label>ID:</label>
+    <input th:field="*{staffID}" /><br>
+
+    <label>Name:</label>
+    <input th:field="*{staffName}" /><br>
+
+    <label>Email:</label>
+    <input th:field="*{staffEmail}" /><br>
+
+    <label>Department ID:</label>
+    <input th:field="*{departmentID}" /><br>
+
+    <label>License Number:</label>
+    <input th:field="*{licenseNumber}" /><br>
+
+    <label>Specialty:</label>
+    <select th:field="*{medicalSpeciality}">
+        <option th:each="s : ${T(com.example.Hospital.Management.System.Model.MedicalSpecialty).values()}"
+                th:value="${s}" th:text="${s}"></option>
+    </select><br>
+
     <button type="submit">Save</button>
 </form>
+
 <a href="/doctors">Back</a>
 </body>
 </html>
