@@ -4,9 +4,14 @@
 <body>
 <h1>New Nurse</h1>
 <form th:action="@{/nurses}" th:object="${nurse}" method="post">
-    <label>ID:</label><input th:field="*{nurseID}"><br>
-    <label>Name:</label><input th:field="*{name}"><br>
-    <label>Shift:</label><input th:field="*{shift}"><br>
+    <label>ID:</label><input th:field="*{staffID}"><br>
+    <label>Name:</label><input th:field="*{staffName}"><br>
+    <label>Email:</label><input th:field="*{staffEmail}"><br>
+    <label>Qualification Level:</label>
+    <select th:field="*{qualificationLevel}">
+        <option th:each="q : ${T(com.example.Hospital.Management.System.Model.NurseLevelQualification).values()}"
+                th:value="${q}" th:text="${q}"></option>
+    </select><br>
     <label>Department ID:</label><input th:field="*{departmentID}"><br>
     <button type="submit">Save</button>
 </form>

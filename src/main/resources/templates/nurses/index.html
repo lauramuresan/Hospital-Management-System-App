@@ -5,14 +5,15 @@
 <h1>Nurses</h1>
 <a href="/nurses/new">➕ Add Nurse</a>
 <table border="1">
-    <tr><th>ID</th><th>Name</th><th>Shift</th><th>Department</th><th>Action</th></tr>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Qualification Level</th><th>Department</th><th>Action</th></tr>
     <tr th:each="n : ${nurses}">
-        <td th:text="${n.nurseID}"></td>
-        <td th:text="${n.name}"></td>
-        <td th:text="${n.shift}"></td>
+        <td th:text="${n.staffID}"></td>
+        <td th:text="${n.staffName}"></td>
+        <td th:text="${n.staffEmail}"></td>
+        <td th:text="${n.qualificationLevel}"></td>
         <td th:text="${n.departmentID}"></td>
         <td>
-            <form th:action="@{'/nurses/' + ${n.nurseID} + '/delete'}" method="post">
+            <form th:action="@{'/nurses/' + ${n.staffID} + '/delete'}" method="post">
                 <button type="submit">❌ Delete</button>
             </form>
         </td>
