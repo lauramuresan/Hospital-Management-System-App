@@ -38,7 +38,7 @@ public class Patient {
         this.appointmentList = appointmentList;
     }
     public void setPacientEmail(String pacientEmail) { this.pacientEmail = pacientEmail; }
-    public void setPatientBirthAge(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public void setPatientBirthDate(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
     @Override
     public String toString() {

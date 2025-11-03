@@ -5,7 +5,14 @@
 <h1>Nurses</h1>
 <a href="/nurses/new">➕ Add Nurse</a>
 <table border="1">
-    <tr><th>ID</th><th>Name</th><th>Email</th><th>Qualification Level</th><th>Department</th><th>Action</th></tr>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Qualification Level</th>
+        <th>Department</th>
+        <th>Action</th>
+    </tr>
     <tr th:each="n : ${nurses}">
         <td th:text="${n.staffID}"></td>
         <td th:text="${n.staffName}"></td>

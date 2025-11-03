@@ -1,11 +1,13 @@
 package com.example.Hospital.Management.System.Controller;
 
 import com.example.Hospital.Management.System.Model.Appointment;
+import com.example.Hospital.Management.System.Model.AppointmentStatus;
 import org.springframework.ui.Model;
 import com.example.Hospital.Management.System.Service.AppointmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Controller
@@ -24,7 +26,9 @@ public class AppointmentWebController {
 
     @GetMapping("/new")
     public String showAppointmentForm(Model model) {
-        model.addAttribute("appointment", new Appointment("","","", "",null, new ArrayList<>()));
+        model.addAttribute("appointment", new Appointment(
+                "", "", "", LocalDateTime.now(), AppointmentStatus.ACTIVE, new ArrayList<>()
+        ));
         return "appointments/form";
     }
 

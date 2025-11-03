@@ -5,12 +5,20 @@
 <h1>Rooms</h1>
 <a href="/rooms/new">➕ Add Room</a>
 <table border="1">
-    <tr><th>ID</th><th>Number</th><th>Type</th><th>Department</th><th>Action</th></tr>
+    <tr>
+        <th>ID</th>
+        <th>Number</th>
+        <th>Status</th>
+        <th>Hospital ID</th>
+        <th>Capacity</th>
+        <th>Action</th>
+    </tr>
     <tr th:each="r : ${rooms}">
         <td th:text="${r.roomID}"></td>
         <td th:text="${r.number}"></td>
-        <td th:text="${r.type}"></td>
-        <td th:text="${r.departmentID}"></td>
+        <td th:text="${r.status}"></td>
+        <td th:text="${r.hospitalID}"></td>
+        <td th:text="${r.capacity}"></td>
         <td>
             <form th:action="@{'/rooms/' + ${r.roomID} + '/delete'}" method="post">
                 <button type="submit">❌ Delete</button>

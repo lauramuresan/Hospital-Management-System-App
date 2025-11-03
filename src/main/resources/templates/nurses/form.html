@@ -1,20 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Add Nurse</title></head>
+<head>
+    <title>Add Appointment</title>
+</head>
 <body>
-<h1>New Nurse</h1>
-<form th:action="@{/nurses}" th:object="${nurse}" method="post">
-    <label>ID:</label><input th:field="*{staffID}"><br>
-    <label>Name:</label><input th:field="*{staffName}"><br>
-    <label>Email:</label><input th:field="*{staffEmail}"><br>
-    <label>Qualification Level:</label>
-    <select th:field="*{qualificationLevel}">
-        <option th:each="q : ${T(com.example.Hospital.Management.System.Model.NurseLevelQualification).values()}"
-                th:value="${q}" th:text="${q}"></option>
-    </select><br>
-    <label>Department ID:</label><input th:field="*{departmentID}"><br>
+<h1>New Appointment</h1>
+
+<form th:action="@{/appointments}" th:object="${appointment}" method="post">
+
+    <label>ID:</label>
+    <input th:field="*{appointmentID}" placeholder="Auto-generated if empty"><br><br>
+
+    <label>Patient ID:</label>
+    <input th:field="*{patientID}" placeholder="Enter Patient ID"><br><br>
+
+    <label>Department ID:</label>
+    <input th:field="*{departmentID}" placeholder="Enter Department ID"><br><br>
+
+    <label>Date:</label>
+    <input type="datetime-local" th:field="*{admissionDate}"
+           th:value="${#dates.format(appointment.admissionDate, 'yyyy-MM-dd\'T\'HH:mm')}"><br><br>
+
+    <label>Status:</label>
+    <select th:field="*{status}">
+        <option th:each="s : ${T(com.example.Hospital.Management.System.Model.AppointmentStatus).values()}"
+                th:value="${s}" th:text="${s}"></option>
+    </select><br><br>
+
     <button type="submit">Save</button>
 </form>
-<a href="/nurses">Back</a>
+
+<br>
+<a href="/appointments">Back</a>
 </body>
 </html>

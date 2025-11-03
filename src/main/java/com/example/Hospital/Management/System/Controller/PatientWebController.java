@@ -26,7 +26,7 @@ public class PatientWebController {
 
     @GetMapping("/new")
     public String showForm(Model model) {
-        model.addAttribute("patient", new Patient("", "", new ArrayList<>(), "",null));
+        model.addAttribute("patient", new Patient("", "", new ArrayList<>(), "", null));
         return "patients/form";
     }
 

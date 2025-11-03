@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Medical Staff Appointments</title>
+</head>
+<body>
+<h1>Medical Staff Assignments</h1>
+<a href="/medical-staff-appointments/new">➕ Add Assignment</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Appointment ID</th>
+        <th>Staff ID</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="a : ${assignments}">
+        <td th:text="${a.medicalStaffAppointmentID}"></td>
+        <td th:text="${a.appointmentID}"></td>
+        <td th:text="${a.medicalStaffID}"></td>
+        <td>
+            <form th:action="@{'/medical-staff-appointments/' + ${a.medicalStaffAppointmentID} + '/delete'}" method="post">
+                <button type="submit">❌ Delete</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
