@@ -8,7 +8,6 @@ public class Patient {
     private List<Appointment> appointmentList;
     private String pacientEmail;
     private LocalDate dateOfBirth;
-//date of birth
     public Patient(String patientID, String patientName, List<Appointment> appointmentList, String pacientEmail, LocalDate dateOfBirth) {
         this.patientID = patientID;
         this.patientName = patientName;
