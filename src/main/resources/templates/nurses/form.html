@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add Appointment</title>
+    <title>Add Nurse</title>
 </head>
 <body>
-<h1>New Appointment</h1>
+<h1>New Nurse</h1>
 
-<form th:action="@{/appointments}" th:object="${appointment}" method="post">
+<form th:action="@{/nurses}" th:object="${nurse}" method="post">
 
     <label>ID:</label>
-    <input th:field="*{appointmentID}" placeholder="Auto-generated if empty"><br><br>
+    <input th:field="*{staffID}" placeholder="Auto-generated if empty"><br><br>
 
-    <label>Patient ID:</label>
-    <input th:field="*{patientID}" placeholder="Enter Patient ID"><br><br>
+    <label>Name:</label>
+    <input th:field="*{staffName}" placeholder="Enter Name"><br><br>
 
-    <label>Department ID:</label>
-    <input th:field="*{departmentID}" placeholder="Enter Department ID"><br><br>
+    <label>Email:</label>
+    <input th:field="*{staffEmail}" placeholder="Enter Email"><br><br>
 
-    <label>Date:</label>
-    <input type="datetime-local" th:field="*{admissionDate}"
-           th:value="${#dates.format(appointment.admissionDate, 'yyyy-MM-dd\'T\'HH:mm')}"><br><br>
-
-    <label>Status:</label>
-    <select th:field="*{status}">
-        <option th:each="s : ${T(com.example.Hospital.Management.System.Model.AppointmentStatus).values()}"
-                th:value="${s}" th:text="${s}"></option>
+    <label>Qualification Level:</label>
+    <select th:field="*{qualificationLevel}">
+        <option th:each="level : ${T(com.example.Hospital.Management.System.Model.NurseLevelQualification).values()}"
+                th:value="${level}" th:text="${level}"></option>
     </select><br><br>
+
+    <label>Department:</label>
+    <input th:field="*{departmentID}" placeholder="Enter Department ID"><br><br>
 
     <button type="submit">Save</button>
 </form>
 
 <br>
-<a href="/appointments">Back</a>
+<a href="/nurses">Back</a>
 </body>
 </html>
