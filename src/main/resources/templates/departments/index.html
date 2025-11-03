@@ -5,10 +5,11 @@
 <h1>Departments</h1>
 <a href="/departments/new">➕ Add Department</a>
 <table border="1">
-    <tr><th>ID</th><th>Name</th><th>Action</th></tr>
+    <tr><th>ID</th><th>Name</th><th>Hospital ID</th><th>Action</th></tr>
     <tr th:each="d : ${departments}">
         <td th:text="${d.departmentID}"></td>
-        <td th:text="${d.name}"></td>
+        <td th:text="${d.departmentName}"></td>
+        <td th:text="${d.hospitalID}"></td>
         <td>
             <form th:action="@{'/departments/' + ${d.departmentID} + '/delete'}" method="post">
                 <button type="submit">❌ Delete</button>

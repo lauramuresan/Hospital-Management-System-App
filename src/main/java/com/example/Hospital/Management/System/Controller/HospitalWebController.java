@@ -20,13 +20,13 @@ public class HospitalWebController {
     @GetMapping
     public String listHospitals(Model model) {
         model.addAttribute("hospitals", hospitalService.getAll());
-        return "hospital/index";
+        return "hospitals/index";
     }
 
     @GetMapping("/new")
     public String showHospitalForm(Model model) {
-        model.addAttribute("appointment", new Hospital("", "", ""));
-        return "hospital/form";
+        model.addAttribute("hospital", new Hospital("", "", ""));
+        return "hospitals/form";
     }
 
     @PostMapping

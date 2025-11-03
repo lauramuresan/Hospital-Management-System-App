@@ -10,27 +10,32 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/medical-staff-appointments")
 public class MedicalStaffAppointmentWebController {
     private final MedicalStaffAppointmentService medicalStaffAppointmentService;
+
     public MedicalStaffAppointmentWebController(MedicalStaffAppointmentService medicalStaffAppointmentService) {
         this.medicalStaffAppointmentService = medicalStaffAppointmentService;
     }
+
     @GetMapping
     public String listMedicalStaffAppointments(Model model){
-        model.addAttribute("medical staff appointment", medicalStaffAppointmentService.getAll());
-        return "medical-staff-appointment/index";
+        model.addAttribute("assignments", medicalStaffAppointmentService.getAll());
+        return "medical-staff-appointments/index";
     }
+
     @GetMapping("/new")
     public String showNewMedicalStaffAppointmentForm(Model model){
-        model.addAttribute("medical staff appointment", new MedicalStaffAppointment("","",""));
-        return "medical-staff-appointment/form";
+        model.addAttribute("assignment", new MedicalStaffAppointment("", "", ""));
+        return "medical-staff-appointments/form";
     }
+
     @PostMapping
-    public String createMedicalStaffAppointment(@ModelAttribute MedicalStaffAppointment medicalStaffAppointment){
-        medicalStaffAppointmentService.create(medicalStaffAppointment);
-        return "redirect:/medical-staff-appointment";
+    public String createMedicalStaffAppointment(@ModelAttribute MedicalStaffAppointment assignment){
+        medicalStaffAppointmentService.create(assignment);
+        return "redirect:/medical-staff-appointments";
     }
+
     @PostMapping("/{id}/delete")
     public String deleteMedicalStaffAppointment(@PathVariable("id") String id){
         medicalStaffAppointmentService.remove(id);
-        return "redirect:/medical-staff-appointment";
+        return "redirect:/medical-staff-appointments";
     }
 }

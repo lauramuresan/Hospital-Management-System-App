@@ -17,7 +17,7 @@ public class NurseWebController {
     }
     @GetMapping
     public String listNurses(Model model) {
-        model.addAttribute("nurse",nurseService.getAll());
+        model.addAttribute("nurses",nurseService.getAll());
         return "nurses/index";
     }
     @GetMapping("/new")

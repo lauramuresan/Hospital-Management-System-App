@@ -4,10 +4,24 @@
 <body>
 <h1>New Room</h1>
 <form th:action="@{/rooms}" th:object="${room}" method="post">
-    <label>ID:</label><input th:field="*{roomID}"><br>
-    <label>Number:</label><input th:field="*{number}"><br>
-    <label>Type:</label><input th:field="*{type}"><br>
-    <label>Department ID:</label><input th:field="*{departmentID}"><br>
+    <label>ID:</label>
+    <input type="text" th:field="*{roomID}"><br>
+
+    <label>Number:</label>
+    <input type="text" th:field="*{number}"><br>
+
+    <label>Status:</label>
+    <select th:field="*{status}">
+        <option th:value="AVAILABLE">AVAILABLE</option>
+        <option th:value="OCCUPIED">OCCUPIED</option>
+    </select><br>
+
+    <label>Hospital ID:</label>
+    <input type="text" th:field="*{hospitalID}"><br>
+
+    <label>Capacity:</label>
+    <input type="number" step="0.1" th:field="*{capacity}"><br>
+
     <button type="submit">Save</button>
 </form>
 <a href="/rooms">Back</a>

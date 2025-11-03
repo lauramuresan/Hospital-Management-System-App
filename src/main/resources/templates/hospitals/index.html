@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Hospitals</title></head>
+<head>
+    <title>Hospitals</title>
+</head>
 <body>
 <h1>Hospitals</h1>
+
 <a href="/hospitals/new">➕ Add Hospital</a>
+
 <table border="1">
-    <tr><th>ID</th><th>Name</th><th>Address</th><th>Action</th></tr>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Action</th>
+    </tr>
     <tr th:each="h : ${hospitals}">
         <td th:text="${h.hospitalID}"></td>
-        <td th:text="${h.name}"></td>
-        <td th:text="${h.address}"></td>
+        <td th:text="${h.hospitalName}"></td>
+        <td th:text="${h.city}"></td>
         <td>
             <form th:action="@{'/hospitals/' + ${h.hospitalID} + '/delete'}" method="post">
                 <button type="submit">❌ Delete</button>

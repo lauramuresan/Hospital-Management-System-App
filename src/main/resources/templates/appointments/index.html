@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Appointments</title></head>
+<head>
+    <title>Appointments</title>
+</head>
 <body>
 <h1>Appointments</h1>
+
 <a href="/appointments/new">➕ Add Appointment</a>
+
 <table border="1">
     <tr>
         <th>ID</th><th>Patient</th><th>Department</th><th>Date</th><th>Status</th><th>Action</th>
@@ -12,7 +16,8 @@
         <td th:text="${a.appointmentID}"></td>
         <td th:text="${a.patientID}"></td>
         <td th:text="${a.departmentID}"></td>
-        <td th:text="${a.admissionDate}"></td>
+        <!-- Formatăm LocalDateTime pentru afișare -->
+        <td th:text="${#temporals.format(a.admissionDate, 'yyyy-MM-dd HH:mm')}"></td>
         <td th:text="${a.status}"></td>
         <td>
             <form th:action="@{'/appointments/' + ${a.appointmentID} + '/delete'}" method="post">
