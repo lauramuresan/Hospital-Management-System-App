@@ -1,5 +1,6 @@
 package com.example.Hospital.Management.System.Service;
 
+import com.example.Hospital.Management.System.Model.Department;
 import com.example.Hospital.Management.System.Model.Hospital;
 import com.example.Hospital.Management.System.Repository.HospitalRepository;
 import org.springframework.stereotype.Service;
@@ -7,25 +8,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class HospitalService {
+public class HospitalService extends BaseService<Hospital>{
 
     private final HospitalRepository hospitalRepository;
     public HospitalService(HospitalRepository hospitalRepository) {
         this.hospitalRepository = hospitalRepository;
     }
-    public void addHospital(Hospital hospital) {
-        hospitalRepository.save(hospital);
+    @Override
+    protected void save(Hospital entity){
+        hospitalRepository.save(entity);
     }
-    public void removeHospital(String hospitalId) {
-        Hospital hospital = hospitalRepository.findById(hospitalId);
-        if (hospital != null) {
-            hospitalRepository.delete(hospital);
-        }
+    protected void delete(Hospital entity){
+        hospitalRepository.delete(entity);
     }
-    public Hospital getHospitalById(String id) {
+    protected Hospital findById(String id){
         return hospitalRepository.findById(id);
     }
-    public List<Hospital> getAllHospitals() {
+    protected List<Hospital> findAll(){
         return hospitalRepository.findAll();
     }
 

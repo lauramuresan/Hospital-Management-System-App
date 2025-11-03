@@ -1,33 +1,29 @@
 package com.example.Hospital.Management.System.Service;
 
+import com.example.Hospital.Management.System.Model.Appointment;
 import com.example.Hospital.Management.System.Model.Department;
 import com.example.Hospital.Management.System.Repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DepartmentService {
+public class DepartmentService extends BaseService<Department>{
 
     private final DepartmentRepository departmentRepository;
     public DepartmentService(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
     }
-    public void addDepartment(Department department) {
-
-        departmentRepository.save(department);
+    @Override
+    protected void save(Department entity){
+        departmentRepository.save(entity);
     }
-    public void removeDepartment(String departmentId) {
-        Department department = departmentRepository.findById(departmentId);
-        if (department != null) {
-            departmentRepository.delete(department);
-        }
+    protected void delete(Department entity){
+        departmentRepository.delete(entity);
     }
-    public Department getDepartmentById(String id) {
-
+    protected Department findById(String id){
         return departmentRepository.findById(id);
     }
-    public List<Department> getAllDepartments() {
-
+    protected List<Department> findAll(){
         return departmentRepository.findAll();
     }
-}
+    }
