@@ -1,28 +1,29 @@
 package com.example.Hospital.Management.System.Service;
 
+import com.example.Hospital.Management.System.Model.MedicalStaff;
 import com.example.Hospital.Management.System.Model.Room;
 import com.example.Hospital.Management.System.Repository.RoomRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RoomService {
+public class RoomService extends BaseService<Room> {
 
     private final RoomRepository roomRepository;
     public RoomService(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
-    public void addRoom(Room room) {
-        roomRepository.save(room);
+    @Override
+    protected void save(Room entity){
+        roomRepository.save(entity);
     }
-    public void removeRoom(String roomId) {
-        Room room = roomRepository.findById(roomId);
-        if (room != null) roomRepository.delete(room);
+    protected void delete(Room entity){
+        roomRepository.delete(entity);
     }
-    public Room getRoomById(String id) {
+    protected Room findById(String id){
         return roomRepository.findById(id);
     }
-    public List<Room> getAllRooms() {
+    protected List<Room> findAll(){
         return roomRepository.findAll();
     }
 }
