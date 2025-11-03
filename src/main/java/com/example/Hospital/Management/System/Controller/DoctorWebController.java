@@ -22,7 +22,7 @@ public class DoctorWebController {
     }
 
     @GetMapping("/new")
-    public String showForm(Model model) {
+    public String showDoctorForm(Model model) {
         model.addAttribute("doctor", new Doctor("", "", "", new ArrayList<>(),"", " ", null));
         return "doctors/form";
     }
