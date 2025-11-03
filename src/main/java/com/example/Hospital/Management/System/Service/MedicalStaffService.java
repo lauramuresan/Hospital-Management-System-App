@@ -1,27 +1,28 @@
 package com.example.Hospital.Management.System.Service;
+import com.example.Hospital.Management.System.Model.Department;
 import com.example.Hospital.Management.System.Model.MedicalStaff;
 import com.example.Hospital.Management.System.Repository.MedicalStaffRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MedicalStaffService {
+public class MedicalStaffService extends BaseService<MedicalStaff>{
 
     private final MedicalStaffRepository medicalStaffRepository;
     public MedicalStaffService(MedicalStaffRepository medicalStaffRepository) {
         this.medicalStaffRepository = medicalStaffRepository;
     }
-    public void addStaff(MedicalStaff staff) {
-        medicalStaffRepository.save(staff);
+    @Override
+    protected void save(MedicalStaff entity){
+        medicalStaffRepository.save(entity);
     }
-    public void removeStaff(String staffId) {
-        MedicalStaff staff = medicalStaffRepository.findById(staffId);
-        if (staff != null) medicalStaffRepository.delete(staff);
+    protected void delete(MedicalStaff entity){
+        medicalStaffRepository.delete(entity);
     }
-    public MedicalStaff getStaffById(String id) {
+    protected MedicalStaff findById(String id){
         return medicalStaffRepository.findById(id);
     }
-    public List<MedicalStaff> getAllStaff() {
+    protected List<MedicalStaff> findAll(){
         return medicalStaffRepository.findAll();
     }
 }
