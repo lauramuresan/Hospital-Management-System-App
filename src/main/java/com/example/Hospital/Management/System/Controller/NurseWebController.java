@@ -17,12 +17,12 @@ public class NurseWebController {
     }
     @GetMapping
     public String listNurses(Model model) {
-        model.addAttribute("nurses",nurseService.getAll());
+        model.addAttribute("nurse",nurseService.getAll());
         return "nurses/index";
     }
     @GetMapping("/new")
     public String showNurseForm(Model model) {
-        model.addAttribute("nurses", new Nurse("","","",new ArrayList<>(),"",null));
+        model.addAttribute("nurse", new Nurse("","","",new ArrayList<>(),"",null));
         return "nurses/form";
     }
     @PostMapping
