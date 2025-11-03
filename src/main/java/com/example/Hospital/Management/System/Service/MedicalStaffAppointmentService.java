@@ -1,27 +1,28 @@
 package com.example.Hospital.Management.System.Service;
 
+import com.example.Hospital.Management.System.Model.Department;
 import com.example.Hospital.Management.System.Model.MedicalStaffAppointment;
 import com.example.Hospital.Management.System.Repository.MedicalStaffAppointmentRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MedicalStaffAppointmentService {
+public class MedicalStaffAppointmentService extends BaseService<MedicalStaffAppointment>{
     private final MedicalStaffAppointmentRepository medicalStaffAppointmentRepository;
     public MedicalStaffAppointmentService(MedicalStaffAppointmentRepository medicalStaffAppointmentRepository) {
         this.medicalStaffAppointmentRepository = medicalStaffAppointmentRepository;
     }
-    public void addMedicalStaffAppointment(MedicalStaffAppointment appointment) {
-        medicalStaffAppointmentRepository.save(appointment);
+    @Override
+    protected void save(MedicalStaffAppointment entity){
+        medicalStaffAppointmentRepository.save(entity);
     }
-    public void removeMedicalStaffAppointment(String appointmentId) {
-        MedicalStaffAppointment appointment = medicalStaffAppointmentRepository.findById(appointmentId);
-        if (appointment != null) medicalStaffAppointmentRepository.delete(appointment);
+    protected void delete(MedicalStaffAppointment entity){
+        medicalStaffAppointmentRepository.delete(entity);
     }
-    public MedicalStaffAppointment getMedicalStaffAppointmentById(String id) {
+    protected MedicalStaffAppointment findById(String id){
         return medicalStaffAppointmentRepository.findById(id);
     }
-    public List<MedicalStaffAppointment> getAllMedicalStaffAppointments() {
+    protected List<MedicalStaffAppointment> findAll(){
         return medicalStaffAppointmentRepository.findAll();
     }
 }

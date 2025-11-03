@@ -5,25 +5,24 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AppointmentService {
+public class AppointmentService extends BaseService<Appointment>{
 
     private final AppointmentRepository appointmentRepository;
+
     public AppointmentService(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
     }
-    public void addAppointment(Appointment appointment) {
-        appointmentRepository.save(appointment);
+    @Override
+    protected void save(Appointment entity){
+        appointmentRepository.save(entity);
     }
-    public void removeAppointment(String appointmentId) {
-        Appointment appointment = appointmentRepository.findById(appointmentId);
-        if (appointment != null) {
-            appointmentRepository.delete(appointment);
-        }
+    protected void delete(Appointment entity){
+        appointmentRepository.delete(entity);
     }
-    public Appointment getAppointmentById(String id) {
+    protected Appointment findById(String id){
         return appointmentRepository.findById(id);
     }
-    public List<Appointment> getAllAppointments() {
+    protected List<Appointment> findAll(){
         return appointmentRepository.findAll();
     }
 }
