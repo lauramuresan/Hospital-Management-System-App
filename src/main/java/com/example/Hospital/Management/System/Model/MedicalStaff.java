@@ -7,7 +7,7 @@ public abstract class MedicalStaff {
     private String departmentID;
     private String staffName;
     private String staffEmail;
-    List<Appointment> appointments;
+    private List<Appointment> appointments;
     public MedicalStaff(String staffID, String departmentID, String staffName, List<Appointment> appointments, String staffEmail) {
         this.staffID = staffID;
         this.departmentID = departmentID;
@@ -45,6 +45,7 @@ public abstract class MedicalStaff {
     public void setStaffEmail(String staffEmail) {
         this.staffEmail = staffEmail;
     }
+
     @Override
     public String toString() {
         return "MedicalStaff{" +
