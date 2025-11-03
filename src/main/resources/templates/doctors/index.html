@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Doctors</title></head>
+<body>
+<h1>Doctors</h1>
+<a href="/doctors/new">➕ Add Doctor</a>
+<table border="1">
+    <tr><th>ID</th><th>Name</th><th>Specialization</th><th>Department</th><th>Action</th></tr>
+    <tr th:each="d : ${doctors}">
+        <td th:text="${d.doctorID}"></td>
+        <td th:text="${d.name}"></td>
+        <td th:text="${d.specialization}"></td>
+        <td th:text="${d.departmentID}"></td>
+        <td>
+            <form th:action="@{'/doctors/' + ${d.doctorID} + '/delete'}" method="post">
+                <button type="submit">❌ Delete</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>>
