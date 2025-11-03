@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Add Appointment</title></head>
+<body>
+<h1>New Appointment</h1>
+<form th:action="@{/appointments}" th:object="${appointment}" method="post">
+    <label>ID:</label><input th:field="*{appointmentID}"><br>
+    <label>Patient ID:</label><input th:field="*{patientID}"><br>
+    <label>Department ID:</label><input th:field="*{departmentID}"><br>
+    <label>Date:</label><input th:field="*{admissionDate}"><br>
+    <label>Status:</label><input th:field="*{status}"><br>
+    <button type="submit">Save</button>
+</form>
+<a href="/appointments">Back</a>
+</body>
+</html>
