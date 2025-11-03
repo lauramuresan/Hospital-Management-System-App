@@ -23,7 +23,7 @@ public class DepartmentWebController {
     }
 
     @GetMapping("/new")
-    public String showForm(Model model) {
+    public String showDepartmentForm(Model model) {
         model.addAttribute("department", new Department("", "", ""));
         return "departments/form";
     }

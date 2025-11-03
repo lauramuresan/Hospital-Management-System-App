@@ -23,7 +23,7 @@ public class AppointmentWebController {
     }
 
     @GetMapping("/new")
-    public String showAddAppointmentForm(Model model) {
+    public String showAppointmentForm(Model model) {
         model.addAttribute("appointment", new Appointment("","","", "",null, new ArrayList<>()));
         return "appointments/form";
     }
