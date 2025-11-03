@@ -22,6 +22,7 @@
     <label>License Number:</label>
     <input th:field="*{licenseNumber}" /><br>
 
+
     <label>Specialty:</label>
     <select th:field="*{medicalSpeciality}">
         <option th:each="s : ${T(com.example.Hospital.Management.System.Model.MedicalSpecialty).values()}"
