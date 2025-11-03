@@ -3,9 +3,11 @@ package com.example.Hospital.Management.System.Service;
 import com.example.Hospital.Management.System.Model.MedicalStaff;
 import com.example.Hospital.Management.System.Model.Nurse;
 import com.example.Hospital.Management.System.Repository.NurseRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class NurseService extends BaseService<Nurse> {
     private final NurseRepository nurseRepository;
     public NurseService(NurseRepository nurseRepository) {
