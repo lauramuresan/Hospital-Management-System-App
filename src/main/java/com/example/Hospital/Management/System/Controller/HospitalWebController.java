@@ -4,40 +4,19 @@ import com.example.Hospital.Management.System.Model.Hospital;
 import com.example.Hospital.Management.System.Service.HospitalService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/hospitals")
-public class HospitalWebController {
-    private final HospitalService hospitalService;
+public class HospitalWebController extends GenericWebController<Hospital> {
 
-    public HospitalWebController(HospitalService hospitalService) {
-        this.hospitalService = hospitalService;
+    public HospitalWebController(HospitalService service) {
+        super(service, "hospitals");
     }
 
-    @GetMapping
-    public String listHospitals(Model model) {
-        model.addAttribute("hospitals", hospitalService.getAll());
-        return "hospitals/index";
-    }
-
-    @GetMapping("/new")
-    public String showHospitalForm(Model model) {
+    @Override
+    public String showForm(Model model) {
         model.addAttribute("hospital", new Hospital("", "", ""));
         return "hospitals/form";
-    }
-
-    @PostMapping
-    public String createHospital(@ModelAttribute Hospital hospital) {
-        hospitalService.create(hospital);
-        return "redirect:/hospitals";
-    }
-
-    @PostMapping("/{id}/delete")
-    public String deleteHospital(@PathVariable("id") String id) {
-        hospitalService.remove(id);
-        return "redirect:/hospitals";
     }
 }

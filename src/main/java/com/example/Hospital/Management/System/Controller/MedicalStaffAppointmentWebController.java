@@ -4,38 +4,19 @@ import com.example.Hospital.Management.System.Model.MedicalStaffAppointment;
 import com.example.Hospital.Management.System.Service.MedicalStaffAppointmentService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/medical-staff-appointments")
-public class MedicalStaffAppointmentWebController {
-    private final MedicalStaffAppointmentService medicalStaffAppointmentService;
+public class MedicalStaffAppointmentWebController extends GenericWebController<MedicalStaffAppointment> {
 
-    public MedicalStaffAppointmentWebController(MedicalStaffAppointmentService medicalStaffAppointmentService) {
-        this.medicalStaffAppointmentService = medicalStaffAppointmentService;
+    public MedicalStaffAppointmentWebController(MedicalStaffAppointmentService service) {
+        super(service, "medical-staff-appointments");
     }
 
-    @GetMapping
-    public String listMedicalStaffAppointments(Model model){
-        model.addAttribute("assignments", medicalStaffAppointmentService.getAll());
-        return "medical-staff-appointments/index";
-    }
-
-    @GetMapping("/new")
-    public String showNewMedicalStaffAppointmentForm(Model model){
+    @Override
+    public String showForm(Model model) {
         model.addAttribute("assignment", new MedicalStaffAppointment("", "", ""));
         return "medical-staff-appointments/form";
-    }
-
-    @PostMapping
-    public String createMedicalStaffAppointment(@ModelAttribute MedicalStaffAppointment assignment){
-        medicalStaffAppointmentService.create(assignment);
-        return "redirect:/medical-staff-appointments";
-    }
-
-    @PostMapping("/{id}/delete")
-    public String deleteMedicalStaffAppointment(@PathVariable("id") String id){
-        medicalStaffAppointmentService.remove(id);
-        return "redirect:/medical-staff-appointments";
     }
 }

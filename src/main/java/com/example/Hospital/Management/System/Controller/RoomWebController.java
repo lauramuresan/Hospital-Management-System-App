@@ -4,41 +4,21 @@ import com.example.Hospital.Management.System.Model.Room;
 import com.example.Hospital.Management.System.Service.RoomService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/rooms")
-public class RoomWebController {
+public class RoomWebController extends GenericWebController<Room> {
 
-    private final RoomService roomService;
-
-    public RoomWebController(RoomService roomService) {
-        this.roomService = roomService;
+    public RoomWebController(RoomService service) {
+        super(service, "rooms");
     }
 
-    @GetMapping
-    public String listRooms(Model model) {
-        model.addAttribute("rooms", roomService.getAll());
-        return "rooms/index";
-    }
-
-    @GetMapping("/new")
+    @Override
     public String showForm(Model model) {
-        model.addAttribute("room", new Room("", "", 0.0,"",null,new ArrayList<>()));
+        model.addAttribute("room", new Room("", "", 0.0, "", null, new ArrayList<>()));
         return "rooms/form";
-    }
-
-    @PostMapping
-    public String createRoom(@ModelAttribute Room room) {
-        roomService.create(room);
-        return "redirect:/rooms";
-    }
-
-    @PostMapping("/{id}/delete")
-    public String deleteRoom(@PathVariable("id") String id) {
-        roomService.remove(id);
-        return "redirect:/rooms";
     }
 }
