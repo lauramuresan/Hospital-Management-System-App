@@ -2,46 +2,26 @@ package com.example.Hospital.Management.System.Controller;
 
 import com.example.Hospital.Management.System.Model.Appointment;
 import com.example.Hospital.Management.System.Model.AppointmentStatus;
-import org.springframework.ui.Model;
 import com.example.Hospital.Management.System.Service.AppointmentService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/appointments")
-public class AppointmentWebController {
-    private final AppointmentService appointmentService;
-    public AppointmentWebController(AppointmentService appointmentService) {
-        this.appointmentService = appointmentService;
+public class AppointmentWebController extends GenericWebController<Appointment> {
+
+    public AppointmentWebController(AppointmentService service) {
+        super(service, "appointments");
     }
 
-    @GetMapping
-    public String listAppointments(Model model) {
-        model.addAttribute("appointments", appointmentService.getAll());
-        return "appointments/index";
-    }
-
-    @GetMapping("/new")
-    public String showAppointmentForm(Model model) {
-        model.addAttribute("appointment", new Appointment(
-                "", "", "", LocalDateTime.now(), AppointmentStatus.ACTIVE, new ArrayList<>()
-        ));
+    @Override
+    public String showForm(Model model) {
+        model.addAttribute("appointment",
+                new Appointment("", "", "", LocalDateTime.now(), AppointmentStatus.ACTIVE, new ArrayList<>()));
         return "appointments/form";
     }
-
-    @PostMapping
-    public String createAppointment(@ModelAttribute Appointment appointment) {
-        appointmentService.create(appointment);
-        return "redirect:/appointments";
-    }
-
-    @PostMapping("/{id}/delete")
-    public String deleteAppointment(@PathVariable("id") String id) {
-        appointmentService.remove(id);
-        return "redirect:/appointments";
-    }
-
 }
