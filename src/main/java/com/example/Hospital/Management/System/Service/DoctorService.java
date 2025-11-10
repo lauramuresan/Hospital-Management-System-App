@@ -1,16 +1,18 @@
 package com.example.Hospital.Management.System.Service;
 
+import com.example.Hospital.Management.System.Model.Appointment;
 import com.example.Hospital.Management.System.Model.Doctor;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.InMemory.DoctorInMemoryRepository;
+import com.example.Hospital.Management.System.Repository.RepositoryFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class DoctorService extends BaseService<Doctor>{
     private final AbstractRepository<Doctor> doctorRepository;
 
-    public DoctorService(AbstractRepository<Doctor> doctorRepository) {
-        this.doctorRepository = doctorRepository;
+    public DoctorService(RepositoryFactory factory) {
+        this.doctorRepository = factory.createRepository(Doctor.class);
     }
 
     @Override
