@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 public class HospitalInFileRepository extends InFileRepository<Hospital> {
     public HospitalInFileRepository(ObjectMapper mapper, @Value("${app.data.folder:./data}") String dataFolder) {
         super(mapper, dataFolder, "hospitals.json");
+
     }
     @Override
     protected String getId(Hospital hospital) { return hospital.getHospitalID(); }
