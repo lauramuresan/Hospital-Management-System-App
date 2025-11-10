@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DepartmentWebController extends GenericWebController<Department> {
 
     public DepartmentWebController(DepartmentService service) {
-        super(service, "departments");
+        super(service, "departments", "department", "departments");
     }
 
     @Override

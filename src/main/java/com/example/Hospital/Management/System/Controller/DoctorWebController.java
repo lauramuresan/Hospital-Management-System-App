@@ -13,12 +13,12 @@ import java.util.ArrayList;
 public class DoctorWebController extends GenericWebController<Doctor> {
 
     public DoctorWebController(DoctorService service) {
-        super(service, "doctors");
+        super(service, "doctors", "doctor", "doctors");
     }
 
     @Override
     public String showForm(Model model) {
-        model.addAttribute("doctor", new Doctor("", "", "", new ArrayList<>(), "", " ", null));
+        model.addAttribute("doctor", new Doctor("", "", "", new ArrayList<>(), "", "", null));
         return "doctors/form";
     }
 }
