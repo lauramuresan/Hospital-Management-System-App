@@ -1,8 +1,10 @@
 package com.example.Hospital.Management.System.Service;
 
+import com.example.Hospital.Management.System.Model.Appointment;
 import com.example.Hospital.Management.System.Model.Nurse;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.InMemory.NurseInMemoryRepository;
+import com.example.Hospital.Management.System.Repository.RepositoryFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +13,8 @@ import java.util.List;
 public class NurseService extends BaseService<Nurse> {
     private final AbstractRepository<Nurse> nurseRepository;
 
-    public NurseService(AbstractRepository<Nurse> nurseRepository) {
-        this.nurseRepository = nurseRepository;
+    public NurseService(RepositoryFactory factory) {
+        this.nurseRepository = factory.createRepository(Nurse.class);
     }
 
     @Override
