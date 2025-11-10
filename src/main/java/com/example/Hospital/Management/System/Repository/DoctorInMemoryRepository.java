@@ -1,8 +1,8 @@
 package com.example.Hospital.Management.System.Repository;
 import com.example.Hospital.Management.System.Model.Doctor;
 import org.springframework.stereotype.Repository;
-@Repository
-public class DoctorRepository extends InMemoryRepository<Doctor> {
+@Repository("doctorInMemory")
+public class DoctorInMemoryRepository extends InMemoryRepository<Doctor> {
     @Override
     protected String getId(Doctor doctor) {
         return doctor.getStaffID();

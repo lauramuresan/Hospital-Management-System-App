@@ -1,17 +1,16 @@
 package com.example.Hospital.Management.System.Service;
 
-import com.example.Hospital.Management.System.Model.MedicalStaff;
 import com.example.Hospital.Management.System.Model.Patient;
-import com.example.Hospital.Management.System.Repository.PatientRepository;
+import com.example.Hospital.Management.System.Repository.PatientInMemoryRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class PatientService extends BaseService<Patient>{
 
-    private final PatientRepository patientRepository;
+    private final PatientInMemoryRepository patientRepository;
 
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientInMemoryRepository patientRepository) {
         this.patientRepository = patientRepository;
     }
 
