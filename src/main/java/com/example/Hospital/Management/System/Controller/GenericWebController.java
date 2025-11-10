@@ -8,15 +8,19 @@ public abstract class GenericWebController<T> {
 
     protected final BaseService<T> service;
     protected final String viewPath;
+    protected final String modelName;
+    protected final String listName;
 
-    protected GenericWebController(BaseService<T> service, String viewPath) {
+    protected GenericWebController(BaseService<T> service, String viewPath, String modelName, String listName) {
         this.service = service;
         this.viewPath = viewPath;
+        this.modelName = modelName;
+        this.listName = listName;
     }
 
     @GetMapping
     public String list(Model model) {
-        model.addAttribute(viewPath, service.getAll());
+        model.addAttribute(listName, service.getAll());
         return viewPath + "/index";
     }
 
@@ -25,6 +29,26 @@ public abstract class GenericWebController<T> {
 
     @PostMapping
     public String create(@ModelAttribute T entity) {
+        service.create(entity);
+        return "redirect:/" + viewPath;
+    }
+
+    @GetMapping("/{id}")
+    public String details(@PathVariable("id") String id, Model model) {
+        T entity = service.getById(id);
+        model.addAttribute(modelName, entity);
+        return viewPath + "/details";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable("id") String id, Model model) {
+        T entity = service.getById(id);
+        model.addAttribute(modelName, entity);
+        return viewPath + "/form";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String edit(@PathVariable("id") String id, @ModelAttribute T entity) {
         service.create(entity);
         return "redirect:/" + viewPath;
     }

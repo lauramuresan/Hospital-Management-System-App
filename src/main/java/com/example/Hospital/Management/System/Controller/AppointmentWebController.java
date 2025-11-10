@@ -15,13 +15,12 @@ import java.util.ArrayList;
 public class AppointmentWebController extends GenericWebController<Appointment> {
 
     public AppointmentWebController(AppointmentService service) {
-        super(service, "appointments");
+        super(service, "appointments", "appointment", "appointments");
     }
 
     @Override
     public String showForm(Model model) {
-        model.addAttribute("appointment",
-                new Appointment("", "", "", LocalDateTime.now(), AppointmentStatus.ACTIVE, new ArrayList<>()));
+        model.addAttribute("appointment", new Appointment("", "", "", LocalDateTime.now(), AppointmentStatus.ACTIVE, new ArrayList<>()));
         return "appointments/form";
     }
 }
