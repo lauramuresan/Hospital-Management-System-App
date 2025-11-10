@@ -1,16 +1,15 @@
 package com.example.Hospital.Management.System.Service;
 
-import com.example.Hospital.Management.System.Model.Appointment;
 import com.example.Hospital.Management.System.Model.Department;
-import com.example.Hospital.Management.System.Repository.DepartmentRepository;
+import com.example.Hospital.Management.System.Repository.DepartmentInMemoryRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class DepartmentService extends BaseService<Department>{
 
-    private final DepartmentRepository departmentRepository;
-    public DepartmentService(DepartmentRepository departmentRepository) {
+    private final DepartmentInMemoryRepository departmentRepository;
+    public DepartmentService(DepartmentInMemoryRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
     }
     @Override

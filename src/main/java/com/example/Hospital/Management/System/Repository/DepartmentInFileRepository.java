@@ -1,0 +1,16 @@
+package com.example.Hospital.Management.System.Repository;
+import com.example.Hospital.Management.System.Model.Department;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+
+@Repository("departmentInFile")
+public class DepartmentInFileRepository extends InFileRepository<Department> {
+    public DepartmentInFileRepository(ObjectMapper mapper, @Value("${app.data.folder:./data}") String dataFolder) {
+        super(mapper, dataFolder, "departments.json");
+    }
+    @Override
+    protected String getId(Department department) { return department.getDepartmentID(); }
+    @Override
+    protected void setId(Department department, String id) { department.setDepartmentID(id); }
+}

@@ -1,8 +1,7 @@
 package com.example.Hospital.Management.System.Service;
 
-import com.example.Hospital.Management.System.Model.Department;
 import com.example.Hospital.Management.System.Model.Hospital;
-import com.example.Hospital.Management.System.Repository.HospitalRepository;
+import com.example.Hospital.Management.System.Repository.HospitalInMemoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,8 @@ import java.util.List;
 @Service
 public class HospitalService extends BaseService<Hospital>{
 
-    private final HospitalRepository hospitalRepository;
-    public HospitalService(HospitalRepository hospitalRepository) {
+    private final HospitalInMemoryRepository hospitalRepository;
+    public HospitalService(HospitalInMemoryRepository hospitalRepository) {
         this.hospitalRepository = hospitalRepository;
     }
     @Override
