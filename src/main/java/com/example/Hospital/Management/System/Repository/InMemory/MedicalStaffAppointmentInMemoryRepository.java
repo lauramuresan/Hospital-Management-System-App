@@ -1,4 +1,4 @@
-package com.example.Hospital.Management.System.Repository;
+package com.example.Hospital.Management.System.Repository.InMemory;
 import com.example.Hospital.Management.System.Model.MedicalStaffAppointment;
 import org.springframework.stereotype.Repository;
 @Repository("medicalStaffAppointmentInMemory")

@@ -1,5 +1,6 @@
-package com.example.Hospital.Management.System.Repository;
+package com.example.Hospital.Management.System.Repository.InFile;
 
+import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class InFileRepository<T> implements AbstractRepository<T>{
+public abstract class InFileRepository<T> implements AbstractRepository<T> {
     private final Path filePath;
     private final ObjectMapper mapper;
 

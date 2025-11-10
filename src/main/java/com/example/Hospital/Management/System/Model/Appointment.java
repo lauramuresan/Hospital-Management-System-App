@@ -1,5 +1,7 @@
 package com.example.Hospital.Management.System.Model;
 
+import com.example.Hospital.Management.System.Model.Enums.AppointmentStatus;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
