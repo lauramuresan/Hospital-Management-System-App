@@ -1,5 +1,7 @@
 package com.example.Hospital.Management.System.Model;
 
+import com.example.Hospital.Management.System.Model.Enums.MedicalSpecialty;
+
 import java.util.List;
 
 public class Doctor extends MedicalStaff{

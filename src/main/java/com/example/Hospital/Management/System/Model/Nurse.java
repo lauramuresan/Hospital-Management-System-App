@@ -1,6 +1,8 @@
 package com.example.Hospital.Management.System.Model;
 
 
+import com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification;
+
 import java.util.List;
 
 public class Nurse extends MedicalStaff{

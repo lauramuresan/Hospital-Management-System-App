@@ -1,4 +1,4 @@
-package com.example.Hospital.Management.System.Repository;
+package com.example.Hospital.Management.System.Repository.InFile;
 
 import com.example.Hospital.Management.System.Model.Hospital;
 import com.fasterxml.jackson.databind.ObjectMapper;

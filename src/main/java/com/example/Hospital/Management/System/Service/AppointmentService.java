@@ -1,6 +1,6 @@
 package com.example.Hospital.Management.System.Service;
 import com.example.Hospital.Management.System.Model.Appointment;
-import com.example.Hospital.Management.System.Repository.AppointmentInMemoryRepository;
+import com.example.Hospital.Management.System.Repository.InMemory.AppointmentInMemoryRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

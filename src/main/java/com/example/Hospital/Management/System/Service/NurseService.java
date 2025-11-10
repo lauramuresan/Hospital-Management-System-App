@@ -1,7 +1,7 @@
 package com.example.Hospital.Management.System.Service;
 
 import com.example.Hospital.Management.System.Model.Nurse;
-import com.example.Hospital.Management.System.Repository.NurseInMemoryRepository;
+import com.example.Hospital.Management.System.Repository.InMemory.NurseInMemoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

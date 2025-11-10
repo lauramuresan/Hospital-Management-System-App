@@ -1,4 +1,6 @@
-package com.example.Hospital.Management.System.Repository;
+package com.example.Hospital.Management.System.Repository.InMemory;
+
+import com.example.Hospital.Management.System.Repository.AbstractRepository;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
