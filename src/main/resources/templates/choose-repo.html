@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Choose Repository Mode</title>
+</head>
+<body>
+<h1>Choose Repository Mode</h1>
+<form th:action="@{/choose-repo}" method="post">
+    <label>
+        <input type="radio" name="mode" value="INMEMORY" th:checked="${currentMode.name() == 'INMEMORY'}"/> In-Memory
+    </label><br/>
+    <label>
+        <input type="radio" name="mode" value="INFILE" th:checked="${currentMode.name() == 'INFILE'}"/> In-File (JSON)
+    </label><br/><br/>
+    <button type="submit">Apply</button>
+</form>
+
+<hr/>
+<nav>
+    <a href="/appointments">Appointments</a> |
+    <a href="/departments">Departments</a> |
+    <a href="/doctors">Doctors</a> |
+    <a href="/hospitals">Hospitals</a> |
+    <a href="/medical-staff-appointments">Staff Assignments</a> |
+    <a href="/nurses">Nurses</a> |
+    <a href="/patients">Patients</a> |
+    <a href="/rooms">Rooms</a>
+</nav>
+
+<p>Current mode: <strong th:text="${currentMode}"></strong></p>
+</body>
+</html>
