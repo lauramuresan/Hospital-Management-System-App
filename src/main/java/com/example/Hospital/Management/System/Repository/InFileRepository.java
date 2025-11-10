@@ -77,4 +77,41 @@ public abstract class InFileRepository<T> implements AbstractRepository<T>{
         writeAllToFile(filtered);
     }
 
+    @Override
+    public synchronized void delete(T entity){
+        String id = getId(entity);
+        if(id == null) return;
+        List<T> all = readAllFromFile();
+        List<T> remaining = new ArrayList<>(
+                all.stream()
+                        .filter(e -> {
+                            String entityId = getId(e);
+                            return entityId == null && !entityId.equals(id);
+                        })
+                        .toList());
+                writeAllToFile(remaining);
+
+    }
+
+    @Override
+    public synchronized T findById(String id){
+        if(id == null) return null;
+        List<T> all = readAllFromFile();
+        return all.stream()
+                .filter(e -> {
+                    String entityId = getId(e);
+                    return entityId == null && !entityId.equals(id);
+                })
+                .findFirst()
+                .orElse(null);
+    }
+    @Override
+    public synchronized List<T> findAll() {
+        return readAllFromFile();
+    }
+
+    public synchronized void replaceAll(List<T> list) {
+        writeAllToFile(list);
+    }
 }
+
