@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class NurseWebController extends GenericWebController<Nurse> {
 
     public NurseWebController(NurseService service) {
-        super(service, "nurses");
+        super(service, "nurses", "nurse", "nurses");
     }
 
     @Override

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MedicalStaffAppointmentWebController extends GenericWebController<MedicalStaffAppointment> {
 
     public MedicalStaffAppointmentWebController(MedicalStaffAppointmentService service) {
-        super(service, "medical-staff-appointments");
+        super(service, "medical-staff-appointments", "assignment", "medicalStaffAppointments");
     }
 
     @Override
