@@ -1,6 +1,7 @@
 package com.example.Hospital.Management.System.Service;
 
 import com.example.Hospital.Management.System.Model.Room;
+import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.InMemory.RoomInMemoryRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -8,10 +9,12 @@ import java.util.List;
 @Service
 public class RoomService extends BaseService<Room> {
 
-    private final RoomInMemoryRepository roomRepository;
-    public RoomService(RoomInMemoryRepository roomRepository) {
+    private final AbstractRepository<Room> roomRepository;
+
+    public RoomService(AbstractRepository<Room> roomRepository) {
         this.roomRepository = roomRepository;
     }
+
     @Override
     protected void save(Room entity){
         roomRepository.save(entity);

@@ -1,16 +1,19 @@
 package com.example.Hospital.Management.System.Service;
 
 import com.example.Hospital.Management.System.Model.MedicalStaffAppointment;
+import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.InMemory.MedicalStaffAppointmentInMemoryRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class MedicalStaffAppointmentService extends BaseService<MedicalStaffAppointment>{
-    private final MedicalStaffAppointmentInMemoryRepository medicalStaffAppointmentRepository;
-    public MedicalStaffAppointmentService(MedicalStaffAppointmentInMemoryRepository medicalStaffAppointmentRepository) {
+    private final AbstractRepository<MedicalStaffAppointment> medicalStaffAppointmentRepository;
+
+    public MedicalStaffAppointmentService(AbstractRepository<MedicalStaffAppointment> medicalStaffAppointmentRepository) {
         this.medicalStaffAppointmentRepository = medicalStaffAppointmentRepository;
     }
+
     @Override
     protected void save(MedicalStaffAppointment entity){
         medicalStaffAppointmentRepository.save(entity);
