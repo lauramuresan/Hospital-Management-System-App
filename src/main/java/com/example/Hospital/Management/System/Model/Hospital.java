@@ -8,6 +8,8 @@ public class Hospital {
     private String city;
     private List<Department> departments;
     private List<Room> rooms;
+    public Hospital() {
+    }
     public Hospital(String hospitalID, String hospitalName, String city) {
         this.hospitalID = hospitalID;
         this.hospitalName = hospitalName;

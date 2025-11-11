@@ -2,32 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Appointment Form</title>
+    <title>Formular Programare</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body class="container mt-4">
-<h2>Appointment Form</h2>
+<h2 th:text="${appointment.appointmentID != null and not #strings.isEmpty(appointment.appointmentID) ? 'Editează Programare' : 'Adaugă Programare'}">Formular Programare</h2>
 
-<form th:action="@{/appointments/save}" th:object="${appointment}" method="post">
-    <input type="hidden" th:field="*{id}"/>
+<form th:action="@{/appointments}" th:object="${appointment}" method="post">
+    <input type="hidden" th:field="*{appointmentID}"/>
 
     <div class="mb-3">
-        <label>Patient Name</label>
-        <input class="form-control" th:field="*{patientName}" required/>
+        <label for="patientID" class="form-label">ID Pacient</label>
+        <input id="patientID" class="form-control" th:field="*{patientID}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Doctor Name</label>
-        <input class="form-control" th:field="*{doctorName}" required/>
+        <label for="departmentID" class="form-label">ID Departament</label>
+        <input id="departmentID" class="form-control" th:field="*{departmentID}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Date</label>
-        <input type="date" class="form-control" th:field="*{date}" required/>
+        <label for="admissionDate" class="form-label">Data și Ora Internării</label>
+        <input type="datetime-local" id="admissionDate" class="form-control" th:field="*{admissionDate}" required/>
     </div>
 
-    <button class="btn btn-primary">Save</button>
-    <a th:href="@{/appointments}" class="btn btn-secondary">Cancel</a>
+    <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" class="form-control" th:field="*{status}" required>
+            <option th:each="s : ${T(com.example.Hospital.Management.System.Model.Enums.AppointmentStatus).values()}"
+                    th:value="${s}" th:text="${s}"></option>
+        </select>
+    </div>
+
+    <input type="hidden" th:field="*{medicalStaffList}" value=""/>
+
+    <button type="submit" class="btn btn-primary">Salvează</button>
+    <a th:href="@{/appointments}" class="btn btn-secondary">Anulează</a>
 </form>
 </body>
 </html>

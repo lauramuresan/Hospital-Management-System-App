@@ -4,7 +4,8 @@ public class MedicalStaffAppointment {
     private String medicalStaffAppointmentID;
     private String appointmentID;
     private String medicalStaffID;
-
+    public MedicalStaffAppointment() {
+    }
     public MedicalStaffAppointment(String medicalStaffAppointmentID, String appointmentID, String medicalStaffID) {
         this.medicalStaffAppointmentID = medicalStaffAppointmentID;
         this.appointmentID = appointmentID;

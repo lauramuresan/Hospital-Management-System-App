@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Hospital Form</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Formular Spital</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
 <body class="container mt-4">
-<h2 th:text="${hospital.hospitalID != null} ? 'Edit Hospital' : 'New Hospital'"></h2>
+
+<h2 th:text="${hospital.hospitalID != null and not #strings.isEmpty(hospital.hospitalID) ? 'Editează Spital' : 'Adaugă Spital'}">
+    Formular Spital
+</h2>
 
 <form th:action="@{/hospitals}" th:object="${hospital}" method="post">
+    <input type="hidden" th:field="*{hospitalID}"/>
+
     <div class="mb-3">
-        <label>ID</label>
-        <input class="form-control" th:field="*{hospitalID}" placeholder="leave blank to auto-generate"/>
+        <label for="hospitalName" class="form-label">Nume Spital</label>
+        <input id="hospitalName" class="form-control" th:field="*{hospitalName}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Name</label>
-        <input class="form-control" th:field="*{hospitalName}" required/>
+        <label for="city" class="form-label">Oraș</label>
+        <input id="city" class="form-control" th:field="*{city}" required/>
     </div>
 
-    <div class="mb-3">
-        <label>City</label>
-        <input class="form-control" th:field="*{city}" />
-    </div>
-
-    <button class="btn btn-primary">Save</button>
-    <a th:href="@{/hospitals}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Salvează</button>
+    <a th:href="@{/hospitals}" class="btn btn-secondary">Anulează</a>
 </form>
+
 </body>
 </html>

@@ -13,6 +13,8 @@ public class Appointment {
     private AppointmentStatus status;
     private List<MedicalStaff> medicalStaffList;
 
+    public Appointment() {
+    }
     public Appointment(String appointmentID, String patientID, String departmentID, LocalDateTime admissionDate, AppointmentStatus status, List<MedicalStaff> medicalStaffList) {
         this.appointmentID = appointmentID;
         this.patientID = patientID;

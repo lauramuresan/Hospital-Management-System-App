@@ -7,6 +7,9 @@ import java.util.List;
 
 public class Nurse extends MedicalStaff{
     private NurseLevelQualification qualificationLevel;
+    public Nurse() {
+        super();
+    }
     public Nurse(String staffID, String departmentID, String staffName, List<Appointment> appointments,String staffEmail,NurseLevelQualification qualificationLevel) {
         super(staffID, departmentID, staffName, appointments,staffEmail);
         this.qualificationLevel = qualificationLevel;

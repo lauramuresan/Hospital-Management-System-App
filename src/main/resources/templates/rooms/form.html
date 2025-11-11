@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Room Form</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Formular Cameră</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
 <body class="container mt-4">
-<h2 th:text="${room.roomID != null} ? 'Edit Room' : 'New Room'"></h2>
+<h2 th:text="${room.roomID != null and not #strings.isEmpty(room.roomID) ? 'Editează Cameră' : 'Adaugă Cameră'}">Formular Cameră</h2>
 
 <form th:action="@{/rooms}" th:object="${room}" method="post">
+    <input type="hidden" th:field="*{roomID}"/>
+
     <div class="mb-3">
-        <label>ID</label>
-        <input class="form-control" th:field="*{roomID}" placeholder="leave blank to auto-generate"/>
+        <label for="roomName" class="form-label">Nume Cameră</label>
+        <input id="roomName" class="form-control" th:field="*{roomName}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Hospital ID</label>
-        <input class="form-control" th:field="*{hospitalID}" />
+        <label for="pricePerNight" class="form-label">Preț/Noapte</label>
+        <input id="pricePerNight" type="number" step="0.01" class="form-control" th:field="*{pricePerNight}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Number</label>
-        <input class="form-control" th:field="*{number}" />
+        <label for="departmentID" class="form-label">ID Departament</label>
+        <input id="departmentID" class="form-control" th:field="*{departmentID}" required/>
     </div>
 
-    <div class="mb-3">
-        <label>Capacity</label>
-        <input type="number" step="0.1" class="form-control" th:field="*{capacity}" />
-    </div>
+    <input type="hidden" th:field="*{hospital}" value=""/>
+    <input type="hidden" th:field="*{nursesList}" value=""/>
 
-    <div class="mb-3">
-        <label>Status</label>
-        <select class="form-select" th:field="*{status}">
-            <option th:each="s : ${T(com.example.Hospital.Management.System.Model.RoomAvailability).values()}"
-                    th:value="${s}" th:text="${s}"></option>
-        </select>
-    </div>
-
-    <button class="btn btn-primary">Save</button>
-    <a th:href="@{/rooms}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Salvează</button>
+    <a th:href="@{/rooms}" class="btn btn-secondary">Anulează</a>
 </form>
 </body>
 </html>

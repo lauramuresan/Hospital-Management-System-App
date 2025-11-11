@@ -1,28 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Assignment Form</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${doctor.staffID != null} ? 'Edit Doctor' : 'Adaugă Doctor'">Doctor Form</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
 <body class="container mt-4">
-<h2 th:text="${assignment.medicalStaffAppointmentID != null} ? 'Edit Assignment' : 'New Assignment'"></h2>
 
-<form th:action="@{/medical-staff-appointments}" th:object="${assignment}" method="post">
+<h2 th:text="${doctor.staffID != null} ? 'Edit Doctor' : 'Adaugă Doctor'"></h2>
+
+<form th:object="${doctor}" method="post"
+      th:action="${doctor.staffID != null} ? @{/doctors/{id}/edit(id=${doctor.staffID})} : @{/doctors}">
+
+    <!-- Ascunde ID doar la editare -->
+    <input type="hidden" th:if="${doctor.staffID != null}" th:field="*{staffID}" />
+
     <div class="mb-3">
-        <label>ID</label>
-        <input class="form-control" th:field="*{medicalStaffAppointmentID}" placeholder="leave blank to auto-generate"/>
+        <label for="staffName" class="form-label">Nume</label>
+        <input type="text" class="form-control" id="staffName" th:field="*{staffName}" required>
     </div>
 
     <div class="mb-3">
-        <label>Appointment ID</label>
-        <input class="form-control" th:field="*{appointmentID}" required/>
+        <label for="staffEmail" class="form-label">Email</label>
+        <input type="email" class="form-control" id="staffEmail" th:field="*{staffEmail}" required>
     </div>
 
     <div class="mb-3">
-        <label>Medical Staff ID</label>
-        <input class="form-control" th:field="*{medicalStaffID}" required/>
+        <label for="departmentID" class="form-label">Departament ID</label>
+        <input type="text" class="form-control" id="departmentID" th:field="*{departmentID}" required>
     </div>
 
-    <button class="btn btn-primary">Save</button>
-    <a th:href="@{/medical-staff-appointments}" class="btn btn-secondary">Cancel</a>
+    <div class="mb-3">
+        <label for="medicalSpeciality" class="form-label">Specialitate</label>
+        <select id="medicalSpeciality" class="form-control" th:field="*{medicalSpeciality}">
+            <option th:each="spec : ${T(com.example.Hospital.Management.System.Model.Enums.MedicalSpecialty).values()}"
+                    th:value="${spec}" th:text="${spec}"
+                    th:selected="${doctor.medicalSpeciality == spec}">
+            </option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvează</button>
+    <a th:href="@{/doctors}" class="btn btn-secondary">Renunță</a>
 </form>
+
 </body>
 </html>
