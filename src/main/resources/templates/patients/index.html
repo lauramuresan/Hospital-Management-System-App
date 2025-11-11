@@ -1,30 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Patients</title>
-</head>
-<body>
-<h1>Patients</h1>
-<a href="/patients/new">➕ Add Patient</a>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Date of Birth</th>
-        <th>Action</th>
-    </tr>
+<head><meta charset="UTF-8"/><title>Patients</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2>Patients</h2>
+<div class="mb-3">
+    <a th:href="@{/patients/new}" class="btn btn-success">+ New Patient</a>
+    <a th:href="@{/}" class="btn btn-secondary">Home</a>
+</div>
+
+<table class="table table-striped">
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Date of Birth</th><th>Actions</th></tr></thead>
+    <tbody>
     <tr th:each="p : ${patients}">
         <td th:text="${p.patientID}"></td>
         <td th:text="${p.patientName}"></td>
         <td th:text="${p.pacientEmail}"></td>
         <td th:text="${p.patientBirthDate}"></td>
         <td>
-            <form th:action="@{'/patients/' + ${p.patientID} + '/delete'}" method="post">
-                <button type="submit">❌ Delete</button>
+            <a th:href="@{'/patients/' + ${p.patientID}}" class="btn btn-info btn-sm">Details</a>
+            <a th:href="@{'/patients/' + ${p.patientID} + '/edit'}" class="btn btn-warning btn-sm">Edit</a>
+            <form th:action="@{'/patients/' + ${p.patientID} + '/delete'}" method="post" style="display:inline">
+                <button class="btn btn-danger btn-sm" onclick="return confirm('Delete patient?')">Delete</button>
             </form>
         </td>
     </tr>
+    </tbody>
 </table>
 </body>
 </html>

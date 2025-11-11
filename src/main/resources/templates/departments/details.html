@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Department Details</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"></head>
+<body class="container mt-4">
+<h2>Department Details</h2>
+<table class="table table-striped">
+    <tr><th>ID</th><td th:text="${department.id}"></td></tr>
+    <tr><th>Name</th><td th:text="${department.name}"></td></tr>
+    <tr><th>Location</th><td th:text="${department.location}"></td></tr>
+</table>
+<a th:href="@{/departments}" class="btn btn-secondary">Back</a>
+</body>
+</html>

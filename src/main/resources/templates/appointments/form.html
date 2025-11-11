@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add Appointment</title>
+    <meta charset="UTF-8">
+    <title>Appointment Form</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
-<body>
-<h1>New Appointment</h1>
+<body class="container mt-4">
+<h2>Appointment Form</h2>
 
-<form th:action="@{/appointments}" th:object="${appointment}" method="post">
-    <label>ID:</label>
-    <input th:field="*{appointmentID}"><br>
+<form th:action="@{/appointments/save}" th:object="${appointment}" method="post">
+    <input type="hidden" th:field="*{id}"/>
 
-    <label>Patient ID:</label>
-    <input th:field="*{patientID}"><br>
+    <div class="mb-3">
+        <label>Patient Name</label>
+        <input class="form-control" th:field="*{patientName}" required/>
+    </div>
 
-    <label>Department ID:</label>
-    <input th:field="*{departmentID}"><br>
+    <div class="mb-3">
+        <label>Doctor Name</label>
+        <input class="form-control" th:field="*{doctorName}" required/>
+    </div>
 
-    <label>Date:</label>
-    <input type="datetime-local" th:field="*{admissionDate}"><br>
+    <div class="mb-3">
+        <label>Date</label>
+        <input type="date" class="form-control" th:field="*{date}" required/>
+    </div>
 
-    <label>Status:</label>
-    <select th:field="*{status}">
-        <option th:each="s : ${T(com.example.Hospital.Management.System.Model.AppointmentStatus).values()}"
-                th:value="${s}" th:text="${s}"></option>
-    </select><br>
-
-    <button type="submit">Save</button>
+    <button class="btn btn-primary">Save</button>
+    <a th:href="@{/appointments}" class="btn btn-secondary">Cancel</a>
 </form>
-
-<a href="/appointments">Back</a>
 </body>
 </html>

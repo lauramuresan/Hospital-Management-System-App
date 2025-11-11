@@ -1,37 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Add Doctor</title>
-</head>
-<body>
-<h1>New Doctor</h1>
+<head><meta charset="UTF-8"/><title>Doctor Form</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2 th:text="${doctor.staffID != null} ? 'Edit Doctor' : 'New Doctor'"></h2>
 
 <form th:action="@{/doctors}" th:object="${doctor}" method="post">
-    <label>ID:</label>
-    <input th:field="*{staffID}" /><br>
+    <div class="mb-3">
+        <label>ID</label>
+        <input class="form-control" th:field="*{staffID}" placeholder="leave blank to auto-generate"/>
+    </div>
 
-    <label>Name:</label>
-    <input th:field="*{staffName}" /><br>
+    <div class="mb-3">
+        <label>Name</label>
+        <input class="form-control" th:field="*{staffName}" required/>
+    </div>
 
-    <label>Email:</label>
-    <input th:field="*{staffEmail}" /><br>
+    <div class="mb-3">
+        <label>Department ID</label>
+        <input class="form-control" th:field="*{departmentID}" />
+    </div>
 
-    <label>Department ID:</label>
-    <input th:field="*{departmentID}" /><br>
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" class="form-control" th:field="*{staffEmail}" />
+    </div>
 
-    <label>License Number:</label>
-    <input th:field="*{licenseNumber}" /><br>
+    <div class="mb-3">
+        <label>License Number</label>
+        <input class="form-control" th:field="*{licenseNumber}" />
+    </div>
 
+    <div class="mb-3">
+        <label>Medical Specialty</label>
+        <input class="form-control" th:field="*{medicalSpeciality}" />
+    </div>
 
-    <label>Specialty:</label>
-    <select th:field="*{medicalSpeciality}">
-        <option th:each="s : ${T(com.example.Hospital.Management.System.Model.MedicalSpecialty).values()}"
-                th:value="${s}" th:text="${s}"></option>
-    </select><br>
-
-    <button type="submit">Save</button>
+    <button class="btn btn-primary">Save</button>
+    <a th:href="@{/doctors}" class="btn btn-secondary">Cancel</a>
 </form>
-
-<a href="/doctors">Back</a>
 </body>
 </html>

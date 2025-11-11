@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Medical Staff Appointments</title>
-</head>
-<body>
-<h1>Medical Staff Assignments</h1>
-<a href="/medical-staff-appointments/new">➕ Add Assignment</a>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Appointment ID</th>
-        <th>Staff ID</th>
-        <th>Action</th>
-    </tr>
-    <tr th:each="a : ${assignments}">
-        <td th:text="${a.medicalStaffAppointmentID}"></td>
-        <td th:text="${a.appointmentID}"></td>
-        <td th:text="${a.medicalStaffID}"></td>
+<head><meta charset="UTF-8"/><title>Medical Staff Appointments</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2>Medical Staff Appointments</h2>
+<div class="mb-3">
+    <a th:href="@{/medical-staff-appointments/new}" class="btn btn-success">+ New Assignment</a>
+    <a th:href="@{/}" class="btn btn-secondary">Home</a>
+</div>
+
+<table class="table table-striped">
+    <thead><tr><th>ID</th><th>Appointment ID</th><th>Medical Staff ID</th><th>Actions</th></tr></thead>
+    <tbody>
+    <tr th:each="m : ${medicalStaffAppointments}">
+        <td th:text="${m.medicalStaffAppointmentID}"></td>
+        <td th:text="${m.appointmentID}"></td>
+        <td th:text="${m.medicalStaffID}"></td>
         <td>
-            <form th:action="@{'/medical-staff-appointments/' + ${a.medicalStaffAppointmentID} + '/delete'}" method="post">
-                <button type="submit">❌ Delete</button>
+            <a th:href="@{'/medical-staff-appointments/' + ${m.medicalStaffAppointmentID}}" class="btn btn-info btn-sm">Details</a>
+            <a th:href="@{'/medical-staff-appointments/' + ${m.medicalStaffAppointmentID} + '/edit'}" class="btn btn-warning btn-sm">Edit</a>
+            <form th:action="@{'/medical-staff-appointments/' + ${m.medicalStaffAppointmentID} + '/delete'}" method="post" style="display:inline">
+                <button class="btn btn-danger btn-sm" onclick="return confirm('Delete assignment?')">Delete</button>
             </form>
         </td>
     </tr>
+    </tbody>
 </table>
 </body>
 </html>

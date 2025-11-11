@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Add Hospital</title>
-</head>
-<body>
-<h1>New Hospital</h1>
+<head><meta charset="UTF-8"/><title>Hospital Form</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2 th:text="${hospital.hospitalID != null} ? 'Edit Hospital' : 'New Hospital'"></h2>
 
 <form th:action="@{/hospitals}" th:object="${hospital}" method="post">
-    <label>ID:</label>
-    <input th:field="*{hospitalID}"><br>
+    <div class="mb-3">
+        <label>ID</label>
+        <input class="form-control" th:field="*{hospitalID}" placeholder="leave blank to auto-generate"/>
+    </div>
 
-    <label>Name:</label>
-    <input th:field="*{hospitalName}"><br>
+    <div class="mb-3">
+        <label>Name</label>
+        <input class="form-control" th:field="*{hospitalName}" required/>
+    </div>
 
-    <label>City:</label>
-    <input th:field="*{city}"><br>
+    <div class="mb-3">
+        <label>City</label>
+        <input class="form-control" th:field="*{city}" />
+    </div>
 
-    <button type="submit">Save</button>
+    <button class="btn btn-primary">Save</button>
+    <a th:href="@{/hospitals}" class="btn btn-secondary">Cancel</a>
 </form>
-
-<a href="/hospitals">Back</a>
 </body>
 </html>
