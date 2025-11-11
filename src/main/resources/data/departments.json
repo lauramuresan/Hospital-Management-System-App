@@ -1,0 +1,52 @@
+[
+  {
+    "departmentID": "DEP001",
+    "departmentName": "Cardiologie",
+    "hospitalID": "HOS001"
+  },
+  {
+    "departmentID": "DEP002",
+    "departmentName": "Neurologie",
+    "hospitalID": "HOS001"
+  },
+  {
+    "departmentID": "DEP003",
+    "departmentName": "Pediatrie",
+    "hospitalID": "HOS002"
+  },
+  {
+    "departmentID": "DEP004",
+    "departmentName": "Dermatologie",
+    "hospitalID": "HOS002"
+  },
+  {
+    "departmentID": "DEP005",
+    "departmentName": "Ortopedie",
+    "hospitalID": "HOS003"
+  },
+  {
+    "departmentID": "DEP006",
+    "departmentName": "Chirurgie",
+    "hospitalID": "HOS003"
+  },
+  {
+    "departmentID": "DEP007",
+    "departmentName": "Gastroenterologie",
+    "hospitalID": "HOS004"
+  },
+  {
+    "departmentID": "DEP008",
+    "departmentName": "Oftalmologie",
+    "hospitalID": "HOS004"
+  },
+  {
+    "departmentID": "DEP009",
+    "departmentName": "Urologie",
+    "hospitalID": "HOS005"
+  },
+  {
+    "departmentID": "DEP010",
+    "departmentName": "Pneumologie",
+    "hospitalID": "HOS005"
+  }
+]
