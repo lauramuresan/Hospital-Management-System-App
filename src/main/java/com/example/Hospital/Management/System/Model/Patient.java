@@ -1,55 +1,54 @@
 package com.example.Hospital.Management.System.Model;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 
 public class Patient {
     private String patientID;
     private String patientName;
-    private List<Appointment> appointmentList;
+    private List<Appointment> appointmentList = new ArrayList<>(); // INITIALIZEAZĂ lista!
     private String pacientEmail;
-    private LocalDate dateOfBirth;
+    private String patientBirthDate;
+
+    // Constructor implicit
     public Patient() {
+        this.appointmentList = new ArrayList<>(); // asigură-te că lista e inițializată
     }
-    public Patient(String patientID, String patientName, List<Appointment> appointmentList, String pacientEmail, LocalDate dateOfBirth) {
+
+    public Patient(String patientID, String patientName, List<Appointment> appointmentList,
+                   String pacientEmail, String patientBirthDate) {
         this.patientID = patientID;
         this.patientName = patientName;
-        this.appointmentList = appointmentList;
+        this.appointmentList = appointmentList != null ? appointmentList : new ArrayList<>();
         this.pacientEmail = pacientEmail;
-        this.dateOfBirth = dateOfBirth;
+        this.patientBirthDate = patientBirthDate;
     }
-    public String getPatientID() {
-        return patientID;
-    }
-    public String getPatientName() {
-        return patientName;
-    }
-    public List<Appointment> getAppointmentList() {
-        return appointmentList;
-    }
-    public String getPacientEmail() {
-        return pacientEmail;
-    }
-    public LocalDate getPatientBirthDate() { return  dateOfBirth; }
-    public void setPatientID(String patientID) {
-        this.patientID = patientID;
-    }
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
-    }
+
+    // Getters și Setters
+    public String getPatientID() { return patientID; }
+    public void setPatientID(String patientID) { this.patientID = patientID; }
+
+    public String getPatientName() { return patientName; }
+    public void setPatientName(String patientName) { this.patientName = patientName; }
+
+    public List<Appointment> getAppointmentList() { return appointmentList; }
     public void setAppointmentList(List<Appointment> appointmentList) {
-        this.appointmentList = appointmentList;
+        this.appointmentList = appointmentList != null ? appointmentList : new ArrayList<>();
     }
+
+    public String getPacientEmail() { return pacientEmail; }
     public void setPacientEmail(String pacientEmail) { this.pacientEmail = pacientEmail; }
-    public void setPatientBirthDate(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    public String getPatientBirthDate() { return patientBirthDate; }
+    public void setPatientBirthDate(String patientBirthDate) { this.patientBirthDate = patientBirthDate; }
 
     @Override
     public String toString() {
         return "Patient{" +
                 "patientID='" + patientID + '\'' +
                 ", patientName='" + patientName + '\'' +
-                ", appointmentList=" + appointmentList +
                 ", pacientEmail='" + pacientEmail + '\'' +
-                ", patientDateOfBirth=" + dateOfBirth +
+                ", patientBirthDate='" + patientBirthDate + '\'' +
                 '}';
     }
 }

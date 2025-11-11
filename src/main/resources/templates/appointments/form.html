@@ -29,12 +29,14 @@
     <div class="mb-3">
         <label for="status" class="form-label">Status</label>
         <select id="status" class="form-control" th:field="*{status}" required>
+            <option value="">Selectează status</option>
             <option th:each="s : ${T(com.example.Hospital.Management.System.Model.Enums.AppointmentStatus).values()}"
                     th:value="${s}" th:text="${s}"></option>
         </select>
     </div>
 
-    <input type="hidden" th:field="*{medicalStaffList}" value=""/>
+    <!-- ELIMINĂ câmpul hidden pentru medicalStaffList -->
+    <!-- Spring va inițializa automat lista goală -->
 
     <button type="submit" class="btn btn-primary">Salvează</button>
     <a th:href="@{/appointments}" class="btn btn-secondary">Anulează</a>

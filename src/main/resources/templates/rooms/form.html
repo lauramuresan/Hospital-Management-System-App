@@ -12,22 +12,31 @@
     <input type="hidden" th:field="*{roomID}"/>
 
     <div class="mb-3">
-        <label for="roomName" class="form-label">Nume Cameră</label>
-        <input id="roomName" class="form-control" th:field="*{roomName}" required/>
+        <label for="number" class="form-label">Număr Cameră</label>
+        <input id="number" class="form-control" th:field="*{number}" placeholder="Ex: 101" required/>
     </div>
 
     <div class="mb-3">
-        <label for="pricePerNight" class="form-label">Preț/Noapte</label>
-        <input id="pricePerNight" type="number" step="0.01" class="form-control" th:field="*{pricePerNight}" required/>
+        <label for="hospitalID" class="form-label">ID Spital</label>
+        <input id="hospitalID" class="form-control" th:field="*{hospitalID}" placeholder="Ex: HOSP001" required/>
     </div>
 
     <div class="mb-3">
-        <label for="departmentID" class="form-label">ID Departament</label>
-        <input id="departmentID" class="form-control" th:field="*{departmentID}" required/>
+        <label for="capacity" class="form-label">Capacitate</label>
+        <input id="capacity" type="number" step="0.1" class="form-control" th:field="*{capacity}" required/>
     </div>
 
-    <input type="hidden" th:field="*{hospital}" value=""/>
-    <input type="hidden" th:field="*{nursesList}" value=""/>
+    <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" class="form-control" th:field="*{status}" required>
+            <option value="">Selectează status</option>
+            <option th:each="status : ${T(com.example.Hospital.Management.System.Model.Enums.RoomAvailability).values()}"
+                    th:value="${status}" th:text="${status}">
+            </option>
+        </select>
+    </div>
+
+    <!-- NU folosi câmp hidden pentru appointments -->
 
     <button type="submit" class="btn btn-primary">Salvează</button>
     <a th:href="@{/rooms}" class="btn btn-secondary">Anulează</a>
