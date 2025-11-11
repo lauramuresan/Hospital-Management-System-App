@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointment Details</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body class="container mt-4">
+<h2>Appointment Details</h2>
+
+<table class="table table-striped">
+    <tr><th>ID</th><td th:text="${appointment.id}"></td></tr>
+    <tr><th>Patient</th><td th:text="${appointment.patientName}"></td></tr>
+    <tr><th>Doctor</th><td th:text="${appointment.doctorName}"></td></tr>
+    <tr><th>Date</th><td th:text="${appointment.date}"></td></tr>
+</table>
+
+<a th:href="@{/appointments}" class="btn btn-secondary">Back</a>
+</body>
+</html>

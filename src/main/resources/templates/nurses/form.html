@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Add Nurse</title>
-</head>
-<body>
-<h1>New Nurse</h1>
+<head><meta charset="UTF-8"/><title>Nurse Form</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2 th:text="${nurse.staffID != null} ? 'Edit Nurse' : 'New Nurse'"></h2>
 
 <form th:action="@{/nurses}" th:object="${nurse}" method="post">
+    <div class="mb-3">
+        <label>ID</label>
+        <input class="form-control" th:field="*{staffID}" placeholder="leave blank to auto-generate"/>
+    </div>
 
-    <label>ID:</label>
-    <input th:field="*{staffID}" placeholder="Auto-generated if empty"><br><br>
+    <div class="mb-3">
+        <label>Name</label>
+        <input class="form-control" th:field="*{staffName}" required/>
+    </div>
 
-    <label>Name:</label>
-    <input th:field="*{staffName}" placeholder="Enter Name"><br><br>
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" class="form-control" th:field="*{staffEmail}" />
+    </div>
 
-    <label>Email:</label>
-    <input th:field="*{staffEmail}" placeholder="Enter Email"><br><br>
+    <div class="mb-3">
+        <label>Department ID</label>
+        <input class="form-control" th:field="*{departmentID}" />
+    </div>
 
-    <label>Qualification Level:</label>
-    <select th:field="*{qualificationLevel}">
-        <option th:each="level : ${T(com.example.Hospital.Management.System.Model.NurseLevelQualification).values()}"
-                th:value="${level}" th:text="${level}"></option>
-    </select><br><br>
+    <div class="mb-3">
+        <label>Qualification Level</label>
+        <input class="form-control" th:field="*{qualificationLevel}" />
+    </div>
 
-    <label>Department:</label>
-    <input th:field="*{departmentID}" placeholder="Enter Department ID"><br><br>
-
-    <button type="submit">Save</button>
+    <button class="btn btn-primary">Save</button>
+    <a th:href="@{/nurses}" class="btn btn-secondary">Cancel</a>
 </form>
-
-<br>
-<a href="/nurses">Back</a>
 </body>
 </html>

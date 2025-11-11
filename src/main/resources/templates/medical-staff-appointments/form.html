@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Add Medical Staff Assignment</title>
-</head>
-<body>
-<h1>New Medical Staff Assignment</h1>
+<head><meta charset="UTF-8"/><title>Assignment Form</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2 th:text="${assignment.medicalStaffAppointmentID != null} ? 'Edit Assignment' : 'New Assignment'"></h2>
+
 <form th:action="@{/medical-staff-appointments}" th:object="${assignment}" method="post">
-    <label>ID:</label>
-    <input th:field="*{medicalStaffAppointmentID}"><br>
-    <label>Appointment ID:</label>
-    <input th:field="*{appointmentID}"><br>
-    <label>Staff ID:</label>
-    <input th:field="*{medicalStaffID}"><br>
-    <button type="submit">Save</button>
+    <div class="mb-3">
+        <label>ID</label>
+        <input class="form-control" th:field="*{medicalStaffAppointmentID}" placeholder="leave blank to auto-generate"/>
+    </div>
+
+    <div class="mb-3">
+        <label>Appointment ID</label>
+        <input class="form-control" th:field="*{appointmentID}" required/>
+    </div>
+
+    <div class="mb-3">
+        <label>Medical Staff ID</label>
+        <input class="form-control" th:field="*{medicalStaffID}" required/>
+    </div>
+
+    <button class="btn btn-primary">Save</button>
+    <a th:href="@{/medical-staff-appointments}" class="btn btn-secondary">Cancel</a>
 </form>
-<a href="/medical-staff-appointments">Back</a>
 </body>
 </html>

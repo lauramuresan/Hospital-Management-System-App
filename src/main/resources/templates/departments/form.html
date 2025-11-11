@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Add Department</title></head>
-<body>
-<h1>New Department</h1>
-<form th:action="@{/departments}" th:object="${department}" method="post">
-    <label>ID:</label><input th:field="*{departmentID}"><br>
-    <label>Name:</label><input th:field="*{departmentName}"><br>
-    <label>Hospital ID:</label><input th:field="*{hospitalID}"><br>
-    <button type="submit">Save</button>
+<head><meta charset="UTF-8"><title>Department Form</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"></head>
+<body class="container mt-4">
+<h2>Department Form</h2>
+
+<form th:action="@{/departments/save}" th:object="${department}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <div class="mb-3">
+        <label>Name</label>
+        <input class="form-control" th:field="*{name}" required/>
+    </div>
+    <div class="mb-3">
+        <label>Location</label>
+        <input class="form-control" th:field="*{location}" required/>
+    </div>
+
+    <button class="btn btn-primary">Save</button>
+    <a th:href="@{/departments}" class="btn btn-secondary">Cancel</a>
 </form>
-<a href="/departments">Back</a>
 </body>
 </html>

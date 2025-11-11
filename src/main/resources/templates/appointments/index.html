@@ -1,30 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Appointments</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
-<body>
-<h1>Appointments</h1>
+<body class="container mt-4">
+<h2>Appointments</h2>
+<a th:href="@{/}" class="btn btn-secondary mb-3">Back</a>
+<a th:href="@{/appointments/new}" class="btn btn-success mb-3">+ Add Appointment</a>
 
-<a href="/appointments/new">➕ Add Appointment</a>
-
-<table border="1">
-    <tr>
-        <th>ID</th><th>Patient</th><th>Department</th><th>Date</th><th>Status</th><th>Action</th>
-    </tr>
+<table class="table table-bordered">
+    <thead>
+    <tr><th>ID</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
     <tr th:each="a : ${appointments}">
-        <td th:text="${a.appointmentID}"></td>
-        <td th:text="${a.patientID}"></td>
-        <td th:text="${a.departmentID}"></td>
-        <!-- Formatăm LocalDateTime pentru afișare -->
-        <td th:text="${#temporals.format(a.admissionDate, 'yyyy-MM-dd HH:mm')}"></td>
-        <td th:text="${a.status}"></td>
+        <td th:text="${a.id}"></td>
+        <td th:text="${a.patientName}"></td>
+        <td th:text="${a.doctorName}"></td>
+        <td th:text="${a.date}"></td>
         <td>
-            <form th:action="@{'/appointments/' + ${a.appointmentID} + '/delete'}" method="post">
-                <button type="submit">❌ Delete</button>
-            </form>
+            <a th:href="@{'/appointments/details/' + ${a.id}}" class="btn btn-info btn-sm">View</a>
+            <a th:href="@{'/appointments/edit/' + ${a.id}}" class="btn btn-warning btn-sm">Edit</a>
+            <a th:href="@{'/appointments/delete/' + ${a.id}}" class="btn btn-danger btn-sm">Delete</a>
         </td>
     </tr>
+    </tbody>
 </table>
 </body>
 </html>

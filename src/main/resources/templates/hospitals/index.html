@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Hospitals</title>
-</head>
-<body>
-<h1>Hospitals</h1>
+<head><meta charset="UTF-8"/><title>Hospitals</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2>Hospitals</h2>
+<div class="mb-3">
+    <a th:href="@{/hospitals/new}" class="btn btn-success">+ New Hospital</a>
+    <a th:href="@{/}" class="btn btn-secondary">Home</a>
+</div>
 
-<a href="/hospitals/new">➕ Add Hospital</a>
-
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>City</th>
-        <th>Action</th>
-    </tr>
+<table class="table table-striped">
+    <thead><tr><th>ID</th><th>Name</th><th>City</th><th>Actions</th></tr></thead>
+    <tbody>
     <tr th:each="h : ${hospitals}">
         <td th:text="${h.hospitalID}"></td>
         <td th:text="${h.hospitalName}"></td>
         <td th:text="${h.city}"></td>
         <td>
-            <form th:action="@{'/hospitals/' + ${h.hospitalID} + '/delete'}" method="post">
-                <button type="submit">❌ Delete</button>
+            <a th:href="@{'/hospitals/' + ${h.hospitalID}}" class="btn btn-info btn-sm">Details</a>
+            <a th:href="@{'/hospitals/' + ${h.hospitalID} + '/edit'}" class="btn btn-warning btn-sm">Edit</a>
+            <form th:action="@{'/hospitals/' + ${h.hospitalID} + '/delete'}" method="post" style="display:inline">
+                <button class="btn btn-danger btn-sm" onclick="return confirm('Delete hospital?')">Delete</button>
             </form>
         </td>
     </tr>
+    </tbody>
 </table>
 </body>
 </html>

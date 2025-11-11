@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Room Details</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<body class="container mt-4">
+<h2>Room Details</h2>
+<table class="table table-striped">
+    <tr><th>ID</th><td th:text="${room.roomID}"></td></tr>
+    <tr><th>Hospital ID</th><td th:text="${room.hospitalID}"></td></tr>
+    <tr><th>Number</th><td th:text="${room.number}"></td></tr>
+    <tr><th>Capacity</th><td th:text="${room.capacity}"></td></tr>
+    <tr><th>Status</th><td th:text="${room.status}"></td></tr>
+</table>
+<a th:href="@{/rooms}" class="btn btn-secondary">Back</a>
+</body>
+</html>
