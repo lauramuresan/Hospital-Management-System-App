@@ -18,6 +18,7 @@ public class HospitalService extends BaseService<Hospital>{
         this.hospitalRepository = factory.createRepository(Hospital.class);
     }
 
+
     @Override
     protected void save(Hospital entity){
         hospitalRepository.save(entity);
