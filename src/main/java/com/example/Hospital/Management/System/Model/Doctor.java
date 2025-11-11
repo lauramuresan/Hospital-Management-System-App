@@ -7,6 +7,9 @@ import java.util.List;
 public class Doctor extends MedicalStaff{
     private String licenseNumber;
     private MedicalSpecialty medicalSpeciality;
+    public Doctor() {
+        super();
+    }
     public Doctor(String staffID, String departmentID, String staffName, List<Appointment> appointments,String staffEmail, String licenseNumber,MedicalSpecialty medicalSpeciality) {
         super(staffID, departmentID, staffName, appointments, staffEmail);
         this.licenseNumber = licenseNumber;

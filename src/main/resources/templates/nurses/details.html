@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Nurse Details</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Detalii Asistent Medical</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
 <body class="container mt-4">
-<h2>Nurse Details</h2>
+<h2>Detalii Asistent Medical</h2>
+
 <table class="table table-striped">
     <tr><th>ID</th><td th:text="${nurse.staffID}"></td></tr>
-    <tr><th>Name</th><td th:text="${nurse.staffName}"></td></tr>
-    <tr><th>Email</th><td th:text="${nurse.staffEmail}"></td></tr>
-    <tr><th>Department ID</th><td th:text="${nurse.departmentID}"></td></tr>
-    <tr><th>Qualification</th><td th:text="${nurse.qualificationLevel}"></td></tr>
+    <tr><th>Nume</th><td th:text="${nurse.firstName}"></td></tr>
+    <tr><th>Prenume</th><td th:text="${nurse.lastName}"></td></tr>
+    <tr><th>Departament ID</th><td th:text="${nurse.departmentID}"></td></tr>
+    <tr><th>Contact</th><td th:text="${nurse.contactNumber}"></td></tr>
+    <tr><th>Email</th><td th:text="${nurse.email}"></td></tr>
+    <tr><th>Cameră (ID)</th><td th:text="${nurse.room != null ? nurse.room.roomID : 'N/A'}"></td></tr>
 </table>
-<a th:href="@{/nurses}" class="btn btn-secondary">Back</a>
+
+<a th:href="@{/nurses}" class="btn btn-secondary">Înapoi la Listă</a>
 </body>
 </html>

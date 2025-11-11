@@ -1,14 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Assignment Details</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Asistenți Medicali</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
 <body class="container mt-4">
-<h2>Assignment Details</h2>
-<table class="table table-striped">
-    <tr><th>ID</th><td th:text="${assignment.medicalStaffAppointmentID}"></td></tr>
-    <tr><th>Appointment ID</th><td th:text="${assignment.appointmentID}"></td></tr>
-    <tr><th>Medical Staff ID</th><td th:text="${assignment.medicalStaffID}"></td></tr>
+<h2>Asistenți Medicali</h2>
+<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
+<a th:href="@{/nurses/new}" class="btn btn-success mb-3">+ Adaugă Asistent</a>
+
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nume</th>
+        <th>Departament ID</th>
+        <th>Contact</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="n : ${nurses}">
+        <td th:text="${n.staffID}"></td>
+        <td th:text="${n.firstName} + ' ' + ${n.lastName}"></td>
+        <td th:text="${n.departmentID}"></td>
+        <td th:text="${n.contactNumber}"></td>
+        <td>
+            <a th:href="@{'/nurses/' + ${n.staffID}}" class="btn btn-info btn-sm">Detalii</a>
+            <a th:href="@{'/nurses/' + ${n.staffID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+            <form th:action="@{'/nurses/' + ${n.staffID} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
 </table>
-<a th:href="@{/medical-staff-appointments}" class="btn btn-secondary">Back</a>
 </body>
 </html>

@@ -11,7 +11,8 @@ public class Room {
     private String number;
     private RoomAvailability status;
     private List<Appointment> appointments;
-
+    public Room() {
+    }
     public Room(String roomID, String hospitalID, double capacity, String number, RoomAvailability status, List<Appointment> appointments) {
         this.roomID = roomID;
         this.hospitalID = hospitalID;

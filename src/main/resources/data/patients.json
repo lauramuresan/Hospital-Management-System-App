@@ -1,12 +1,72 @@
 [
-  {"patientID": "PAT001", "patientName": "Ion Georgescu", "pacientEmail": "ion.g@email.com", "dateOfBirth": "1985-05-10", "appointmentList": []},
-  {"patientID": "PAT002", "patientName": "Ana Maria Popa", "pacientEmail": "ana.p@email.com", "dateOfBirth": "1992-11-20", "appointmentList": []},
-  {"patientID": "PAT003", "patientName": "Vlad Petrescu", "pacientEmail": "vlad.p@email.com", "dateOfBirth": "2001-01-15", "appointmentList": []},
-  {"patientID": "PAT004", "patientName": "Raluca Stoica", "pacientEmail": "raluca.s@email.com", "dateOfBirth": "1970-07-28", "appointmentList": []},
-  {"patientID": "PAT005", "patientName": "Gheorghe Dinu", "pacientEmail": "g.dinu@email.com", "dateOfBirth": "1963-03-01", "appointmentList": []},
-  {"patientID": "PAT006", "patientName": "Cristina Munteanu", "pacientEmail": "c.munteanu@email.com", "dateOfBirth": "1999-09-09", "appointmentList": []},
-  {"patientID": "PAT007", "patientName": "Petru Iordache", "pacientEmail": "p.iordache@email.com", "dateOfBirth": "1955-12-05", "appointmentList": []},
-  {"patientID": "PAT008", "patientName": "Sofia Barbu", "pacientEmail": "s.barbu@email.com", "dateOfBirth": "2010-04-12", "appointmentList": []},
-  {"patientID": "PAT009", "patientName": "Marius Radulescu", "pacientEmail": "m.radulescu@email.com", "dateOfBirth": "1988-02-22", "appointmentList": []},
-  {"patientID": "PAT010", "patientName": "Gabriela Vasile", "pacientEmail": "g.vasile@email.com", "dateOfBirth": "1977-06-18", "appointmentList": []}
+  {
+    "patientID": "P001",
+    "patientName": "Ion Georgescu",
+    "appointmentList": [],
+    "pacientEmail": "ion.g@email.com",
+    "patientBirthDate": "1985-06-20"
+  },
+  {
+    "patientID": "P002",
+    "patientName": "Andreea Mihai",
+    "appointmentList": [],
+    "pacientEmail": "andreea.m@email.com",
+    "patientBirthDate": "1992-11-15"
+  },
+  {
+    "patientID": "P003",
+    "patientName": "Vlad Nistor",
+    "appointmentList": [],
+    "pacientEmail": "vlad.n@email.com",
+    "patientBirthDate": "2005-01-01"
+  },
+  {
+    "patientID": "P004",
+    "patientName": "Laura Câmpeanu",
+    "appointmentList": [],
+    "pacientEmail": "laura.c@email.com",
+    "patientBirthDate": "1970-03-10"
+  },
+  {
+    "patientID": "P005",
+    "patientName": "Dan Mateescu",
+    "appointmentList": [],
+    "pacientEmail": "dan.m@email.com",
+    "patientBirthDate": "1999-09-25"
+  },
+  {
+    "patientID": "P006",
+    "patientName": "Sonia Florescu",
+    "appointmentList": [],
+    "pacientEmail": "sonia.f@email.com",
+    "patientBirthDate": "1965-12-05"
+  },
+  {
+    "patientID": "P007",
+    "patientName": "Costin Popa",
+    "appointmentList": [],
+    "pacientEmail": "costin.p@email.com",
+    "patientBirthDate": "1988-07-14"
+  },
+  {
+    "patientID": "P008",
+    "patientName": "Alina Dima",
+    "appointmentList": [],
+    "pacientEmail": "alina.d@email.com",
+    "patientBirthDate": "1995-04-30"
+  },
+  {
+    "patientID": "P009",
+    "patientName": "Radu Barbu",
+    "appointmentList": [],
+    "pacientEmail": "radu.b@email.com",
+    "patientBirthDate": "2001-02-17"
+  },
+  {
+    "patientID": "P010",
+    "patientName": "Ioana Cristi",
+    "appointmentList": [],
+    "pacientEmail": "ioana.c@email.com",
+    "patientBirthDate": "1978-10-12"
+  }
 ]

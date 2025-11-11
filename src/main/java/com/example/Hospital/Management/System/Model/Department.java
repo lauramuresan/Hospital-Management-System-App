@@ -4,6 +4,8 @@ public class Department {
     private String departmentID;
     private String departmentName;
     private String hospitalID;
+    public Department() {
+    }
     public Department(String departmentID, String departmentName, String hospitalID) {
         this.departmentID = departmentID;
         this.departmentName = departmentName;

@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Hospitals</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Spitalelor</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
 <body class="container mt-4">
-<h2>Hospitals</h2>
-<div class="mb-3">
-    <a th:href="@{/hospitals/new}" class="btn btn-success">+ New Hospital</a>
-    <a th:href="@{/}" class="btn btn-secondary">Home</a>
-</div>
 
-<table class="table table-striped">
-    <thead><tr><th>ID</th><th>Name</th><th>City</th><th>Actions</th></tr></thead>
+<h2>Spitale</h2>
+
+<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
+<a th:href="@{/hospitals/new}" class="btn btn-success mb-3">+ Adaugă Spital</a>
+
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nume</th>
+        <th>Oraș</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
     <tbody>
     <tr th:each="h : ${hospitals}">
         <td th:text="${h.hospitalID}"></td>
         <td th:text="${h.hospitalName}"></td>
         <td th:text="${h.city}"></td>
         <td>
-            <a th:href="@{'/hospitals/' + ${h.hospitalID}}" class="btn btn-info btn-sm">Details</a>
-            <a th:href="@{'/hospitals/' + ${h.hospitalID} + '/edit'}" class="btn btn-warning btn-sm">Edit</a>
-            <form th:action="@{'/hospitals/' + ${h.hospitalID} + '/delete'}" method="post" style="display:inline">
-                <button class="btn btn-danger btn-sm" onclick="return confirm('Delete hospital?')">Delete</button>
+            <a th:href="@{'/hospitals/' + ${h.hospitalID}}" class="btn btn-info btn-sm">Detalii</a>
+            <a th:href="@{'/hospitals/' + ${h.hospitalID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+            <form th:action="@{'/hospitals/' + ${h.hospitalID} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
             </form>
         </td>
     </tr>
     </tbody>
 </table>
+
 </body>
 </html>

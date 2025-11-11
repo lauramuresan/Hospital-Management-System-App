@@ -1,33 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Patient Form</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Formular Pacient</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
 <body class="container mt-4">
-<h2 th:text="${patient.patientID != null} ? 'Edit Patient' : 'New Patient'"></h2>
+<h2 th:text="${patient.patientID != null and not #strings.isEmpty(patient.patientID) ? 'Editează Pacient' : 'Adaugă Pacient'}">Formular Pacient</h2>
 
 <form th:action="@{/patients}" th:object="${patient}" method="post">
+    <input type="hidden" th:field="*{patientID}"/>
+
     <div class="mb-3">
-        <label>ID</label>
-        <input class="form-control" th:field="*{patientID}" placeholder="leave blank to auto-generate"/>
+        <label for="firstName" class="form-label">Prenume</label>
+        <input id="firstName" class="form-control" th:field="*{firstName}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Name</label>
-        <input class="form-control" th:field="*{patientName}" required/>
+        <label for="lastName" class="form-label">Nume</label>
+        <input id="lastName" class="form-control" th:field="*{lastName}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Email</label>
-        <input type="email" class="form-control" th:field="*{pacientEmail}" />
+        <label for="contactNumber" class="form-label">Contact</label>
+        <input id="contactNumber" class="form-control" th:field="*{contactNumber}" required/>
     </div>
 
     <div class="mb-3">
-        <label>Date of Birth</label>
-        <input type="date" class="form-control" th:field="*{dateOfBirth}" />
+        <label for="email" class="form-label">Email</label>
+        <input id="email" type="email" class="form-control" th:field="*{email}" required/>
     </div>
 
-    <button class="btn btn-primary">Save</button>
-    <a th:href="@{/patients}" class="btn btn-secondary">Cancel</a>
+    <input type="hidden" th:field="*{appointments}" value=""/>
+
+    <button type="submit" class="btn btn-primary">Salvează</button>
+    <a th:href="@{/patients}" class="btn btn-secondary">Anulează</a>
 </form>
 </body>
 </html>

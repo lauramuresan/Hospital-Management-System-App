@@ -8,6 +8,8 @@ public abstract class MedicalStaff {
     private String staffName;
     private String staffEmail;
     private List<Appointment> appointments;
+    public MedicalStaff() {
+    }
     public MedicalStaff(String staffID, String departmentID, String staffName, List<Appointment> appointments, String staffEmail) {
         this.staffID = staffID;
         this.departmentID = departmentID;

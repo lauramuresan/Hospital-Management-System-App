@@ -7,11 +7,17 @@ import org.springframework.stereotype.Repository;
 
 @Repository("doctorInFile")
 public class DoctorInFileRepository extends InFileRepository<Doctor> {
-    public DoctorInFileRepository(ObjectMapper mapper, @Value("${app.data.folder:./data}") String dataFolder) {
+    public DoctorInFileRepository(ObjectMapper mapper, @Value("${app.data.folder:data/}") String dataFolder) {
         super(mapper, dataFolder, "doctors.json");
     }
+
     @Override
-    protected String getId(Doctor doctor) { return doctor.getStaffID(); }
+    protected String getId(Doctor doctor) {
+        return doctor.getStaffID();
+    }
+
     @Override
-    protected void setId(Doctor doctor, String id) { doctor.setStaffID(id); }
+    protected void setId(Doctor doctor, String id) {
+        doctor.setStaffID(id);
+    }
 }

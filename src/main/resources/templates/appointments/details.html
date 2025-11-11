@@ -2,19 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Appointment Details</title>
+    <title>Detalii Programare</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body class="container mt-4">
-<h2>Appointment Details</h2>
+<h2>Detalii Programare</h2>
 
 <table class="table table-striped">
-    <tr><th>ID</th><td th:text="${appointment.id}"></td></tr>
-    <tr><th>Patient</th><td th:text="${appointment.patientName}"></td></tr>
-    <tr><th>Doctor</th><td th:text="${appointment.doctorName}"></td></tr>
-    <tr><th>Date</th><td th:text="${appointment.date}"></td></tr>
+    <tr><th>ID Programare</th><td th:text="${appointment.appointmentID}"></td></tr>
+    <tr><th>ID Pacient</th><td th:text="${appointment.patientID}"></td></tr>
+    <tr><th>ID Departament</th><td th:text="${appointment.departmentID}"></td></tr>
+    <tr><th>Data/Ora Internare</th><td th:text="${#temporals.format(appointment.admissionDate, 'yyyy-MM-dd HH:mm')}"></td></tr>
+    <tr><th>Status</th><td th:text="${appointment.status}"></td></tr>
+    <tr>
+        <th>Personal Medical (ID-uri)</th>
+        <td>
+            <ul class="list-unstyled">
+                <li th:each="staff : ${appointment.medicalStaffList}" th:text="${staff.staffID}">Staff ID</li>
+            </ul>
+            <span th:if="${#lists.isEmpty(appointment.medicalStaffList)}">Niciun personal alocat.</span>
+        </td>
+    </tr>
 </table>
 
-<a th:href="@{/appointments}" class="btn btn-secondary">Back</a>
+<a th:href="@{/appointments}" class="btn btn-secondary">Înapoi la Listă</a>
 </body>
 </html>

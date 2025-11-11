@@ -1,17 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Doctor Details</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/></head>
-<body class="container mt-4">
-<h2>Doctor Details</h2>
-<table class="table table-striped">
-    <tr><th>ID</th><td th:text="${doctor.staffID}"></td></tr>
-    <tr><th>Name</th><td th:text="${doctor.staffName}"></td></tr>
-    <tr><th>Department ID</th><td th:text="${doctor.departmentID}"></td></tr>
-    <tr><th>Email</th><td th:text="${doctor.staffEmail}"></td></tr>
-    <tr><th>License</th><td th:text="${doctor.licenseNumber}"></td></tr>
-    <tr><th>Specialty</th><td th:text="${doctor.medicalSpeciality}"></td></tr>
-</table>
-<a th:href="@{/doctors}" class="btn btn-secondary">Back</a>
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Details</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Doctor Details</h2>
+    <table class="table table-bordered">
+        <tr>
+            <th>ID</th>
+            <td th:text="${doctor != null ? doctor.staffID : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td th:text="${doctor != null ? doctor.staffName : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td th:text="${doctor != null ? doctor.staffEmail : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <th>Department</th>
+            <td th:text="${doctor != null ? doctor.departmentID : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <th>Specialty</th>
+            <td th:text="${doctor != null ? doctor.medicalSpeciality : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <th>Appointments</th>
+            <td>
+                <ul th:if="${doctor != null and doctor.appointments != null}">
+                    <li th:each="appt : ${doctor.appointments}" th:text="${appt}"></li>
+                </ul>
+                <span th:unless="${doctor != null and doctor.appointments != null}">No appointments found.</span>
+            </td>
+        </tr>
+    </table>
+    <a th:href="@{/doctors}" class="btn btn-primary">Back to List</a>
+</div>
 </body>
 </html>
