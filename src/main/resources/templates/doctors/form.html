@@ -2,21 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${doctor != null and doctor.staffID != null} ? 'Edit Doctor' : 'Create Doctor'">Create/Edit Doctor</title>
+    <title th:text="${doctor != null and doctor.staffID != null and doctor.staffID != ''} ? 'Edit Doctor' : 'Create Doctor'">Create/Edit Doctor</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
 
-    <h2 th:text="${doctor != null and doctor.staffID != null} ? 'Edit Doctor' : 'Create Doctor'"></h2>
+    <h2 th:text="${doctor != null and doctor.staffID != null and doctor.staffID != ''} ? 'Edit Doctor' : 'Create Doctor'">Create/Edit Doctor</h2>
 
-    <!-- UN SINGUR FORM -->
-    <form th:object="${doctor}"
-          th:action="${doctor != null and doctor.staffID != null} ? @{/doctors/{id}/edit(id=${doctor.staffID})} : @{/doctors}"
-          method="post">
+    <!-- FORM SIMPLIFICAT - același endpoint pentru ambele operații -->
+    <form th:object="${doctor}" th:action="@{/doctors}" method="post">
 
-        <!-- Hidden field doar la editare -->
-        <input type="hidden" th:if="${doctor != null and doctor.staffID != null}" th:field="*{staffID}" />
+        <!-- Hidden field pentru ID (doar la editare) -->
+        <input type="hidden" th:if="${doctor != null and doctor.staffID != null and doctor.staffID != ''}" th:field="*{staffID}" />
 
         <div class="mb-3">
             <label for="staffName" class="form-label">Name</label>
@@ -35,10 +33,10 @@
 
         <div class="mb-3">
             <label for="medicalSpeciality" class="form-label">Specialty</label>
-            <select id="medicalSpeciality" class="form-control" th:field="*{medicalSpeciality}">
+            <select id="medicalSpeciality" class="form-control" th:field="*{medicalSpeciality}" required>
+                <option value="">Select Specialty</option>
                 <option th:each="spec : ${T(com.example.Hospital.Management.System.Model.Enums.MedicalSpecialty).values()}"
-                        th:value="${spec}" th:text="${spec}"
-                        th:selected="${doctor != null and doctor.medicalSpeciality == spec}">
+                        th:value="${spec}" th:text="${spec}">
                 </option>
             </select>
         </div>

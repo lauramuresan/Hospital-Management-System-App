@@ -2,43 +2,43 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formular Asistent</title>
+    <title th:text="${nurse.staffID != null and nurse.staffID != ''} ? 'Editează Asistent' : 'Adaugă Asistent'">Formular Asistent</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body class="container mt-4">
-<h2 th:text="${nurse.staffID != null and not #strings.isEmpty(nurse.staffID) ? 'Editează Asistent' : 'Adaugă Asistent'}">Formular Asistent</h2>
+<h2 th:text="${nurse.staffID != null and nurse.staffID != ''} ? 'Editează Asistent' : 'Adaugă Asistent'">Formular Asistent</h2>
 
-<form th:action="@{/nurses}" th:object="${nurse}" method="post">
-    <input type="hidden" th:field="*{staffID}"/>
+<form th:object="${nurse}" th:action="@{/nurses}" method="post">
 
-    <div class="mb-3">
-        <label for="firstName" class="form-label">Prenume</label>
-        <input id="firstName" class="form-control" th:field="*{firstName}" required/>
-    </div>
+    <!-- Câmp hidden pentru ID (doar la editare) -->
+    <input type="hidden" th:if="${nurse.staffID != null and nurse.staffID != ''}" th:field="*{staffID}" />
 
     <div class="mb-3">
-        <label for="lastName" class="form-label">Nume</label>
-        <input id="lastName" class="form-control" th:field="*{lastName}" required/>
+        <label for="staffName" class="form-label">Nume complet</label>
+        <input id="staffName" class="form-control" th:field="*{staffName}" placeholder="Ex: As. Ion Popescu" required/>
     </div>
 
     <div class="mb-3">
         <label for="departmentID" class="form-label">ID Departament</label>
-        <input id="departmentID" class="form-control" th:field="*{departmentID}" required/>
+        <input id="departmentID" class="form-control" th:field="*{departmentID}" placeholder="Ex: DEP001" required/>
     </div>
 
     <div class="mb-3">
-        <label for="contactNumber" class="form-label">Contact</label>
-        <input id="contactNumber" class="form-control" th:field="*{contactNumber}" required/>
+        <label for="staffEmail" class="form-label">Email</label>
+        <input id="staffEmail" type="email" class="form-control" th:field="*{staffEmail}" placeholder="ex: ion.popescu@hosp.ro" required/>
     </div>
 
     <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input id="email" type="email" class="form-control" th:field="*{email}" required/>
+        <label for="qualificationLevel" class="form-label">Nivel Calificare</label>
+        <select id="qualificationLevel" class="form-control" th:field="*{qualificationLevel}" required>
+            <option value="">Selectează nivelul</option>
+            <option th:each="level : ${T(com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification).values()}"
+                    th:value="${level}" th:text="${level}">
+            </option>
+        </select>
     </div>
 
-    <input type="hidden" th:field="*{room}" value=""/>
-
-    <button type="submit" class="btn btn-primary">Salvează</button>
+    <button type="submit" class="btn btn-success">Salvează</button>
     <a th:href="@{/nurses}" class="btn btn-secondary">Anulează</a>
 </form>
 </body>
