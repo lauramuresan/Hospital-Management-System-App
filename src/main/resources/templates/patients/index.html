@@ -7,6 +7,11 @@
 </head>
 <body class="container mt-4">
 <h2>Pacienți</h2>
+
+<!-- Mesaje de eroare/succes -->
+<div th:if="${param.error}" class="alert alert-danger">Eroare la salvare!</div>
+<div th:if="${param.not_found}" class="alert alert-warning">Pacientul nu a fost găsit!</div>
+
 <a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
 <a th:href="@{/patients/new}" class="btn btn-success mb-3">+ Adaugă Pacient</a>
 
@@ -15,17 +20,17 @@
     <tr>
         <th>ID</th>
         <th>Nume</th>
-        <th>Contact</th>
         <th>Email</th>
+        <th>Data Nașterii</th>
         <th>Acțiuni</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="p : ${patients}">
         <td th:text="${p.patientID}"></td>
-        <td th:text="${p.firstName} + ' ' + ${p.lastName}"></td>
-        <td th:text="${p.contactNumber}"></td>
-        <td th:text="${p.email}"></td>
+        <td th:text="${p.patientName}"></td>
+        <td th:text="${p.pacientEmail}"></td>
+        <td th:text="${p.patientBirthDate}"></td>
         <td>
             <a th:href="@{'/patients/' + ${p.patientID}}" class="btn btn-info btn-sm">Detalii</a>
             <a th:href="@{'/patients/' + ${p.patientID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>

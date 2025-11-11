@@ -2,47 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Detalii Doctor</title>
+    <title>Detalii Alocare Personal Medical</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body class="container mt-4">
+<h2>Detalii Alocare Personal Medical</h2>
 
-<h2>Detalii Doctor</h2>
-
-<table class="table table-bordered">
-    <tr>
-        <th>ID</th>
-        <td th:text="${doctor.staffID}"></td>
-    </tr>
-    <tr>
-        <th>Nume</th>
-        <td th:text="${doctor.staffName}"></td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td th:text="${doctor.staffEmail}"></td>
-    </tr>
-    <tr>
-        <th>Departament</th>
-        <td th:text="${doctor.departmentID}"></td>
-    </tr>
-    <tr>
-        <th>Specialitate</th>
-        <td th:text="${doctor.medicalSpeciality}"></td>
-    </tr>
-    <tr>
-        <th>Programări</th>
-        <td>
-            <ul th:if="${doctor.appointments != null}">
-                <li th:each="appt : ${doctor.appointments}" th:text="${appt}"></li>
-            </ul>
-            <span th:unless="${doctor.appointments != null}">Nu există programări.</span>
-        </td>
-    </tr>
+<table class="table table-striped">
+    <tr><th>ID Alocare</th><td th:text="${assignment.medicalStaffAppointmentID}"></td></tr>
+    <tr><th>ID Programare</th><td th:text="${assignment.appointmentID}"></td></tr>
+    <tr><th>ID Personal Medical</th><td th:text="${assignment.medicalStaffID}"></td></tr>
 </table>
 
-<a th:href="@{/doctors}" class="btn btn-primary">Înapoi la listă</a>
-<a th:href="@{/doctors/{id}/edit(id=${doctor.staffID})}" class="btn btn-warning">Editare</a>
-
+<a th:href="@{/medical-staff-appointments}" class="btn btn-secondary">Înapoi la Listă</a>
 </body>
 </html>

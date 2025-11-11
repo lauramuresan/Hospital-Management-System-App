@@ -9,29 +9,30 @@
 <h2 th:text="${patient.patientID != null and not #strings.isEmpty(patient.patientID) ? 'Editează Pacient' : 'Adaugă Pacient'}">Formular Pacient</h2>
 
 <form th:action="@{/patients}" th:object="${patient}" method="post">
-    <input type="hidden" th:field="*{patientID}"/>
+
+    <!-- Câmp hidden pentru ID -->
+    <input type="hidden" th:field="*{patientID}" />
 
     <div class="mb-3">
-        <label for="firstName" class="form-label">Prenume</label>
-        <input id="firstName" class="form-control" th:field="*{firstName}" required/>
+        <label for="patientName" class="form-label">Nume complet</label>
+        <input id="patientName" class="form-control" th:field="*{patientName}"
+               placeholder="Ex: Ion Popescu" required/>
     </div>
 
     <div class="mb-3">
-        <label for="lastName" class="form-label">Nume</label>
-        <input id="lastName" class="form-control" th:field="*{lastName}" required/>
+        <label for="pacientEmail" class="form-label">Email</label>
+        <input id="pacientEmail" type="email" class="form-control" th:field="*{pacientEmail}"
+               placeholder="ex: ion.popescu@email.com" required/>
     </div>
 
     <div class="mb-3">
-        <label for="contactNumber" class="form-label">Contact</label>
-        <input id="contactNumber" class="form-control" th:field="*{contactNumber}" required/>
+        <label for="patientBirthDate" class="form-label">Data Nașterii</label>
+        <input id="patientBirthDate" type="date" class="form-control" th:field="*{patientBirthDate}"
+               required/>
     </div>
 
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input id="email" type="email" class="form-control" th:field="*{email}" required/>
-    </div>
-
-    <input type="hidden" th:field="*{appointments}" value=""/>
+    <!-- NU mai folosi câmp hidden pentru appointmentList -->
+    <!-- Spring va inițializa automat lista goală -->
 
     <button type="submit" class="btn btn-primary">Salvează</button>
     <a th:href="@{/patients}" class="btn btn-secondary">Anulează</a>

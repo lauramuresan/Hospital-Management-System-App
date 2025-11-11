@@ -27,35 +27,58 @@ public abstract class GenericWebController<T> {
     @GetMapping("/new")
     public abstract String showForm(Model model);
 
+    // Folosește @ModelAttribute fără specificații extra
     @PostMapping
     public String create(@ModelAttribute T entity) {
-        service.create(entity);
-        return "redirect:/" + viewPath;
+        try {
+            service.create(entity);
+            return "redirect:/" + viewPath;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/" + viewPath + "?error=true";
+        }
     }
 
     @GetMapping("/{id}")
     public String details(@PathVariable("id") String id, Model model) {
-        T entity = service.getById(id);
-        model.addAttribute(modelName, entity);
-        return viewPath + "/details";
+        try {
+            T entity = service.getById(id);
+            model.addAttribute(modelName, entity);
+            return viewPath + "/details";
+        } catch (Exception e) {
+            return "redirect:/" + viewPath + "?not_found=true";
+        }
     }
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable("id") String id, Model model) {
-        T entity = service.getById(id);
-        model.addAttribute(modelName, entity);
-        return viewPath + "/form";
+        try {
+            T entity = service.getById(id);
+            model.addAttribute(modelName, entity);
+            return viewPath + "/form";
+        } catch (Exception e) {
+            return "redirect:/" + viewPath + "?not_found=true";
+        }
     }
 
     @PostMapping("/{id}/edit")
     public String edit(@PathVariable("id") String id, @ModelAttribute T entity) {
-        service.create(entity);
-        return "redirect:/" + viewPath;
+        try {
+            service.create(entity); // sau service.update(entity) dacă ai metodă separată
+            return "redirect:/" + viewPath;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/" + viewPath + "?error=true";
+        }
     }
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") String id) {
-        service.remove(id);
-        return "redirect:/" + viewPath;
+        try {
+            service.remove(id);
+            return "redirect:/" + viewPath;
+        } catch (Exception e) {
+            return "redirect:/" + viewPath + "?error=true";
+        }
     }
 }

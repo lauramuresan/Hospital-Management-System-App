@@ -10,17 +10,17 @@
 
 <table class="table table-striped">
     <tr><th>ID</th><td th:text="${room.roomID}"></td></tr>
-    <tr><th>Nume</th><td th:text="${room.roomName}"></td></tr>
-    <tr><th>Preț/Noapte</th><td th:text="${room.pricePerNight}"></td></tr>
-    <tr><th>Departament ID</th><td th:text="${room.departmentID}"></td></tr>
-    <tr><th>Spital (ID)</th><td th:text="${room.hospital != null ? room.hospital.hospitalID : 'N/A'}"></td></tr>
+    <tr><th>Număr</th><td th:text="${room.number}"></td></tr>
+    <tr><th>ID Spital</th><td th:text="${room.hospitalID}"></td></tr>
+    <tr><th>Capacitate</th><td th:text="${room.capacity}"></td></tr>
+    <tr><th>Status</th><td th:text="${room.status}"></td></tr>
     <tr>
-        <th>Asistenți (ID-uri)</th>
+        <th>Programări</th>
         <td>
-            <ul class="list-unstyled">
-                <li th:each="n : ${room.nursesList}" th:text="${n.staffID}"></li>
+            <ul th:if="${room.appointments != null and !#lists.isEmpty(room.appointments)}">
+                <li th:each="appt : ${room.appointments}" th:text="${appt}"></li>
             </ul>
-            <span th:if="${#lists.isEmpty(room.nursesList)}">Niciun asistent alocat.</span>
+            <span th:unless="${room.appointments != null and !#lists.isEmpty(room.appointments)}">Nu există programări.</span>
         </td>
     </tr>
 </table>
