@@ -1,0 +1,52 @@
+[
+  {
+    "hospitalID": "HOS001",
+    "hospitalName": "Spitalul Sf. Maria",
+    "city": "Bucuresti"
+  },
+  {
+    "hospitalID": "HOS002",
+    "hospitalName": "Clinica Regina Elisabeta",
+    "city": "Cluj-Napoca"
+  },
+  {
+    "hospitalID": "HOS003",
+    "hospitalName": "Centrul Medical Speranța",
+    "city": "Iasi"
+  },
+  {
+    "hospitalID": "HOS004",
+    "hospitalName": "Spitalul Județean Timișoara",
+    "city": "Timisoara"
+  },
+  {
+    "hospitalID": "HOS005",
+    "hospitalName": "Maternitatea Buna Vestire",
+    "city": "Bucuresti"
+  },
+  {
+    "hospitalID": "HOS006",
+    "hospitalName": "Spitalul de Urgență",
+    "city": "Cluj-Napoca"
+  },
+  {
+    "hospitalID": "HOS007",
+    "hospitalName": "Sanatoriul Păcii",
+    "city": "Constanța"
+  },
+  {
+    "hospitalID": "HOS008",
+    "hospitalName": "Policlinica Nord",
+    "city": "Bucuresti"
+  },
+  {
+    "hospitalID": "HOS009",
+    "hospitalName": "Clinica Dr. Popescu",
+    "city": "Sibiu"
+  },
+  {
+    "hospitalID": "HOS010",
+    "hospitalName": "Spitalul Municipal",
+    "city": "Oradea"
+  }
+]

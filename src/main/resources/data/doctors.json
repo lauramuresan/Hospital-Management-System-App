@@ -1,0 +1,12 @@
+[
+  {"staffID": "STF001", "departmentID": "DEP001", "staffName": "Dr. Andrei Popescu", "staffEmail": "a.popescu@hosp.ro", "licenseNumber": "LNC001", "medicalSpeciality": "CARDIOLOGY", "appointments": []},
+  {"staffID": "STF002", "departmentID": "DEP001", "staffName": "Dr. Elena Vasilescu", "staffEmail": "e.vasilescu@hosp.ro", "licenseNumber": "LNC002", "medicalSpeciality": "CARDIOLOGY", "appointments": []},
+  {"staffID": "STF003", "departmentID": "DEP002", "staffName": "Dr. Mihai Georgescu", "staffEmail": "m.georgescu@hosp.ro", "licenseNumber": "LNC003", "medicalSpeciality": "NEUROLOGY", "appointments": []},
+  {"staffID": "STF004", "departmentID": "DEP003", "staffName": "Dr. Maria Ionescu", "staffEmail": "m.ionescu@hosp.ro", "licenseNumber": "LNC004", "medicalSpeciality": "PEDRIATICS", "appointments": []},
+  {"staffID": "STF005", "departmentID": "DEP004", "staffName": "Dr. Sorin Radu", "staffEmail": "s.radu@hosp.ro", "licenseNumber": "LNC005", "medicalSpeciality": "DERMATOLOGY", "appointments": []},
+  {"staffID": "STF006", "departmentID": "DEP005", "staffName": "Dr. Ana Dobre", "staffEmail": "a.dobre@hosp.ro", "licenseNumber": "LNC006", "medicalSpeciality": "ORTOPEDICS", "appointments": []},
+  {"staffID": "STF007", "departmentID": "DEP006", "staffName": "Dr. Cristian Moldovan", "staffEmail": "c.moldovan@hosp.ro", "licenseNumber": "LNC007", "medicalSpeciality": "NEUROLOGY", "appointments": []},
+  {"staffID": "STF008", "departmentID": "DEP007", "staffName": "Dr. Paula Stancu", "staffEmail": "p.stancu@hosp.ro", "licenseNumber": "LNC008", "medicalSpeciality": "CARDIOLOGY", "appointments": []},
+  {"staffID": "STF009", "departmentID": "DEP008", "staffName": "Dr. Vlad Petrescu", "staffEmail": "v.petrescu@hosp.ro", "licenseNumber": "LNC009", "medicalSpeciality": "ORTOPEDICS", "appointments": []},
+  {"staffID": "STF010", "departmentID": "DEP009", "staffName": "Dr. Ioana Cernat", "staffEmail": "i.cernat@hosp.ro", "licenseNumber": "LNC010", "medicalSpeciality": "DERMATOLOGY", "appointments": []}
+]

@@ -1,0 +1,12 @@
+[
+  {"medicalStaffAppointmentID": "MSA001", "appointmentID": "APP001", "medicalStaffID": "STF001"},
+  {"medicalStaffAppointmentID": "MSA002", "appointmentID": "APP001", "medicalStaffID": "STF011"},
+  {"medicalStaffAppointmentID": "MSA003", "appointmentID": "APP002", "medicalStaffID": "STF003"},
+  {"medicalStaffAppointmentID": "MSA004", "appointmentID": "APP003", "medicalStaffID": "STF004"},
+  {"medicalStaffAppointmentID": "MSA005", "appointmentID": "APP003", "medicalStaffID": "STF014"},
+  {"medicalStaffAppointmentID": "MSA006", "appointmentID": "APP004", "medicalStaffID": "STF005"},
+  {"medicalStaffAppointmentID": "MSA007", "appointmentID": "APP005", "medicalStaffID": "STF006"},
+  {"medicalStaffAppointmentID": "MSA008", "appointmentID": "APP006", "medicalStaffID": "STF002"},
+  {"medicalStaffAppointmentID": "MSA009", "appointmentID": "APP007", "medicalStaffID": "STF007"},
+  {"medicalStaffAppointmentID": "MSA010", "appointmentID": "APP010", "medicalStaffID": "STF009"}
+]

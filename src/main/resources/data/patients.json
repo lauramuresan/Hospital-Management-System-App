@@ -1,0 +1,12 @@
+[
+  {"patientID": "PAT001", "patientName": "Ion Georgescu", "pacientEmail": "ion.g@email.com", "dateOfBirth": "1985-05-10", "appointmentList": []},
+  {"patientID": "PAT002", "patientName": "Ana Maria Popa", "pacientEmail": "ana.p@email.com", "dateOfBirth": "1992-11-20", "appointmentList": []},
+  {"patientID": "PAT003", "patientName": "Vlad Petrescu", "pacientEmail": "vlad.p@email.com", "dateOfBirth": "2001-01-15", "appointmentList": []},
+  {"patientID": "PAT004", "patientName": "Raluca Stoica", "pacientEmail": "raluca.s@email.com", "dateOfBirth": "1970-07-28", "appointmentList": []},
+  {"patientID": "PAT005", "patientName": "Gheorghe Dinu", "pacientEmail": "g.dinu@email.com", "dateOfBirth": "1963-03-01", "appointmentList": []},
+  {"patientID": "PAT006", "patientName": "Cristina Munteanu", "pacientEmail": "c.munteanu@email.com", "dateOfBirth": "1999-09-09", "appointmentList": []},
+  {"patientID": "PAT007", "patientName": "Petru Iordache", "pacientEmail": "p.iordache@email.com", "dateOfBirth": "1955-12-05", "appointmentList": []},
+  {"patientID": "PAT008", "patientName": "Sofia Barbu", "pacientEmail": "s.barbu@email.com", "dateOfBirth": "2010-04-12", "appointmentList": []},
+  {"patientID": "PAT009", "patientName": "Marius Radulescu", "pacientEmail": "m.radulescu@email.com", "dateOfBirth": "1988-02-22", "appointmentList": []},
+  {"patientID": "PAT010", "patientName": "Gabriela Vasile", "pacientEmail": "g.vasile@email.com", "dateOfBirth": "1977-06-18", "appointmentList": []}
+]
