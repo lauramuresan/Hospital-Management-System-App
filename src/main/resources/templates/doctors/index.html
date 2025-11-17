@@ -17,6 +17,7 @@
             <th>Name</th>
             <th>Email</th>
             <th>Department</th>
+            <th>License</th>
             <th>Specialty</th>
             <th>Actions</th>
         </tr>
@@ -27,6 +28,7 @@
             <td th:text="${doctor.staffName}"></td>
             <td th:text="${doctor.staffEmail}"></td>
             <td th:text="${doctor.departmentID}"></td>
+            <td th:text="${doctor.licenseNumber}"></td>
             <td th:text="${doctor.medicalSpeciality}"></td>
             <td>
                 <a th:href="@{'/doctors/' + ${doctor.staffID}}" class="btn btn-info btn-sm">Details</a>
