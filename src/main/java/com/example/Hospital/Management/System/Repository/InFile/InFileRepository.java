@@ -33,9 +33,6 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
 
         this.mapper = mapper;
 
-        // ----------------------------------------------------
-        // ✅ CORECȚIA CĂII: Asigură-te că există separatorul '/'
-        // ----------------------------------------------------
         String cleanedFolder = dataFolder.replace("./", "");
         if (!cleanedFolder.endsWith("/")) {
             cleanedFolder = cleanedFolder + "/";
