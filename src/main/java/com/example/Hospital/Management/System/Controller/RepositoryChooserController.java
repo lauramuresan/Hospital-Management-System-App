@@ -12,7 +12,7 @@ public class RepositoryChooserController {
     private final RepositoryModeHolder modeHolder;
     public RepositoryChooserController(RepositoryModeHolder modeHolder) { this.modeHolder = modeHolder; }
 
-    @GetMapping({"/", "/choose-repo"})
+    @GetMapping({"/", "/HospitalManagementSystem"})
     public String chooseForm(Model model) {
         model.addAttribute("currentMode", modeHolder.getMode());
         return "choose-repo";

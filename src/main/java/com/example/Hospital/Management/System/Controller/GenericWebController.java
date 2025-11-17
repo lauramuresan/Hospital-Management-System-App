@@ -27,7 +27,6 @@ public abstract class GenericWebController<T> {
     @GetMapping("/new")
     public abstract String showForm(Model model);
 
-    // Folosește @ModelAttribute fără specificații extra
     @PostMapping
     public String create(@ModelAttribute T entity) {
         try {
