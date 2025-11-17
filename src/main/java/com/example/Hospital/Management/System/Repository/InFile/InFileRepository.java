@@ -70,11 +70,11 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
                 // Populează dataStore
                 entities.forEach(e -> dataStore.put(getId(e), e));
 
-                System.out.println("✅ " + dataStore.size() + " " + entityType.getSimpleName() + " încărcate din " + filePath);
+                System.out.println(dataStore.size() + " " + entityType.getSimpleName() + " încărcate din " + filePath);
             }
 
         } catch (IOException e) {
-            System.err.println("❌ EROARE CRITICĂ la încărcarea datelor din fișier: " + filePath);
+            System.err.println("eroare la încărcarea datelor din fișier: " + filePath);
             e.printStackTrace();
             throw new RuntimeException("Eșec la inițializarea InFileRepository.", e);
         }
