@@ -66,9 +66,7 @@ public class InMemoryDataSeeder {
             ));
         }
     }
-
-
-
+    
     private void seedDepartments() {
         for (int i = 1; i <= 10; i++) {
             departmentRepo.save(new Department(
