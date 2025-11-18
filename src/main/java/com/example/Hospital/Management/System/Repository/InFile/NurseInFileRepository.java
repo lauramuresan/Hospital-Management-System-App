@@ -2,13 +2,13 @@ package com.example.Hospital.Management.System.Repository.InFile;
 
 import com.example.Hospital.Management.System.Model.Nurse;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("nurseInFile")
 public class NurseInFileRepository extends InFileRepository<Nurse> {
-    public NurseInFileRepository(ObjectMapper mapper, @Value("${app.data.folder:data/}") String dataFolder) {
-        super(mapper, dataFolder, "nurses.json");
+
+    public NurseInFileRepository(ObjectMapper mapper) {
+        super(mapper, "./data", "nurses.json");
     }
 
     @Override

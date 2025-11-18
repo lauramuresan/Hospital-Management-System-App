@@ -2,13 +2,13 @@ package com.example.Hospital.Management.System.Repository.InFile;
 
 import com.example.Hospital.Management.System.Model.MedicalStaffAppointment;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("medicalStaffAppointmentInFile")
 public class MedicalStaffAppointmentInFileRepository extends InFileRepository<MedicalStaffAppointment> {
-    public MedicalStaffAppointmentInFileRepository(ObjectMapper mapper, @Value("${app.data.folder:data/}") String dataFolder) {
-        super(mapper, dataFolder, "medicalstaffappointments.json");
+
+    public MedicalStaffAppointmentInFileRepository(ObjectMapper mapper) {
+        super(mapper, "./data", "medicalstaffappointments.json");
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.example.Hospital.Management.System.Repository.InFile;
 
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-
 import jakarta.annotation.PostConstruct;
-import java.io.InputStream;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +27,16 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
     protected abstract void setId(T entity, String id);
 
     protected InFileRepository(ObjectMapper mapper, String dataFolder, String fileName) {
-        // Înregistrează modulul Java Time pentru a citi LocalDateTime/LocalDate
         mapper.registerModule(new JavaTimeModule());
-
         this.mapper = mapper;
 
-        String cleanedFolder = dataFolder.replace("./", "");
-        if (!cleanedFolder.endsWith("/")) {
-            cleanedFolder = cleanedFolder + "/";
+        if (!dataFolder.endsWith("/")) {
+            dataFolder = dataFolder + "/";
         }
-        this.filePath = cleanedFolder + fileName;
-        // ----------------------------------------------------
+        this.filePath = dataFolder + fileName;
 
-        // Determinăm tipul generic T la runtime
-        this.entityType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.entityType = (Class<T>) ((ParameterizedType)
+                getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @PostConstruct
@@ -49,38 +44,49 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
         dataStore.clear();
 
         try {
-            // Aici filePath va fi acum corect, de exemplu: "data/appointments.json"
-            Resource resource = new ClassPathResource(filePath);
+            File file = new File(filePath);
 
-            if (!resource.exists() || resource.contentLength() == 0) {
-                System.out.println("Fișierul de date nu există sau este gol (în classpath): " + filePath);
+            // Creează folderul și fișierul dacă nu există
+            if (!file.exists()) {
+                System.out.println("Fișierul nu există, îl creez: " + filePath);
+                file.getParentFile().mkdirs();
+                mapper.writeValue(file, new ArrayList<T>());
                 return;
             }
-            // ... (restul metodei loadData() rămâne la fel)
 
-            try (InputStream inputStream = resource.getInputStream()) {
-                // Citirea datelor ca Listă de obiecte de tipul T
-                List<T> entities = mapper.readValue(inputStream, new TypeReference<List<T>>() {
-                    @Override
-                    public java.lang.reflect.Type getType() {
-                        return mapper.getTypeFactory().constructCollectionType(List.class, entityType);
-                    }
-                });
+            // Dacă fișierul există, îl citim
+            try (InputStream inputStream = new FileInputStream(file)) {
+                List<T> entities = mapper.readValue(
+                        inputStream,
+                        mapper.getTypeFactory()
+                                .constructCollectionType(List.class, entityType)
+                );
 
-                // Populează dataStore
                 entities.forEach(e -> dataStore.put(getId(e), e));
 
-                System.out.println(dataStore.size() + " " + entityType.getSimpleName() + " încărcate din " + filePath);
+                System.out.println(dataStore.size() + " "
+                        + entityType.getSimpleName()
+                        + " încărcate din " + filePath);
             }
 
-        } catch (IOException e) {
-            System.err.println("eroare la încărcarea datelor din fișier: " + filePath);
-            e.printStackTrace();
-            throw new RuntimeException("Eșec la inițializarea InFileRepository.", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Eroare la încărcarea datelor din " + filePath, e);
         }
     }
 
-    // (Metodele save, delete, findById, findAll rămân la fel)
+    private synchronized void writeDataToFile() {
+        try {
+            File file = new File(filePath);
+            file.getParentFile().mkdirs();
+
+            List<T> entities = new ArrayList<>(dataStore.values());
+            mapper.writeValue(file, entities);
+
+            System.out.println("Date salvate în " + filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Eroare la scrierea datelor în " + filePath, e);
+        }
+    }
 
     @Override
     public synchronized void save(T entity) {
@@ -90,12 +96,16 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
             setId(entity, id);
         }
         dataStore.put(id, entity);
+        writeDataToFile();
     }
 
     @Override
     public synchronized void delete(T entity) {
         String id = getId(entity);
-        if (id != null) dataStore.remove(id);
+        if (id != null) {
+            dataStore.remove(id);
+            writeDataToFile();
+        }
     }
 
     @Override
