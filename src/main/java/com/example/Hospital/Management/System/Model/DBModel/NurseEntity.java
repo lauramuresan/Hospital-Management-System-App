@@ -1,5 +1,6 @@
 package com.example.Hospital.Management.System.Model.DBModel;
 
+import com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class NurseEntity extends MedicalStaffEntity {
     }
 
     // --- Getteri și Setteri (rămân doar pentru câmpurile specifice) ---
-    public String getNurseCategory() { return nurseCategory; }
+    public NurseLevelQualification getNurseCategory() { return nurseCategory; }
     public void setNurseCategory(String nurseCategory) { this.nurseCategory = nurseCategory; }
 
     // Setter-ul listei rămâne (este util)

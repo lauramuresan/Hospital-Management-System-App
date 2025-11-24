@@ -46,7 +46,7 @@ public class InMemoryDataSeeder {
 
         seedHospitals();
         seedDepartments();
-        seedPatients();
+        //seedPatients();
         seedDoctors();
         seedNurses();
         seedRooms();
@@ -75,17 +75,17 @@ public class InMemoryDataSeeder {
         }
     }
 
-    private void seedPatients() {
-        for (int i = 1; i <= 10; i++) {
-            patientRepo.save(new Patient(
-                    "P" + i,
-                    "Patient " + i,
-                    new ArrayList<>(),
-                    "patient" + i + "@mail.com",
-                    "1990-01-" + ((i % 28) + 1)
-            ));
-        }
-    }
+//    private void seedPatients() {
+//        for (int i = 1; i <= 10; i++) {
+//            patientRepo.save(new Patient(
+//                    "P" + i,
+//                    "Patient " + i,
+//                    new ArrayList<>(),
+//                    "patient" + i + "@mail.com",
+//                    "1990-01-" + ((i % 28) + 1)
+//            ));
+//        }
+//    }
 
     private void seedDoctors() {
         MedicalSpecialty[] specialties = MedicalSpecialty.values();
