@@ -14,7 +14,7 @@ public class Nurse extends MedicalStaff {
         super(staffID, departmentID, staffName, appointments,staffEmail);
         this.qualificationLevel = qualificationLevel;
     }
-    public String getQualificationLevel() {
+    public NurseLevelQualification getQualificationLevel() {
         return qualificationLevel;
     }
     public void setQualificationLevel(NurseLevelQualification qualificationLevel) {

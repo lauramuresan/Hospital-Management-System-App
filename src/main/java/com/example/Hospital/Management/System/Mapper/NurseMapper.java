@@ -15,7 +15,7 @@ public class NurseMapper extends MedicalStaffMapper {
         return entity;
     }
 
-    public static Nurse toDomain(NurseEntity entity) {
+    public Nurse toDomain(NurseEntity entity) {
         if (entity == null) return null;
         Nurse domain = new Nurse();
 
