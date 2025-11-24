@@ -1,5 +1,6 @@
 package com.example.Hospital.Management.System.Model.GeneralModel;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ public class Patient {
     private String patientName;
     private List<Appointment> appointmentList = new ArrayList<>(); // INITIALIZEAZĂ lista!
     private String pacientEmail;
-    private String patientBirthDate;
+    private LocalDate patientBirthDate;
 
     // Constructor implicit
     public Patient() {
@@ -16,7 +17,7 @@ public class Patient {
     }
 
     public Patient(String patientID, String patientName, List<Appointment> appointmentList,
-                   String pacientEmail, String patientBirthDate) {
+                   String pacientEmail, LocalDate patientBirthDate) {
         this.patientID = patientID;
         this.patientName = patientName;
         this.appointmentList = appointmentList != null ? appointmentList : new ArrayList<>();
@@ -39,8 +40,8 @@ public class Patient {
     public String getPacientEmail() { return pacientEmail; }
     public void setPacientEmail(String pacientEmail) { this.pacientEmail = pacientEmail; }
 
-    public String getPatientBirthDate() { return patientBirthDate; }
-    public void setPatientBirthDate(String patientBirthDate) { this.patientBirthDate = patientBirthDate; }
+    public LocalDate getPatientBirthDate() { return patientBirthDate; }
+    public void setPatientBirthDate(LocalDate patientBirthDate) { this.patientBirthDate = patientBirthDate; }
 
     @Override
     public String toString() {
