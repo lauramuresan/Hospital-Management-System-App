@@ -1,15 +1,13 @@
 package com.example.Hospital.Management.System.Repository.InMemory;
 
 
-import com.example.Hospital.Management.System.Model.*;
 import com.example.Hospital.Management.System.Model.Enums.*;
-import com.example.Hospital.Management.System.Repository.InMemory.*;
+import com.example.Hospital.Management.System.Model.GeneralModel.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class InMemoryDataSeeder {

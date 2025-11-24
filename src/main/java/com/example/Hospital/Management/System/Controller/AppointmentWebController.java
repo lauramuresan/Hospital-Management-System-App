@@ -1,6 +1,6 @@
 package com.example.Hospital.Management.System.Controller;
 
-import com.example.Hospital.Management.System.Model.Appointment;
+import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
 import com.example.Hospital.Management.System.Model.Enums.AppointmentStatus;
 import com.example.Hospital.Management.System.Service.AppointmentService;
 import org.springframework.stereotype.Controller;

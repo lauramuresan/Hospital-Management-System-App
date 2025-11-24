@@ -1,6 +1,6 @@
 package com.example.Hospital.Management.System.Controller;
 
-import com.example.Hospital.Management.System.Model.Patient;
+import com.example.Hospital.Management.System.Model.GeneralModel.Patient;
 import com.example.Hospital.Management.System.Service.PatientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,16 +1,16 @@
-package com.example.Hospital.Management.System.Model;
+package com.example.Hospital.Management.System.Model.GeneralModel;
 
 
 import com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification;
 
 import java.util.List;
 
-public class Nurse extends MedicalStaff{
+public class Nurse extends MedicalStaff {
     private NurseLevelQualification qualificationLevel;
     public Nurse() {
         super();
     }
-    public Nurse(String staffID, String departmentID, String staffName, List<Appointment> appointments,String staffEmail,NurseLevelQualification qualificationLevel) {
+    public Nurse(String staffID, String departmentID, String staffName, List<Appointment> appointments, String staffEmail, NurseLevelQualification qualificationLevel) {
         super(staffID, departmentID, staffName, appointments,staffEmail);
         this.qualificationLevel = qualificationLevel;
     }
