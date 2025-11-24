@@ -18,7 +18,7 @@ public class PatientMapper {
         return entity;
     }
 
-    public static Patient toDomain(PatientEntity entity) {
+    public Patient toDomain(PatientEntity entity) {
         if (entity == null) return null;
         Patient domain = new Patient();
 

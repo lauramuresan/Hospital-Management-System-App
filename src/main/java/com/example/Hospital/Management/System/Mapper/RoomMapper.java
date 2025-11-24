@@ -26,7 +26,7 @@ public class RoomMapper {
         return entity;
     }
 
-    public static Room toDomain(RoomEntity entity) {
+    public Room toDomain(RoomEntity entity) {
         if (entity == null) return null;
         Room domain = new Room();
 
@@ -36,7 +36,6 @@ public class RoomMapper {
         domain.setStatus(entity.getStatus());
 
         if (entity.getHospital() != null && entity.getHospital().getId() != null) {
-            // Presupunând că POJO-ul Room are un setHospitalID(String)
             domain.setHospitalID(String.valueOf(entity.getHospital().getId()));
         }
 

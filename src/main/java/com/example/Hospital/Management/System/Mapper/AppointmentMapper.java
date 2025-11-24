@@ -29,7 +29,7 @@ public class AppointmentMapper {
         return entity;
     }
 
-    public static Appointment toDomain(AppointmentEntity entity) {
+    public Appointment toDomain(AppointmentEntity entity) {
         if (entity == null) return null;
         Appointment domain = new Appointment();
 

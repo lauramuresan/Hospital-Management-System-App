@@ -16,7 +16,7 @@ public class DoctorMapper extends MedicalStaffMapper {
         return entity;
     }
 
-    public static Doctor toDomain(DoctorEntity entity) {
+    public Doctor toDomain(DoctorEntity entity) {
         if (entity == null) return null;
         Doctor domain = new Doctor();
 

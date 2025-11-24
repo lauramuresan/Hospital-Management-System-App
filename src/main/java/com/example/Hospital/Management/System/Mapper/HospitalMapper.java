@@ -26,7 +26,7 @@ public class HospitalMapper {
         return entity;
     }
 
-    public static Hospital toDomain(HospitalEntity entity) {
+    public Hospital toDomain(HospitalEntity entity) {
         if (entity == null) return null;
         Hospital domain = new Hospital();
 
