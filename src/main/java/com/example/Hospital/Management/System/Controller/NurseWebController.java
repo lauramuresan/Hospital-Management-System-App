@@ -23,10 +23,4 @@ public class NurseWebController extends GenericWebController<Nurse> {
         return "nurses/form";
     }
 
-    // Override pentru a trata corect edit-ul
-    @PostMapping("/{id}/edit")
-    public String edit(@PathVariable("id") String id, @ModelAttribute Nurse nurse) {
-        nurseService.create(nurse); // sau update dacă ai metodă separată
-        return "redirect:/nurses";
-    }
 }

@@ -4,7 +4,7 @@ import com.example.Hospital.Management.System.Mapper.PatientMapper;
 import com.example.Hospital.Management.System.Model.DBModel.PatientEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Patient;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
-import com.example.Hospital.Management.System.Repository.DBRepository.DBPatientRepository; // Repository-ul Spring Data JPA
+import com.example.Hospital.Management.System.Repository.DBRepository.DBPatientRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,29 +14,34 @@ import java.util.stream.Collectors;
 public class PatientAdaptor implements AbstractRepository<Patient> {
 
     private final DBPatientRepository jpaRepository;
-    private final PatientMapper mapper;
+    // Eliminat: private final PatientMapper mapper;
 
-    // Constructorul primește JpaRepository și Mapper
-    public PatientAdaptor(DBPatientRepository jpaRepository, PatientMapper mapper) {
+    // CORECȚIE: Eliminăm parametrul PatientMapper din constructor
+    public PatientAdaptor(DBPatientRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
+        // Eliminat: this.mapper = mapper;
     }
 
     @Override
     public void save(Patient domain) {
         // Business Validation: Unicitatea Email-ului
         if (domain.getPatientID() == null || !isExistingEmail(domain)) {
+            // Presupunând că existsByPacientEmail este definită în DBPatientRepository
             if (jpaRepository.existsByPacientEmail(domain.getPacientEmail())) {
                 throw new RuntimeException("Emailul " + domain.getPacientEmail() + " este deja înregistrat.");
             }
         }
 
-        PatientEntity entity = mapper.toEntity(domain);
+        // CORECȚIE: Apelăm metoda statică direct pe clasa PatientMapper
+        PatientEntity entity = PatientMapper.toEntity(domain);
         PatientEntity savedEntity = jpaRepository.save(entity);
-        domain.setPatientID(String.valueOf(savedEntity.getId()));
+
+        // Returnarea ID-ului generat către POJO-ul de domeniu este o practică bună:
+        if (savedEntity.getId() != null) {
+            domain.setPatientID(String.valueOf(savedEntity.getId()));
+        }
     }
 
-    // Metodă ajutătoare pentru a evita excepția la update dacă emailul nu s-a schimbat
     private boolean isExistingEmail(Patient domain) {
         if (domain.getPatientID() == null) return false;
         try {
@@ -60,12 +65,14 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
     @Override
     public Patient findById(String id) {
         try {
-            return jpaRepository.findById(Long.valueOf(id)).map(mapper::toDomain).orElse(null);
+            // CORECȚIE: Folosim referința pe CLASĂ (PatientMapper::toDomain)
+            return jpaRepository.findById(Long.valueOf(id)).map(PatientMapper::toDomain).orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Patient> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        // CORECȚIE: Folosim referința pe CLASĂ (PatientMapper::toDomain)
+        return jpaRepository.findAll().stream().map(PatientMapper::toDomain).collect(Collectors.toList());
     }
 }

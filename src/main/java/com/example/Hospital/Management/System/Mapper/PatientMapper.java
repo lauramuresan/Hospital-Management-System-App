@@ -4,6 +4,8 @@ import com.example.Hospital.Management.System.Model.GeneralModel.Patient;
 import com.example.Hospital.Management.System.Model.DBModel.PatientEntity;
 
 public class PatientMapper {
+
+    // Metoda toEntity este deja statică (OK)
     public static PatientEntity toEntity(Patient domain) {
         if (domain == null) return null;
         PatientEntity entity = new PatientEntity();
@@ -18,7 +20,8 @@ public class PatientMapper {
         return entity;
     }
 
-    public Patient toDomain(PatientEntity entity) {
+    // CORECȚIE: Metoda trebuie să fie statică
+    public static Patient toDomain(PatientEntity entity) {
         if (entity == null) return null;
         Patient domain = new Patient();
 

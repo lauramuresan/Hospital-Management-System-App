@@ -14,26 +14,29 @@ import java.util.stream.Collectors;
 public class DoctorAdaptor implements AbstractRepository<Doctor> {
 
     private final DBDoctorRepository jpaRepository;
-    private final DoctorMapper mapper;
+    // Eliminat: private final DoctorMapper mapper;
 
-    public DoctorAdaptor(DBDoctorRepository jpaRepository, DoctorMapper mapper) {
+    // CORECȚIE: Eliminăm parametrul DoctorMapper din constructor
+    public DoctorAdaptor(DBDoctorRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
+        // Eliminat: this.mapper = mapper;
     }
 
     @Override
     public void save(Doctor domain) {
         // Business Validation: Unicitatea LicenseNumber
         if (domain.getStaffID() == null || !isExistingLicense(domain)) {
+            // NOTĂ: Pentru ca existsByLicenseNumber să funcționeze,
+            // trebuie să o definiți în DBDoctorRepository.
             if (jpaRepository.existsByLicenseNumber(domain.getLicenseNumber())) {
                 throw new RuntimeException("Numărul licenței " + domain.getLicenseNumber() + " este deja înregistrat.");
             }
         }
 
-        jpaRepository.save(mapper.toEntity(domain));
+        // CORECȚIE: Apelăm metoda statică direct pe clasa DoctorMapper
+        jpaRepository.save(DoctorMapper.toEntity(domain));
     }
 
-    // Metodă ajutătoare pentru a evita excepția la update dacă numărul licenței nu s-a schimbat
     private boolean isExistingLicense(Doctor domain) {
         if (domain.getStaffID() == null) return false;
         try {
@@ -57,12 +60,14 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
     @Override
     public Doctor findById(String id) {
         try {
-            return jpaRepository.findById(Long.valueOf(id)).map(mapper::toDomain).orElse(null);
+            // CORECȚIE: Folosim referința pe CLASĂ (DoctorMapper::toDomain)
+            return jpaRepository.findById(Long.valueOf(id)).map(DoctorMapper::toDomain).orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Doctor> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        // CORECȚIE: Folosim referința pe CLASĂ (DoctorMapper::toDomain)
+        return jpaRepository.findAll().stream().map(DoctorMapper::toDomain).collect(Collectors.toList());
     }
 }

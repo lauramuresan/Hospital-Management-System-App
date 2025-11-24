@@ -7,6 +7,7 @@ import com.example.Hospital.Management.System.Model.DBModel.MedicalStaffAppointm
 
 public class MedicalStaffAppointmentMapper {
 
+    // Metodă statică: OK
     public static MedicalStaffAppointmentEntity createEntityFromIds(
             String appointmentId, String doctorId, String nurseId) {
 
@@ -29,7 +30,6 @@ public class MedicalStaffAppointmentMapper {
             try { nurseProxy.setId(Long.valueOf(nurseId)); } catch (NumberFormatException e) { return null; }
             entity.setNurse(nurseProxy);
         }
-
 
         return entity;
     }

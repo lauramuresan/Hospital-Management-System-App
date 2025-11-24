@@ -24,7 +24,7 @@ public class DepartmentMapper {
         return entity;
     }
 
-    public Department toDomain(DepartmentEntity entity) {
+    public static Department toDomain(DepartmentEntity entity) {
         if (entity == null) return null;
         Department domain = new Department();
 

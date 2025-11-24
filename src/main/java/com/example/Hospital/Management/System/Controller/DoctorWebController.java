@@ -24,10 +24,4 @@ public class DoctorWebController extends GenericWebController<Doctor> {
         return "doctors/form";
     }
 
-    // Override pentru edit să folosească același endpoint POST
-    @PostMapping("/{id}/edit")
-    public String edit(@PathVariable("id") String id, @ModelAttribute Doctor doctor) {
-        doctorService.create(doctor); // sau update dacă ai metodă separată
-        return "redirect:/doctors";
-    }
 }

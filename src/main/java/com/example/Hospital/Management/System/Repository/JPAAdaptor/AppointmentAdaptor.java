@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 public class AppointmentAdaptor implements AbstractRepository<Appointment> {
 
     private final DBAppointmentRepository jpaRepository;
-    private final AppointmentMapper mapper;
+    // Eliminat: private final AppointmentMapper mapper;
     private final DBRoomRepository roomJpaRepository;
     private final DBPatientRepository patientJpaRepository;
 
-    public AppointmentAdaptor(DBAppointmentRepository jpaRepository, AppointmentMapper mapper, DBRoomRepository roomJpaRepository, DBPatientRepository patientJpaRepository) {
+    // Modificăm Constructorul pentru a elimina parametrul AppointmentMapper
+    public AppointmentAdaptor(DBAppointmentRepository jpaRepository, DBRoomRepository roomJpaRepository, DBPatientRepository patientJpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
         this.roomJpaRepository = roomJpaRepository;
         this.patientJpaRepository = patientJpaRepository;
     }
@@ -33,13 +33,16 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
         if (domain.getAdmissionDate().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Programarea nu poate fi stabilită pentru o dată/oră din trecut.");
         }
-        // Business Validation: Camera și Pacientul există (FK validation)
-//        if (!roomJpaRepository.existsById(Long.valueOf(domain.getRoom())) || !patientJpaRepository.existsById(Long.valueOf(domain.getPatientID()))) {
-//            throw new RuntimeException("Camera sau Pacientul specificat nu există.");
-//        }
-        // Alte Validări: Verificare disponibilitate cameră, doctor, etc. ar trebui adăugate aici.
 
-        jpaRepository.save(mapper.toEntity(domain));
+        // Dacă codul comentat va fi activat, verificați dacă getRoom() returnează un String sau un obiect POJO
+        /*
+        if (!roomJpaRepository.existsById(Long.valueOf(domain.getRoomID())) || !patientJpaRepository.existsById(Long.valueOf(domain.getPatientID()))) {
+            throw new RuntimeException("Camera sau Pacientul specificat nu există.");
+        }
+        */
+
+        // CORECTAT: Apelăm metoda statică direct pe clasa AppointmentMapper
+        jpaRepository.save(AppointmentMapper.toEntity(domain));
     }
 
     @Override
@@ -52,12 +55,18 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
     @Override
     public Appointment findById(String id) {
         try {
-            return jpaRepository.findById(Long.valueOf(id)).map(mapper::toDomain).orElse(null);
+            // CORECTAT: Folosim referința pe CLASĂ (AppointmentMapper::toDomain)
+            return jpaRepository.findById(Long.valueOf(id))
+                    .map(AppointmentMapper::toDomain)
+                    .orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Appointment> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        // CORECTAT: Folosim referința pe CLASĂ (AppointmentMapper::toDomain)
+        return jpaRepository.findAll().stream()
+                .map(AppointmentMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

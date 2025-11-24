@@ -4,40 +4,77 @@ import com.example.Hospital.Management.System.Mapper.MedicalStaffAppointmentMapp
 import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffAppointment;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBMedicalStaffAppointmentRepository;
+import com.example.Hospital.Management.System.Repository.DBRepository.DBDoctorRepository; // NOU
+import com.example.Hospital.Management.System.Repository.DBRepository.DBNurseRepository;  // NOU
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class MedicalStaffAppointmentAdaptor implements AbstractRepository<MedicalStaffAppointment> {
 
     private final DBMedicalStaffAppointmentRepository jpaRepository;
-    private final MedicalStaffAppointmentMapper mapper;
+    // Adăugăm Repositories necesare pentru verificare
+    private final DBDoctorRepository doctorJpaRepository;
+    private final DBNurseRepository nurseJpaRepository;
 
-    public MedicalStaffAppointmentAdaptor(DBMedicalStaffAppointmentRepository jpaRepository, MedicalStaffAppointmentMapper mapper) {
+    // CORECȚIE: Eliminăm Mapper-ul și Adăugăm Repositories
+    public MedicalStaffAppointmentAdaptor(
+            DBMedicalStaffAppointmentRepository jpaRepository,
+            DBDoctorRepository doctorJpaRepository,
+            DBNurseRepository nurseJpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
+        this.doctorJpaRepository = doctorJpaRepository;
+        this.nurseJpaRepository = nurseJpaRepository;
     }
 
     @Override
     public void save(MedicalStaffAppointment domain) {
-        // Business Validation: Verifică dacă AppointmentID, DoctorID și/sau NurseID există.
-        // NOTĂ: Dacă modelul de domeniu MedicalStaffAppointment este doar un holder de ID-uri,
-        // salvarea va fi complexă și necesită toți Repositories (Doctor, Nurse, Appointment) injectați aici.
-        // În acest context, mapper.createEntityFromIds(domain.getAppointmentId(), domain.getDoctorId(), domain.getNurseId());
-        // ar fi metoda folosită.
+        String staffId = domain.getMedicalStaffID();
+        String doctorId = null;
+        String nurseId = null;
 
-        // Presupunând că Mapper-ul poate crea entitatea de legătură:
-        jpaRepository.save(mapper.createEntityFromIds(domain.getAppointmentID(), domain.getMedicalStaffID(), domain.getMedicalStaffID()));
+        if (staffId != null) {
+            Long staffIdLong;
+            try {
+                staffIdLong = Long.valueOf(staffId);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("ID-ul Personalului Medical este invalid.");
+            }
+
+            // LOGICA CRITICĂ: Verificăm dacă ID-ul este de Doctor sau de Nurse
+            if (doctorJpaRepository.existsById(staffIdLong)) {
+                doctorId = staffId;
+            } else if (nurseJpaRepository.existsById(staffIdLong)) {
+                nurseId = staffId;
+            } else {
+                throw new RuntimeException("ID-ul Personalului Medical (" + staffId + ") nu a fost găsit ca Doctor sau Asistentă.");
+            }
+        }
+
+        // Dacă nu este furnizat un ID de personal medical, ambele vor fi null, ceea ce poate fi permis.
+
+        // CORECȚIE: Apelăm metoda statică direct pe clasa MedicalStaffAppointmentMapper
+        jpaRepository.save(Objects.requireNonNull(MedicalStaffAppointmentMapper.createEntityFromIds(
+                domain.getAppointmentID(),
+                doctorId, // ID-ul verificat de doctor
+                nurseId   // ID-ul verificat de asistentă
+        )));
     }
 
     @Override
     public void delete(MedicalStaffAppointment domain) {
-        jpaRepository.deleteById(Long.valueOf(domain.getMedicalStaffAppointmentID()));
+        if (domain.getMedicalStaffAppointmentID() != null) {
+            try {
+                jpaRepository.deleteById(Long.valueOf(domain.getMedicalStaffAppointmentID()));
+            } catch (NumberFormatException e) { /* Ignoră */ }
+        }
     }
 
     @Override
     public MedicalStaffAppointment findById(String id) { return null; }
+
     @Override
     public List<MedicalStaffAppointment> findAll() { return List.of(); }
 }
