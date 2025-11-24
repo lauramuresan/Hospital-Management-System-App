@@ -2,7 +2,7 @@ package com.example.Hospital.Management.System.Model.DBModel;
 
 import com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull; // Folosim doar NotNull pentru Enum
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +11,8 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "staff_id")
 public class NurseEntity extends MedicalStaffEntity {
 
-    @NotBlank(message = "Categoria este obligatorie.")
+    @NotNull(message = "Categoria este obligatorie.")
+    @Enumerated(EnumType.STRING) // Esențial pentru a stoca Enum-ul ca String în DB
     private NurseLevelQualification nurseCategory;
 
     // Relația JPA (OBLIGATORIE)
@@ -23,8 +24,9 @@ public class NurseEntity extends MedicalStaffEntity {
         super();
     }
 
-    // --- Constructor Utilitar ---
-    public NurseEntity(String staffName, String staffEmail, DepartmentEntity department, @NotBlank NurseLevelQualification nurseCategory) {
+    // --- Constructor Utilitar (CORECTAT) ---
+    // S-a eliminat @NotBlank de pe NurseLevelQualification
+    public NurseEntity(String staffName, String staffEmail, DepartmentEntity department, NurseLevelQualification nurseCategory) {
         super(staffName, staffEmail, department);
         this.nurseCategory = nurseCategory;
     }
@@ -35,9 +37,11 @@ public class NurseEntity extends MedicalStaffEntity {
         return this.nurseAppointments;
     }
 
-    // --- Getteri și Setteri (rămân doar pentru câmpurile specifice) ---
+    // --- Getteri și Setteri (CORECTAT) ---
     public NurseLevelQualification getNurseCategory() { return nurseCategory; }
-    public void setNurseCategory(@NotBlank NurseLevelQualification nurseCategory) { this.nurseCategory = nurseCategory; }
+
+    // S-a eliminat @NotBlank de pe Setter, s-a păstrat @NotNull pentru coerență dacă doriți
+    public void setNurseCategory(NurseLevelQualification nurseCategory) { this.nurseCategory = nurseCategory; }
 
     // Setter-ul listei rămâne (este util)
     public void setNurseAppointments(List<MedicalStaffAppointmentEntity> nurseAppointments) { this.nurseAppointments = nurseAppointments; }
