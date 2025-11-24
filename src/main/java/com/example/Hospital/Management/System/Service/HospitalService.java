@@ -1,9 +1,7 @@
 package com.example.Hospital.Management.System.Service;
 
-import com.example.Hospital.Management.System.Model.Appointment;
-import com.example.Hospital.Management.System.Model.Hospital;
+import com.example.Hospital.Management.System.Model.GeneralModel.Hospital;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
-import com.example.Hospital.Management.System.Repository.InMemory.HospitalInMemoryRepository;
 import com.example.Hospital.Management.System.Repository.RepositoryFactory;
 import org.springframework.stereotype.Service;
 

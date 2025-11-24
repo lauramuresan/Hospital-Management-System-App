@@ -1,6 +1,6 @@
 package com.example.Hospital.Management.System.Repository;
 
-import com.example.Hospital.Management.System.Model.*;
+import com.example.Hospital.Management.System.Model.GeneralModel.*;
 import com.example.Hospital.Management.System.Repository.InFile.*;
 import com.example.Hospital.Management.System.Repository.InMemory.*;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,5 @@
 package com.example.Hospital.Management.System.Repository.InMemory;
-import com.example.Hospital.Management.System.Model.Appointment;
+import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
 import org.springframework.stereotype.Repository;
 @Repository("appointmentInMemory")
 public class AppointmentInMemoryRepository extends InMemoryRepository<Appointment> {

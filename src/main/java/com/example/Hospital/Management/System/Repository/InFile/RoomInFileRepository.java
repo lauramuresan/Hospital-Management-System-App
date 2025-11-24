@@ -1,6 +1,6 @@
 package com.example.Hospital.Management.System.Repository.InFile;
 
-import com.example.Hospital.Management.System.Model.Room;
+import com.example.Hospital.Management.System.Model.GeneralModel.Room;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 

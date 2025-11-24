@@ -1,4 +1,4 @@
-package com.example.Hospital.Management.System.Model;
+package com.example.Hospital.Management.System.Model.GeneralModel;
 
 public class Department {
     private String departmentID;
