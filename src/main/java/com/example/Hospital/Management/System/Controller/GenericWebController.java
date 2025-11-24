@@ -1,8 +1,11 @@
 package com.example.Hospital.Management.System.Controller;
 
 import com.example.Hospital.Management.System.Service.BaseService;
+import jakarta.validation.Valid; // Necesar pentru validare
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult; // Necesar pentru rezultatul validării
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Pentru mesaje flash
 
 public abstract class GenericWebController<T> {
 
@@ -21,63 +24,92 @@ public abstract class GenericWebController<T> {
     @GetMapping
     public String list(Model model) {
         model.addAttribute(listName, service.getAll());
-        return viewPath + "/index";
+        return viewPath + "/index"; // Ex: patients/index.html
     }
 
     @GetMapping("/new")
     public abstract String showForm(Model model);
 
     @PostMapping
-    public String create(@ModelAttribute T entity) {
+    public String create(@Valid @ModelAttribute T entity,
+                         BindingResult result,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
+
+
+        if (result.hasErrors()) {
+            model.addAttribute(modelName, entity);
+            return viewPath + "/form";
+        }
+
         try {
             service.create(entity);
+            redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost salvat cu succes.");
             return "redirect:/" + viewPath;
         } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/" + viewPath + "?error=true";
+            model.addAttribute(modelName, entity); // Păstrăm datele
+            model.addAttribute("globalError", "Eroare: " + e.getMessage());
+            return viewPath + "/form";
         }
     }
 
     @GetMapping("/{id}")
-    public String details(@PathVariable("id") String id, Model model) {
+    public String details(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             T entity = service.getById(id);
             model.addAttribute(modelName, entity);
-            return viewPath + "/details";
+            return viewPath + "/details"; // Ex: patients/details.html
         } catch (Exception e) {
-            return "redirect:/" + viewPath + "?not_found=true";
+            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu a fost găsit.");
+            return "redirect:/" + viewPath;
         }
     }
 
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable("id") String id, Model model) {
+    public String editForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             T entity = service.getById(id);
             model.addAttribute(modelName, entity);
             return viewPath + "/form";
         } catch (Exception e) {
-            return "redirect:/" + viewPath + "?not_found=true";
+            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu poate fi editat: nu a fost găsit.");
+            return "redirect:/" + viewPath;
         }
     }
 
     @PostMapping("/{id}/edit")
-    public String edit(@PathVariable("id") String id, @ModelAttribute T entity) {
+    public String edit(@PathVariable("id") String id,
+                       @Valid @ModelAttribute T entity,
+                       BindingResult result,
+                       Model model,
+                       RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            model.addAttribute(modelName, entity);
+            return viewPath + "/form";
+        }
+
         try {
-            service.create(entity); // sau service.update(entity) dacă ai metodă separată
+            service.create(entity); // Presupunând că service.create gestionează și update
+            redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost actualizat cu succes.");
             return "redirect:/" + viewPath;
         } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/" + viewPath + "?error=true";
+            model.addAttribute(modelName, entity);
+            model.addAttribute("globalError", "Eroare de actualizare: " + e.getMessage());
+            return viewPath + "/form";
         }
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable("id") String id) {
+    public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {
         try {
             service.remove(id);
+            redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost șters.");
             return "redirect:/" + viewPath;
         } catch (Exception e) {
-            return "redirect:/" + viewPath + "?error=true";
+
+            redirectAttributes.addFlashAttribute("errorMessage", "Eroare la ștergere: " + e.getMessage());
+            return "redirect:/" + viewPath;
         }
     }
 }

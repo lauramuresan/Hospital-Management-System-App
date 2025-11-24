@@ -5,23 +5,38 @@ import com.example.Hospital.Management.System.Repository.RepositoryModeHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RepositoryChooserController {
 
     private final RepositoryModeHolder modeHolder;
-    public RepositoryChooserController(RepositoryModeHolder modeHolder) { this.modeHolder = modeHolder; }
 
+    public RepositoryChooserController(RepositoryModeHolder modeHolder) {
+        this.modeHolder = modeHolder;
+    }
     @GetMapping({"/", "/HospitalManagementSystem"})
     public String chooseForm(Model model) {
         model.addAttribute("currentMode", modeHolder.getMode());
+        // Această pagină (choose-repo.html) va afișa cele 3 butoane/opțiuni
         return "choose-repo";
     }
 
     @PostMapping("/choose-repo")
-    public String setMode(@RequestParam("mode") String mode) {
-        if ("INFILE".equalsIgnoreCase(mode)) modeHolder.setMode(RepositoryMode.INFILE);
-        else modeHolder.setMode(RepositoryMode.INMEMORY);
+    public String setMode(@RequestParam("mode") String mode, RedirectAttributes redirectAttributes) {
+        RepositoryMode selectedMode = RepositoryMode.INMEMORY;
+
+        if ("INFILE".equalsIgnoreCase(mode)) {
+            selectedMode = RepositoryMode.INFILE;
+        } else if ("INMEMORY".equalsIgnoreCase(mode)) {
+            selectedMode = RepositoryMode.INMEMORY;
+        } else if ("MYSQL".equalsIgnoreCase(mode)) {
+            selectedMode = RepositoryMode.MYSQL;
+        }
+
+        modeHolder.setMode(selectedMode);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Modul de persistență a fost schimbat la " + selectedMode + ".");
         return "redirect:/";
     }
 }
