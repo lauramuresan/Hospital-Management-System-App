@@ -6,6 +6,8 @@ import com.example.Hospital.Management.System.Model.DBModel.PatientEntity;
 
 
 public class AppointmentMapper {
+
+    // Metoda toEntity este deja statică (OK)
     public static AppointmentEntity toEntity(Appointment domain) {
         if (domain == null) return null;
         AppointmentEntity entity = new AppointmentEntity();
@@ -16,6 +18,7 @@ public class AppointmentMapper {
             } catch (NumberFormatException e) {
             }
         }
+        // Presupunem că domain.getAdmissionDate() returnează un tip compatibil (ex: LocalDateTime)
         entity.setAppointmentDateTime(domain.getAdmissionDate());
         entity.setStatus(domain.getStatus());
 
@@ -29,7 +32,8 @@ public class AppointmentMapper {
         return entity;
     }
 
-    public Appointment toDomain(AppointmentEntity entity) {
+    // ADĂUGAȚI CUVÂNTUL CHEIE static AICI
+    public static Appointment toDomain(AppointmentEntity entity) { // <-- CORECTAT
         if (entity == null) return null;
         Appointment domain = new Appointment();
 

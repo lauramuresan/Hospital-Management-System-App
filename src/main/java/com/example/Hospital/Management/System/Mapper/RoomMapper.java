@@ -5,6 +5,8 @@ import com.example.Hospital.Management.System.Model.DBModel.RoomEntity;
 import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity;
 
 public class RoomMapper {
+
+    // Metoda toEntity este deja statică (OK)
     public static RoomEntity toEntity(Room domain) {
         if (domain == null) return null;
         RoomEntity entity = new RoomEntity();
@@ -13,6 +15,7 @@ public class RoomMapper {
             try { entity.setId(Long.valueOf(domain.getRoomID())); } catch (NumberFormatException e) {}
         }
         entity.setNumber(domain.getNumber());
+        // Atenție la posibila trunchiere: capacity este mapat de la long la int
         entity.setCapacity((int) domain.getCapacity());
         entity.setStatus(domain.getStatus());
 
@@ -26,7 +29,8 @@ public class RoomMapper {
         return entity;
     }
 
-    public Room toDomain(RoomEntity entity) {
+    // CORECȚIE: Adăugăm static
+    public static Room toDomain(RoomEntity entity) {
         if (entity == null) return null;
         Room domain = new Room();
 

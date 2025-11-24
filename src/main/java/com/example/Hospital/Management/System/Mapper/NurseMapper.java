@@ -2,8 +2,10 @@ package com.example.Hospital.Management.System.Mapper;
 
 import com.example.Hospital.Management.System.Model.GeneralModel.Nurse;
 import com.example.Hospital.Management.System.Model.DBModel.NurseEntity;
+// Importul rămâne
 
 public class NurseMapper extends MedicalStaffMapper {
+
     public static NurseEntity toEntity(Nurse domain) {
         if (domain == null) return null;
         NurseEntity entity = new NurseEntity();
@@ -15,12 +17,13 @@ public class NurseMapper extends MedicalStaffMapper {
         return entity;
     }
 
-    public Nurse toDomain(NurseEntity entity) {
+    public static Nurse toDomain(NurseEntity entity) {
         if (entity == null) return null;
         Nurse domain = new Nurse();
 
         mapBaseToDomain(entity, domain);
 
+        // CORECȚIE: Mapare directă (Enum -> Enum)
         domain.setQualificationLevel(entity.getNurseCategory());
 
         return domain;

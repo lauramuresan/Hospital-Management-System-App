@@ -13,17 +13,18 @@ import java.util.stream.Collectors;
 public class NurseAdaptor implements AbstractRepository<Nurse> {
 
     private final DBNurseRepository jpaRepository;
-    private final NurseMapper mapper;
+    // Eliminat: private final NurseMapper mapper;
 
-    public NurseAdaptor(DBNurseRepository jpaRepository, NurseMapper mapper) {
+    // CORECȚIE: Eliminăm parametrul NurseMapper din constructor
+    public NurseAdaptor(DBNurseRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
+        // Eliminat: this.mapper = mapper;
     }
 
     @Override
     public void save(Nurse domain) {
-        // Nu există validări de unicitate specifice (ex: un nurseCategory nu este unic)
-        jpaRepository.save(mapper.toEntity(domain));
+        // CORECȚIE: Apelăm metoda statică direct pe clasa NurseMapper
+        jpaRepository.save(NurseMapper.toEntity(domain));
     }
 
     @Override
@@ -36,12 +37,14 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
     @Override
     public Nurse findById(String id) {
         try {
-            return jpaRepository.findById(Long.valueOf(id)).map(mapper::toDomain).orElse(null);
+            // CORECȚIE: Folosim referința pe CLASĂ (NurseMapper::toDomain)
+            return jpaRepository.findById(Long.valueOf(id)).map(NurseMapper::toDomain).orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Nurse> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        // CORECȚIE: Folosim referința pe CLASĂ (NurseMapper::toDomain)
+        return jpaRepository.findAll().stream().map(NurseMapper::toDomain).collect(Collectors.toList());
     }
 }

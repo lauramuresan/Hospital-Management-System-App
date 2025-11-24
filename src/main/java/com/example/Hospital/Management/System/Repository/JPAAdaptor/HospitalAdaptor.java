@@ -13,17 +13,18 @@ import java.util.stream.Collectors;
 public class HospitalAdaptor implements AbstractRepository<Hospital> {
 
     private final DBHospitalRepository jpaRepository;
-    private final HospitalMapper mapper;
+    // Eliminat: private final HospitalMapper mapper; // <-- Eliminat
 
-    public HospitalAdaptor(DBHospitalRepository jpaRepository, HospitalMapper mapper) {
+    // CORECȚIE: Eliminăm parametrul HospitalMapper din constructor
+    public HospitalAdaptor(DBHospitalRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.mapper = mapper;
+        // Eliminat: this.mapper = mapper;
     }
 
     @Override
     public void save(Hospital domain) {
-        // Nu există o validare unică simplă impusă de Entitate, bazată pe JPA.
-        jpaRepository.save(mapper.toEntity(domain));
+        // CORECȚIE: Apelăm metoda statică direct pe clasa HospitalMapper
+        jpaRepository.save(HospitalMapper.toEntity(domain));
     }
 
     @Override
@@ -36,12 +37,14 @@ public class HospitalAdaptor implements AbstractRepository<Hospital> {
     @Override
     public Hospital findById(String id) {
         try {
-            return jpaRepository.findById(Long.valueOf(id)).map(mapper::toDomain).orElse(null);
+            // CORECȚIE: Folosim referința pe CLASĂ (HospitalMapper::toDomain)
+            return jpaRepository.findById(Long.valueOf(id)).map(HospitalMapper::toDomain).orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Hospital> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        // CORECȚIE: Folosim referința pe CLASĂ (HospitalMapper::toDomain)
+        return jpaRepository.findAll().stream().map(HospitalMapper::toDomain).collect(Collectors.toList());
     }
 }

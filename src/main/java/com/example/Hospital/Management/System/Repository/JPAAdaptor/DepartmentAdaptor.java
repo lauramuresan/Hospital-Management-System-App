@@ -14,13 +14,11 @@ import java.util.stream.Collectors;
 public class DepartmentAdaptor implements AbstractRepository<Department> {
 
     private final DBDepartmentRepository jpaRepository;
-    private final DBHospitalRepository hospitalJpaRepository; // Pentru Business Validation
-    private final DepartmentMapper mapper;
+    private final DBHospitalRepository hospitalJpaRepository;
 
-    public DepartmentAdaptor(DBDepartmentRepository jpaRepository, DBHospitalRepository hospitalJpaRepository, DepartmentMapper mapper) {
+    public DepartmentAdaptor(DBDepartmentRepository jpaRepository, DBHospitalRepository hospitalJpaRepository) {
         this.jpaRepository = jpaRepository;
         this.hospitalJpaRepository = hospitalJpaRepository;
-        this.mapper = mapper;
     }
 
     @Override
@@ -30,7 +28,8 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
             throw new RuntimeException("Spitalul specificat cu ID-ul " + domain.getHospitalID() + " nu există.");
         }
 
-        jpaRepository.save(mapper.toEntity(domain));
+        // CORECTAT: Apelăm metoda statică direct pe clasa DepartmentMapper
+        jpaRepository.save(DepartmentMapper.toEntity(domain));
     }
 
     @Override
@@ -43,12 +42,16 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
     @Override
     public Department findById(String id) {
         try {
-            return jpaRepository.findById(Long.valueOf(id)).map(mapper::toDomain).orElse(null);
+            return jpaRepository.findById(Long.valueOf(id))
+                    .map(DepartmentMapper::toDomain)
+                    .orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Department> findAll() {
-        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(Collectors.toList());
+        return jpaRepository.findAll().stream()
+                .map(DepartmentMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
