@@ -16,6 +16,7 @@ public class DoctorEntity extends MedicalStaffEntity {
     private String licenseNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private MedicalSpecialty medicalSpeciality;
 
     // Relația JPA (OBLIGATORIE)
