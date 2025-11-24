@@ -12,7 +12,7 @@ import java.util.List;
 public class NurseEntity extends MedicalStaffEntity {
 
     @NotBlank(message = "Categoria este obligatorie.")
-    private String nurseCategory;
+    private NurseLevelQualification nurseCategory;
 
     // Relația JPA (OBLIGATORIE)
     @OneToMany(mappedBy = "nurse", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -24,7 +24,7 @@ public class NurseEntity extends MedicalStaffEntity {
     }
 
     // --- Constructor Utilitar ---
-    public NurseEntity(String staffName, String staffEmail, DepartmentEntity department, String nurseCategory) {
+    public NurseEntity(String staffName, String staffEmail, DepartmentEntity department, @NotBlank NurseLevelQualification nurseCategory) {
         super(staffName, staffEmail, department);
         this.nurseCategory = nurseCategory;
     }
@@ -37,7 +37,7 @@ public class NurseEntity extends MedicalStaffEntity {
 
     // --- Getteri și Setteri (rămân doar pentru câmpurile specifice) ---
     public NurseLevelQualification getNurseCategory() { return nurseCategory; }
-    public void setNurseCategory(String nurseCategory) { this.nurseCategory = nurseCategory; }
+    public void setNurseCategory(@NotBlank NurseLevelQualification nurseCategory) { this.nurseCategory = nurseCategory; }
 
     // Setter-ul listei rămâne (este util)
     public void setNurseAppointments(List<MedicalStaffAppointmentEntity> nurseAppointments) { this.nurseAppointments = nurseAppointments; }
