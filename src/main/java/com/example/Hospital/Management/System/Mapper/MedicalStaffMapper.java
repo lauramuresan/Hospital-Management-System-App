@@ -7,18 +7,10 @@ import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
 public abstract class MedicalStaffMapper {
 
     protected static <D extends MedicalStaff, E extends MedicalStaffEntity> E mapBaseToEntity(D domain, E entity) {
-        if (domain.getStaffID() != null) {
-            try { entity.setId(Long.valueOf(domain.getStaffID())); } catch (NumberFormatException e) {}
-        }
+        entity.setId(domain.getStaffID() != null ? MapperUtils.parseLong(domain.getStaffID()) : null);
         entity.setStaffName(domain.getStaffName());
         entity.setStaffEmail(domain.getStaffEmail());
-
-        if (domain.getDepartmentID() != null) {
-            DepartmentEntity departmentProxy = new DepartmentEntity();
-            try { departmentProxy.setId(Long.valueOf(domain.getDepartmentID())); } catch (NumberFormatException e) { return null; }
-            entity.setDepartment(departmentProxy);
-        }
-
+        entity.setDepartment(MapperUtils.createEntityProxy(DepartmentEntity.class, domain.getDepartmentID()));
         return entity;
     }
 
@@ -26,11 +18,8 @@ public abstract class MedicalStaffMapper {
         domain.setStaffID(entity.getId() != null ? String.valueOf(entity.getId()) : null);
         domain.setStaffName(entity.getStaffName());
         domain.setStaffEmail(entity.getStaffEmail());
-
-        if (entity.getDepartment() != null && entity.getDepartment().getId() != null) {
+        if (entity.getDepartment() != null && entity.getDepartment().getId() != null)
             domain.setDepartmentID(String.valueOf(entity.getDepartment().getId()));
-        }
-
         return domain;
     }
 }

@@ -9,10 +9,8 @@ public class DoctorMapper extends MedicalStaffMapper {
         if (domain == null) return null;
         DoctorEntity entity = new DoctorEntity();
         mapBaseToEntity(domain, entity);
-
         entity.setLicenseNumber(domain.getLicenseNumber());
         entity.setMedicalSpeciality(domain.getMedicalSpeciality());
-
         return entity;
     }
 
@@ -22,7 +20,6 @@ public class DoctorMapper extends MedicalStaffMapper {
         mapBaseToDomain(entity, domain);
         domain.setLicenseNumber(entity.getLicenseNumber());
         domain.setMedicalSpeciality(entity.getMedicalSpeciality());
-
         return domain;
     }
 }

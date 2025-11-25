@@ -8,14 +8,10 @@ public class PatientMapper {
     public static PatientEntity toEntity(Patient domain) {
         if (domain == null) return null;
         PatientEntity entity = new PatientEntity();
-
-        if (domain.getPatientID() != null) {
-            try { entity.setId(Long.valueOf(domain.getPatientID())); } catch (NumberFormatException e) {}
-        }
+        entity.setId(domain.getPatientID() != null ? MapperUtils.parseLong(domain.getPatientID()) : null);
         entity.setPatientName(domain.getPatientName());
         entity.setPacientEmail(domain.getPacientEmail());
         entity.setPatientBirthDate(domain.getPatientBirthDate());
-
         return entity;
     }
 
@@ -26,7 +22,6 @@ public class PatientMapper {
         domain.setPatientName(entity.getPatientName());
         domain.setPacientEmail(entity.getPacientEmail());
         domain.setPatientBirthDate(entity.getPatientBirthDate());
-
         return domain;
     }
 }
