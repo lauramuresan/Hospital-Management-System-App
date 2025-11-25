@@ -3,7 +3,6 @@ package com.example.Hospital.Management.System.Mapper;
 import com.example.Hospital.Management.System.Model.GeneralModel.Nurse;
 import com.example.Hospital.Management.System.Model.DBModel.NurseEntity;
 
-
 public class NurseMapper extends MedicalStaffMapper {
 
     public static NurseEntity toEntity(Nurse domain) {
@@ -11,7 +10,6 @@ public class NurseMapper extends MedicalStaffMapper {
         NurseEntity entity = new NurseEntity();
         mapBaseToEntity(domain, entity);
         entity.setNurseCategory(domain.getQualificationLevel());
-
         return entity;
     }
 
@@ -20,7 +18,6 @@ public class NurseMapper extends MedicalStaffMapper {
         Nurse domain = new Nurse();
         mapBaseToDomain(entity, domain);
         domain.setQualificationLevel(entity.getNurseCategory());
-
         return domain;
     }
 }
