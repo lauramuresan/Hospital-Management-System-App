@@ -7,7 +7,6 @@ import com.example.Hospital.Management.System.Model.DBModel.MedicalStaffAppointm
 
 public class MedicalStaffAppointmentMapper {
 
-    // Metodă statică: OK
     public static MedicalStaffAppointmentEntity createEntityFromIds(
             String appointmentId, String doctorId, String nurseId) {
 

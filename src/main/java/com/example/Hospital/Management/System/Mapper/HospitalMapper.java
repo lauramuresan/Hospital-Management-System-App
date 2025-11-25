@@ -6,11 +6,9 @@ import java.util.stream.Collectors;
 
 public class HospitalMapper {
 
-    // Metoda toEntity este deja statică (OK)
     public static HospitalEntity toEntity(Hospital domain) {
         if (domain == null) return null;
         HospitalEntity entity = new HospitalEntity();
-
         if (domain.getHospitalID() != null) {
             try { entity.setId(Long.valueOf(domain.getHospitalID())); } catch (NumberFormatException e) {}
         }
@@ -26,9 +24,7 @@ public class HospitalMapper {
 
         return entity;
     }
-
-    // CORECȚIE: Adăugăm static
-    public static Hospital toDomain(HospitalEntity entity) { // <-- CORECTAT
+    public static Hospital toDomain(HospitalEntity entity) {
         if (entity == null) return null;
         Hospital domain = new Hospital();
 
@@ -38,7 +34,7 @@ public class HospitalMapper {
 
         if (entity.getDepartments() != null) {
             domain.setDepartments(entity.getDepartments().stream()
-                    .map(DepartmentMapper::toDomain) // Presupunând că toDomain este statică
+                    .map(DepartmentMapper::toDomain)
                     .collect(Collectors.toList()));
         }
 

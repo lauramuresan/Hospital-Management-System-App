@@ -13,17 +13,13 @@ import java.util.stream.Collectors;
 public class HospitalAdaptor implements AbstractRepository<Hospital> {
 
     private final DBHospitalRepository jpaRepository;
-    // Eliminat: private final HospitalMapper mapper; // <-- Eliminat
 
-    // CORECȚIE: Eliminăm parametrul HospitalMapper din constructor
     public HospitalAdaptor(DBHospitalRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        // Eliminat: this.mapper = mapper;
     }
 
     @Override
     public void save(Hospital domain) {
-        // CORECȚIE: Apelăm metoda statică direct pe clasa HospitalMapper
         jpaRepository.save(HospitalMapper.toEntity(domain));
     }
 
@@ -37,14 +33,12 @@ public class HospitalAdaptor implements AbstractRepository<Hospital> {
     @Override
     public Hospital findById(String id) {
         try {
-            // CORECȚIE: Folosim referința pe CLASĂ (HospitalMapper::toDomain)
             return jpaRepository.findById(Long.valueOf(id)).map(HospitalMapper::toDomain).orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Hospital> findAll() {
-        // CORECȚIE: Folosim referința pe CLASĂ (HospitalMapper::toDomain)
         return jpaRepository.findAll().stream().map(HospitalMapper::toDomain).collect(Collectors.toList());
     }
 }

@@ -6,8 +6,8 @@ import com.example.Hospital.Management.System.Model.DBModel.PatientEntity;
 
 
 public class AppointmentMapper {
-
-    // Metoda toEntity este deja statică (OK)
+    //Această metodă statică ia un obiect de domeniu și îl convertește
+    // într-o entitate JPA, gata pentru a fi salvată în baza de date
     public static AppointmentEntity toEntity(Appointment domain) {
         if (domain == null) return null;
         AppointmentEntity entity = new AppointmentEntity();
@@ -18,11 +18,9 @@ public class AppointmentMapper {
             } catch (NumberFormatException e) {
             }
         }
-        // Presupunem că domain.getAdmissionDate() returnează un tip compatibil (ex: LocalDateTime)
         entity.setAppointmentDateTime(domain.getAdmissionDate());
         entity.setStatus(domain.getStatus());
 
-        // Maparea Patient (Proxy)
         if (domain.getPatientID() != null) {
             PatientEntity patientProxy = new PatientEntity();
             try { patientProxy.setId(Long.valueOf(domain.getPatientID())); } catch (NumberFormatException e) { return null; }
@@ -31,9 +29,9 @@ public class AppointmentMapper {
 
         return entity;
     }
-
-    // ADĂUGAȚI CUVÂNTUL CHEIE static AICI
-    public static Appointment toDomain(AppointmentEntity entity) { // <-- CORECTAT
+    //Această metodă statică ia o entitate JPA
+    //și o convertește în obiectul de domeniu
+    public static Appointment toDomain(AppointmentEntity entity) {
         if (entity == null) return null;
         Appointment domain = new Appointment();
 

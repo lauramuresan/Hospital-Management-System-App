@@ -15,11 +15,9 @@ import java.util.Objects;
 public class MedicalStaffAppointmentAdaptor implements AbstractRepository<MedicalStaffAppointment> {
 
     private final DBMedicalStaffAppointmentRepository jpaRepository;
-    // Adăugăm Repositories necesare pentru verificare
     private final DBDoctorRepository doctorJpaRepository;
     private final DBNurseRepository nurseJpaRepository;
 
-    // CORECȚIE: Eliminăm Mapper-ul și Adăugăm Repositories
     public MedicalStaffAppointmentAdaptor(
             DBMedicalStaffAppointmentRepository jpaRepository,
             DBDoctorRepository doctorJpaRepository,
@@ -43,7 +41,6 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
                 throw new RuntimeException("ID-ul Personalului Medical este invalid.");
             }
 
-            // LOGICA CRITICĂ: Verificăm dacă ID-ul este de Doctor sau de Nurse
             if (doctorJpaRepository.existsById(staffIdLong)) {
                 doctorId = staffId;
             } else if (nurseJpaRepository.existsById(staffIdLong)) {
@@ -53,13 +50,10 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
             }
         }
 
-        // Dacă nu este furnizat un ID de personal medical, ambele vor fi null, ceea ce poate fi permis.
-
-        // CORECȚIE: Apelăm metoda statică direct pe clasa MedicalStaffAppointmentMapper
         jpaRepository.save(Objects.requireNonNull(MedicalStaffAppointmentMapper.createEntityFromIds(
                 domain.getAppointmentID(),
-                doctorId, // ID-ul verificat de doctor
-                nurseId   // ID-ul verificat de asistentă
+                doctorId,
+                nurseId
         )));
     }
 

@@ -25,20 +25,17 @@ public abstract class MedicalStaffEntity {
     @JoinColumn(name = "department_id", nullable = false)
     private DepartmentEntity department;
 
-    // --- Metoda Moștenită (Abstractă) ---
     public abstract List<MedicalStaffAppointmentEntity> getMedicalStaffAppointments();
 
-    // --- Constructor Obligatoriu JPA ---
     public MedicalStaffEntity() {}
 
-    // --- Constructor Utilitar ---
     public MedicalStaffEntity(String staffName, String staffEmail, DepartmentEntity department) {
         this.staffName = staffName;
         this.staffEmail = staffEmail;
         this.department = department;
     }
 
-    // --- Getteri și Setteri ---
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getStaffName() { return staffName; }

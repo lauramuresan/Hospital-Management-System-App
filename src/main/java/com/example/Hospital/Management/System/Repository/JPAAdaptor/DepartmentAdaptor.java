@@ -28,7 +28,7 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
             throw new RuntimeException("Spitalul specificat cu ID-ul " + domain.getHospitalID() + " nu există.");
         }
 
-        // CORECTAT: Apelăm metoda statică direct pe clasa DepartmentMapper
+
         jpaRepository.save(DepartmentMapper.toEntity(domain));
     }
 

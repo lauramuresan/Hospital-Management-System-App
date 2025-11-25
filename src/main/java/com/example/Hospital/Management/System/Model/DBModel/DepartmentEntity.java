@@ -11,7 +11,7 @@ public class DepartmentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Cheia primară (Long)
+    private Long id;
 
     @NotBlank(message = "Numele departamentului este obligatoriu.")
     private String departmentName;
@@ -20,8 +20,6 @@ public class DepartmentEntity {
     @JoinColumn(name = "hospital_id", nullable = false)
     private HospitalEntity hospital;
 
-    // Relația bidirecțională One-to-Many cu Personalul Medical
-    // MappedBy: "department" este câmpul din clasa MedicalStaffEntity care deține cheia străină.
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MedicalStaffEntity> medicalStaff = new ArrayList<>();
 
@@ -33,37 +31,27 @@ public class DepartmentEntity {
         this.hospital = hospital;
     }
 
-    // --- Getteri și Setteri ---
-
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getDepartmentName() {
         return departmentName;
     }
-
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
     }
-
     public HospitalEntity getHospital() {
         return hospital;
     }
-
     public void setHospital(HospitalEntity hospital) {
         this.hospital = hospital;
     }
-
-    // Getteri și Setteri pentru noua listă de personal
     public List<MedicalStaffEntity> getMedicalStaff() {
         return medicalStaff;
     }
-
     public void setMedicalStaff(List<MedicalStaffEntity> medicalStaff) {
         this.medicalStaff = medicalStaff;
     }
