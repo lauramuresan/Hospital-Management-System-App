@@ -90,7 +90,7 @@ public abstract class GenericWebController<T> {
         }
 
         try {
-            service.create(entity); // Presupunând că service.create gestionează și update
+            service.create(entity);
             redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost actualizat cu succes.");
             return "redirect:/" + viewPath;
         } catch (Exception e) {

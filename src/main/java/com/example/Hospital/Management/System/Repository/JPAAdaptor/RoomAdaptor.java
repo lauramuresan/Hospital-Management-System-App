@@ -14,12 +14,9 @@ import java.util.stream.Collectors;
 public class RoomAdaptor implements AbstractRepository<Room> {
 
     private final DBRoomRepository jpaRepository;
-    // Eliminat: private final RoomMapper mapper;
 
-    // CORECȚIE: Eliminăm parametrul RoomMapper din constructor
     public RoomAdaptor(DBRoomRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        // Eliminat: this.mapper = mapper;
     }
 
     @Override
@@ -29,7 +26,6 @@ public class RoomAdaptor implements AbstractRepository<Room> {
 //                throw new RuntimeException("Numărul camerei " + domain.getNumber() + " este deja folosit.");
 //            }
 //        }
-        // CORECȚIE: Apelăm metoda statică direct pe clasa RoomMapper
         jpaRepository.save(RoomMapper.toEntity(domain));
     }
 
@@ -56,14 +52,12 @@ public class RoomAdaptor implements AbstractRepository<Room> {
     @Override
     public Room findById(String id) {
         try {
-            // CORECȚIE: Folosim referința pe CLASĂ (RoomMapper::toDomain)
             return jpaRepository.findById(Long.valueOf(id)).map(RoomMapper::toDomain).orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Room> findAll() {
-        // CORECȚIE: Folosim referința pe CLASĂ (RoomMapper::toDomain)
         return jpaRepository.findAll().stream().map(RoomMapper::toDomain).collect(Collectors.toList());
     }
 }

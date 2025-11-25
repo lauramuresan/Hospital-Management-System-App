@@ -13,7 +13,6 @@ public abstract class MedicalStaffMapper {
         entity.setStaffName(domain.getStaffName());
         entity.setStaffEmail(domain.getStaffEmail());
 
-        // Maparea Department (Proxy)
         if (domain.getDepartmentID() != null) {
             DepartmentEntity departmentProxy = new DepartmentEntity();
             try { departmentProxy.setId(Long.valueOf(domain.getDepartmentID())); } catch (NumberFormatException e) { return null; }
@@ -29,7 +28,6 @@ public abstract class MedicalStaffMapper {
         domain.setStaffEmail(entity.getStaffEmail());
 
         if (entity.getDepartment() != null && entity.getDepartment().getId() != null) {
-            // Presupunând că POJO-ul MedicalStaff are un setDepartmentID(String)
             domain.setDepartmentID(String.valueOf(entity.getDepartment().getId()));
         }
 

@@ -14,12 +14,9 @@ import java.util.stream.Collectors;
 public class DoctorAdaptor implements AbstractRepository<Doctor> {
 
     private final DBDoctorRepository jpaRepository;
-    // Eliminat: private final DoctorMapper mapper;
 
-    // CORECȚIE: Eliminăm parametrul DoctorMapper din constructor
     public DoctorAdaptor(DBDoctorRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
-        // Eliminat: this.mapper = mapper;
     }
 
     @Override
@@ -33,7 +30,6 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
             }
         }
 
-        // CORECȚIE: Apelăm metoda statică direct pe clasa DoctorMapper
         jpaRepository.save(DoctorMapper.toEntity(domain));
     }
 
@@ -60,14 +56,12 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
     @Override
     public Doctor findById(String id) {
         try {
-            // CORECȚIE: Folosim referința pe CLASĂ (DoctorMapper::toDomain)
             return jpaRepository.findById(Long.valueOf(id)).map(DoctorMapper::toDomain).orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Doctor> findAll() {
-        // CORECȚIE: Folosim referința pe CLASĂ (DoctorMapper::toDomain)
         return jpaRepository.findAll().stream().map(DoctorMapper::toDomain).collect(Collectors.toList());
     }
 }

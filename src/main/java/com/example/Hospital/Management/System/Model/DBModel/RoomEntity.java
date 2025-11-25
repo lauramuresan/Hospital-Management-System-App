@@ -51,47 +51,36 @@ public class RoomEntity {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getNumber() {
         return number;
     }
-
     public void setNumber(String number) {
         this.number = number;
     }
-
     public Integer getCapacity() {
         return capacity;
     }
-
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
-
     public HospitalEntity getHospital() {
         return hospital;
     }
-
     public void setHospital(HospitalEntity hospital) {
         this.hospital = hospital;
     }
-
     public RoomAvailability getStatus() {
         return status;
     }
-
     public void setStatus(RoomAvailability status) {
         this.status = status;
     }
-
     public List<AppointmentEntity> getAppointments() {
         return appointments;
     }
-
     public void setAppointments(List<AppointmentEntity> appointments) {
         this.appointments = appointments;
     }

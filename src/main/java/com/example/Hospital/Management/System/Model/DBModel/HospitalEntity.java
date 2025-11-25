@@ -39,39 +39,30 @@ public class HospitalEntity {
     public Long getId() {
         return id;
     }
-
     public String getHospitalName() {
         return hospitalName;
     }
-
     public String getCity() {
         return city;
     }
-
     public List<DepartmentEntity> getDepartments() {
         return departments;
     }
-
     public List<RoomEntity> getRooms() {
         return rooms;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public void setHospitalName(String hospitalName) {
         this.hospitalName = hospitalName;
     }
-
     public void setCity(String city) {
         this.city = city;
     }
-
     public void setDepartments(List<DepartmentEntity> departments) {
         this.departments = departments;
     }
-
     public void setRooms(List<RoomEntity> rooms) {
         this.rooms = rooms;
     }

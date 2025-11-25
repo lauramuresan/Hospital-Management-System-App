@@ -14,7 +14,6 @@ public class DepartmentMapper {
         }
         entity.setDepartmentName(domain.getDepartmentName());
 
-        // Maparea Hospital (Proxy)
         if (domain.getHospitalID() != null) {
             HospitalEntity hospitalProxy = new HospitalEntity();
             try { hospitalProxy.setId(Long.valueOf(domain.getHospitalID())); } catch (NumberFormatException e) { return null; }
@@ -30,11 +29,8 @@ public class DepartmentMapper {
 
         domain.setDepartmentID(entity.getId() != null ? String.valueOf(entity.getId()) : null);
         domain.setDepartmentName(entity.getDepartmentName());
-
-        // Setăm ID-ul Hospital pe Domain POJO (presupunând că POJO are setHospitalID(String))
         if (entity.getHospital() != null && entity.getHospital().getId() != null) {
             domain.setHospitalID(String.valueOf(entity.getHospital().getId()));
-            // Decomentați linia de mai sus dacă POJO are metoda
         }
         return domain;
     }

@@ -16,11 +16,9 @@ import java.util.stream.Collectors;
 public class AppointmentAdaptor implements AbstractRepository<Appointment> {
 
     private final DBAppointmentRepository jpaRepository;
-    // Eliminat: private final AppointmentMapper mapper;
     private final DBRoomRepository roomJpaRepository;
     private final DBPatientRepository patientJpaRepository;
 
-    // Modificăm Constructorul pentru a elimina parametrul AppointmentMapper
     public AppointmentAdaptor(DBAppointmentRepository jpaRepository, DBRoomRepository roomJpaRepository, DBPatientRepository patientJpaRepository) {
         this.jpaRepository = jpaRepository;
         this.roomJpaRepository = roomJpaRepository;
@@ -29,7 +27,6 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
 
     @Override
     public void save(Appointment domain) {
-        // Business Validation: Data/Ora nu e în trecut
         if (domain.getAdmissionDate().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Programarea nu poate fi stabilită pentru o dată/oră din trecut.");
         }
@@ -55,7 +52,6 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
     @Override
     public Appointment findById(String id) {
         try {
-            // CORECTAT: Folosim referința pe CLASĂ (AppointmentMapper::toDomain)
             return jpaRepository.findById(Long.valueOf(id))
                     .map(AppointmentMapper::toDomain)
                     .orElse(null);
@@ -64,7 +60,6 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
 
     @Override
     public List<Appointment> findAll() {
-        // CORECTAT: Folosim referința pe CLASĂ (AppointmentMapper::toDomain)
         return jpaRepository.findAll().stream()
                 .map(AppointmentMapper::toDomain)
                 .collect(Collectors.toList());
