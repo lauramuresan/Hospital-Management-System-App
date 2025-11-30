@@ -3,9 +3,11 @@ import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.RepositoryFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Adăugat
 import java.util.List;
 
 @Service
+@Transactional // Adăugat: Esențial pentru operațiunile JPA
 public class AppointmentService extends BaseService<Appointment>{
 
     private final AbstractRepository<Appointment> appointmentRepository;
@@ -15,16 +17,19 @@ public class AppointmentService extends BaseService<Appointment>{
     }
 
     @Override
-    protected void save(Appointment entity){
+    protected void save(Appointment entity){ // Vizibilitate uniformizată și @Override
         appointmentRepository.save(entity);
     }
-    protected void delete(Appointment entity){
+    @Override
+    protected void delete(Appointment entity){ // Vizibilitate uniformizată și @Override
         appointmentRepository.delete(entity);
     }
-    protected Appointment findById(String id){
+    @Override
+    protected Appointment findById(String id){ // Vizibilitate uniformizată și @Override
         return appointmentRepository.findById(id);
     }
-    protected List<Appointment> findAll(){
+    @Override
+    protected List<Appointment> findAll(){ // Vizibilitate uniformizată și @Override
         return appointmentRepository.findAll();
     }
 }
