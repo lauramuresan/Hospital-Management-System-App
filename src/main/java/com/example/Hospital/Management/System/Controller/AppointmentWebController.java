@@ -20,7 +20,7 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
 
     @Override
     public String showForm(Model model) {
-        model.addAttribute("appointment", new Appointment("", "", "", LocalDateTime.now(), AppointmentStatus.ACTIVE, new ArrayList<>()));
+        model.addAttribute("appointment", new Appointment("", "", "","", LocalDateTime.now(), AppointmentStatus.ACTIVE, new ArrayList<>()));
         return "appointments/form";
     }
 }

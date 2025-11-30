@@ -141,6 +141,7 @@ public class InMemoryDataSeeder {
                     "A" + i,
                     "P" + ((i % 10) + 1),
                     "D" + ((i % 10) + 1),
+                    "R" + ((i % 10) + 1),
                     LocalDateTime.now().plusDays(i),
                     statuses[i % statuses.length],
                     new ArrayList<>()
