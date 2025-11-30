@@ -3,5 +3,10 @@ package com.example.Hospital.Management.System.Repository.DBRepository;
 import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface DBDepartmentRepository extends JpaRepository<DepartmentEntity, Long> {
+
+    // Metodă pentru a verifica dacă un departament cu un anumit nume există deja în spitalul dat.
+    Optional<DepartmentEntity> findByDepartmentNameAndHospitalId(String departmentName, Long hospitalId);
 }
