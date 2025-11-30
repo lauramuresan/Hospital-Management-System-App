@@ -4,8 +4,11 @@ import com.example.Hospital.Management.System.Model.GeneralModel.Doctor;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.RepositoryFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Adăugat
 import java.util.List;
+
 @Service
+@Transactional // Adăugat
 public class DoctorService extends BaseService<Doctor>{
     private final AbstractRepository<Doctor> doctorRepository;
 
@@ -17,14 +20,16 @@ public class DoctorService extends BaseService<Doctor>{
     protected void save(Doctor entity){
         doctorRepository.save(entity);
     }
-    protected void delete(Doctor entity){
+    @Override
+    protected void delete(Doctor entity){ // Adăugat @Override
         doctorRepository.delete(entity);
     }
-    protected Doctor findById(String id){
+    @Override
+    protected Doctor findById(String id){ // Adăugat @Override
         return doctorRepository.findById(id);
     }
-    protected List<Doctor> findAll(){
+    @Override
+    protected List<Doctor> findAll(){ // Adăugat @Override
         return doctorRepository.findAll();
     }
-
 }

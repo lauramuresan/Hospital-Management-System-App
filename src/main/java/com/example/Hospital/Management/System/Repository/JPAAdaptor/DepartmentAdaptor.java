@@ -3,11 +3,13 @@ package com.example.Hospital.Management.System.Repository.JPAAdaptor;
 import com.example.Hospital.Management.System.Mapper.DepartmentMapper;
 import com.example.Hospital.Management.System.Mapper.MapperUtils;
 import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
+import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity; // Asigurați-vă că este importat
 import com.example.Hospital.Management.System.Model.GeneralModel.Department;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBDepartmentRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBHospitalRepository;
 import org.springframework.stereotype.Component;
+import jakarta.persistence.EntityNotFoundException; // Adăugat pentru excepții clare
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +32,11 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
 
         // 1. Validare existență Spital părinte (FK)
         if (hospitalId == null || !hospitalJpaRepository.existsById(hospitalId)) {
-            throw new RuntimeException("Spitalul specificat cu ID-ul " + domain.getHospitalID() + " nu există.");
+            // Aruncăm o excepție clară, care va fi prinsă de stratul superior
+            throw new EntityNotFoundException("Spitalul specificat cu ID-ul " + domain.getHospitalID() + " nu există.");
         }
 
         // 2. Validare Unicitate Nume Departamnt pe Spital (Business Validation)
-        // Nu permite două departamente cu același nume în același spital.
         Optional<DepartmentEntity> existingDepartment = jpaRepository.findByDepartmentNameAndHospitalId(domain.getDepartmentName(), hospitalId);
 
         if (existingDepartment.isPresent()) {
@@ -44,7 +46,16 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
             }
         }
 
-        jpaRepository.save(DepartmentMapper.toEntity(domain));
+        // 3. Crearea entității și ATAȘAREA REFERINȚEI SPITALULUI
+        DepartmentEntity entity = DepartmentMapper.toEntity(domain);
+
+        // Obținem o REFERINȚĂ (proxy) la HospitalEntity validă, fără a o încărca din baza de date
+        // Aceasta este esențial pentru a seta corect Foreign Key.
+        HospitalEntity hospitalReference = hospitalJpaRepository.getReferenceById(hospitalId);
+        entity.setHospital(hospitalReference);
+
+        // 4. Salvarea entității (INSERT)
+        jpaRepository.save(entity);
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.example.Hospital.Management.System.Model.DBModel;
 
 import com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull; // Folosim doar NotNull pentru Enum
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +13,7 @@ public class NurseEntity extends MedicalStaffEntity {
 
     @NotNull(message = "Categoria este obligatorie.")
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false) // ADĂUGAT: Forțează NOT NULL în DB
     private NurseLevelQualification nurseCategory;
 
     @OneToMany(mappedBy = "nurse", cascade = CascadeType.ALL, orphanRemoval = true)

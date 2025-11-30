@@ -12,11 +12,13 @@ import java.util.List;
 public class DoctorEntity extends MedicalStaffEntity {
 
     @NotBlank(message = "Numărul licenței este obligatoriu.")
-    @Column(unique = true)
+    @Column(unique = true, nullable = false) // <<< ADĂUGAT: Forțează NOT NULL în DB
     private String licenseNumber;
+
     @Enumerated(EnumType.STRING)
-    @Column(length = 50)
+    @Column(length = 50, nullable = false) // ADĂUGAT: Specialitatea este obligatorie
     private MedicalSpecialty medicalSpeciality;
+
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MedicalStaffAppointmentEntity> doctorAppointments = new ArrayList<MedicalStaffAppointmentEntity>();
 

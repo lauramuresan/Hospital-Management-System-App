@@ -16,7 +16,8 @@ public class AppointmentEntity {
     private Long id;
 
     @NotNull(message = "Data și ora programării sunt obligatorii.")
-    private LocalDateTime appointmentDateTime;
+    @Column(name = "appointment_date_time") // <<< CORECȚIA ESENȚIALĂ AICI
+    private LocalDateTime admissionDate;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Statusul programării este obligatoriu.")
@@ -35,8 +36,8 @@ public class AppointmentEntity {
 
     public AppointmentEntity() {}
 
-    public AppointmentEntity(LocalDateTime appointmentDateTime, AppointmentStatus status, PatientEntity patient, RoomEntity room) {
-        this.appointmentDateTime = appointmentDateTime;
+    public AppointmentEntity(LocalDateTime admissionDate, AppointmentStatus status, PatientEntity patient, RoomEntity room) {
+        this.admissionDate = admissionDate;
         this.status = status;
         this.patient = patient;
         this.room = room;
@@ -44,8 +45,8 @@ public class AppointmentEntity {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public LocalDateTime getAppointmentDateTime() { return appointmentDateTime; }
-    public void setAppointmentDateTime(LocalDateTime appointmentDateTime) { this.appointmentDateTime = appointmentDateTime; }
+    public LocalDateTime getAdmissionDate() { return admissionDate; }
+    public void setAdmissionDate(LocalDateTime appointmentDateTime) { this.admissionDate = appointmentDateTime; }
     public AppointmentStatus getStatus() { return status; }
     public void setStatus(AppointmentStatus status) { this.status = status; }
     public PatientEntity getPatient() { return patient; }

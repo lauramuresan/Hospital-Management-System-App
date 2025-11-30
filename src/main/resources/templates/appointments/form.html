@@ -2,44 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Formular Programare</title>
+    <title th:text="${appointment.appointmentID != null ? 'Editează Programare' : 'Adaugă Programare'}">Formular Programare</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body class="container mt-4">
-<h2 th:text="${appointment.appointmentID != null and not #strings.isEmpty(appointment.appointmentID) ? 'Editează Programare' : 'Adaugă Programare'}">Formular Programare</h2>
+
+<h2><span th:text="${appointment.appointmentID != null ? 'Editează Programare' : 'Adaugă Programare'}"></span></h2>
 
 <form th:action="@{/appointments}" th:object="${appointment}" method="post">
-    <input type="hidden" th:field="*{appointmentID}"/>
+
+    <input type="hidden" th:field="*{appointmentID}" />
+    <input type="hidden" th:field="*{departmentID}" />
+    <input type="hidden" th:field="*{medicalStaffList}" />
 
     <div class="mb-3">
-        <label for="patientID" class="form-label">ID Pacient</label>
-        <input id="patientID" class="form-control" th:field="*{patientID}" required/>
+        <label for="patientID" class="form-label">Pacient</label>
+        <select id="patientID" class="form-select" th:field="*{patientID}" required>
+            <option value="">-- Selectează un Pacient --</option>
+            <option th:each="patient : ${patients}"
+                    th:value="${patient.patientID}"
+                    th:text="${patient.patientName} + ' (ID: ' + ${patient.patientID} + ')'">
+            </option>
+        </select>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('patientID')}" th:errors="*{patientID}"></div>
     </div>
 
     <div class="mb-3">
-        <label for="departmentID" class="form-label">ID Departament</label>
-        <input id="departmentID" class="form-control" th:field="*{departmentID}" required/>
+        <label for="roomID" class="form-label">Cameră</label>
+        <select id="roomID" class="form-select" th:field="*{roomID}" required>
+            <option value="">-- Selectează o Cameră --</option>
+            <option th:each="room : ${rooms}"
+                    th:value="${room.roomID}"
+                    th:text="${room.number} + ' (Spital: ' + ${room.hospitalID} + ')'">
+            </option>
+        </select>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('roomID')}" th:errors="*{roomID}"></div>
     </div>
 
     <div class="mb-3">
-        <label for="admissionDate" class="form-label">Data și Ora Internării</label>
-        <input type="datetime-local" id="admissionDate" class="form-control" th:field="*{admissionDate}" required/>
+        <label for="admissionDate" class="form-label">Data și Ora Programării</label>
+        <input type="datetime-local" id="admissionDate" class="form-control"
+               th:field="*{admissionDate}" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('admissionDate')}" th:errors="*{admissionDate}"></div>
     </div>
 
     <div class="mb-3">
         <label for="status" class="form-label">Status</label>
-        <select id="status" class="form-control" th:field="*{status}" required>
-            <option value="">Selectează status</option>
-            <option th:each="s : ${T(com.example.Hospital.Management.System.Model.Enums.AppointmentStatus).values()}"
-                    th:value="${s}" th:text="${s}"></option>
+        <select id="status" class="form-select" th:field="*{status}" required>
+            <option value="">-- Selectează Status --</option>
+            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
         </select>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
     </div>
-
-    <!-- ELIMINĂ câmpul hidden pentru medicalStaffList -->
-    <!-- Spring va inițializa automat lista goală -->
 
     <button type="submit" class="btn btn-primary">Salvează</button>
     <a th:href="@{/appointments}" class="btn btn-secondary">Anulează</a>
 </form>
+
+<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
+
 </body>
 </html>

@@ -6,37 +6,45 @@
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body class="container mt-4">
-<h2>Programări</h2>
-<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
-<a th:href="@{/appointments/new}" class="btn btn-success mb-3">+ Adaugă Programare</a>
 
-<table class="table table-bordered table-hover">
+<h2>Lista Programări</h2>
+
+<a th:href="@{/appointments/new}" class="btn btn-primary mb-3">Adaugă Programare</a>
+
+<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+
+<table class="table table-striped">
     <thead>
     <tr>
-        <th>ID Programare</th>
-        <th>ID Pacient</th>
-        <th>ID Departament</th>
-        <th>Data Internare</th>
+        <th>ID</th>
+        <th>Pacient (ID)</th>
+        <th>Camera (ID)</th>
+        <th>Data/Ora</th>
         <th>Status</th>
         <th>Acțiuni</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="a : ${appointments}">
-        <td th:text="${a.appointmentID}"></td>
-        <td th:text="${a.patientID}"></td>
-        <td th:text="${a.departmentID}"></td>
-        <td th:text="${#temporals.format(a.admissionDate, 'yyyy-MM-dd HH:mm')}"></td>
-        <td th:text="${a.status}"></td>
+    <tr th:each="appointment : ${appointments}">
+        <td th:text="${appointment.appointmentID}">1</td>
+        <td th:text="${appointment.patientID}">10</td>
+        <td th:text="${appointment.roomID}">A101</td>
+        <td th:text="${#temporals.format(appointment.admissionDate, 'dd-MM-yyyy HH:mm')}">01-12-2025 10:00</td>
+        <td th:text="${appointment.status}">ACTIVE</td>
         <td>
-            <a th:href="@{'/appointments/' + ${a.appointmentID}}" class="btn btn-info btn-sm">Detalii</a>
-            <a th:href="@{'/appointments/' + ${a.appointmentID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-            <form th:action="@{'/appointments/' + ${a.appointmentID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
+            <a th:href="@{/appointments/{id}(id=${appointment.appointmentID})}" class="btn btn-info btn-sm">Detalii</a>
+            <a th:href="@{/appointments/{id}/edit(id=${appointment.appointmentID})}" class="btn btn-warning btn-sm">Edit</a>
+
+            <form th:action="@{/appointments/{id}/delete(id=${appointment.appointmentID})}" method="post" style="display:inline;">
+                <button type="submit" onclick="return confirm('Sigur vrei să ștergi această programare?');"
+                        class="btn btn-danger btn-sm">Delete</button>
             </form>
         </td>
     </tr>
     </tbody>
 </table>
+
 </body>
 </html>
