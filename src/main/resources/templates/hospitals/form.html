@@ -11,17 +11,21 @@
     Formular Spital
 </h2>
 
+<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
+
 <form th:action="@{/hospitals}" th:object="${hospital}" method="post">
     <input type="hidden" th:field="*{hospitalID}"/>
 
     <div class="mb-3">
         <label for="hospitalName" class="form-label">Nume Spital</label>
         <input id="hospitalName" class="form-control" th:field="*{hospitalName}" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('hospitalName')}" th:errors="*{hospitalName}"></div>
     </div>
 
     <div class="mb-3">
         <label for="city" class="form-label">Oraș</label>
         <input id="city" class="form-control" th:field="*{city}" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Salvează</button>

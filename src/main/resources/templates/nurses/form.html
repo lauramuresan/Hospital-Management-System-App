@@ -8,24 +8,28 @@
 <body class="container mt-4">
 <h2 th:text="${nurse.staffID != null and nurse.staffID != ''} ? 'Editează Asistent' : 'Adaugă Asistent'">Formular Asistent</h2>
 
+<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
+
 <form th:object="${nurse}" th:action="@{/nurses}" method="post">
 
-    <!-- Câmp hidden pentru ID (doar la editare) -->
     <input type="hidden" th:if="${nurse.staffID != null and nurse.staffID != ''}" th:field="*{staffID}" />
 
     <div class="mb-3">
         <label for="staffName" class="form-label">Nume complet</label>
         <input id="staffName" class="form-control" th:field="*{staffName}" placeholder="Ex: As. Ion Popescu" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('staffName')}" th:errors="*{staffName}"></div>
     </div>
 
     <div class="mb-3">
         <label for="departmentID" class="form-label">ID Departament</label>
         <input id="departmentID" class="form-control" th:field="*{departmentID}" placeholder="Ex: DEP001" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('departmentID')}" th:errors="*{departmentID}"></div>
     </div>
 
     <div class="mb-3">
         <label for="staffEmail" class="form-label">Email</label>
         <input id="staffEmail" type="email" class="form-control" th:field="*{staffEmail}" placeholder="ex: ion.popescu@hosp.ro" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('staffEmail')}" th:errors="*{staffEmail}"></div>
     </div>
 
     <div class="mb-3">
@@ -36,6 +40,7 @@
                     th:value="${level}" th:text="${level}">
             </option>
         </select>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('qualificationLevel')}" th:errors="*{qualificationLevel}"></div>
     </div>
 
     <button type="submit" class="btn btn-success">Salvează</button>

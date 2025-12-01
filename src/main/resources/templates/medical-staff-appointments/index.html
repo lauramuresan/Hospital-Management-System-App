@@ -8,9 +8,9 @@
 <body class="container mt-4">
 <h2>Alocări Personal Medical la Programări</h2>
 
-<!-- Mesaje de eroare/succes -->
-<div th:if="${param.error}" class="alert alert-danger">Eroare la salvare!</div>
-<div th:if="${param.not_found}" class="alert alert-warning">Alocarea nu a fost găsită!</div>
+<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
 
 <a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
 <a th:href="@{/medical-staff-appointments/new}" class="btn btn-success mb-3">+ Adaugă Alocare</a>

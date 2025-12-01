@@ -1,6 +1,8 @@
 package com.example.Hospital.Management.System.Repository.JPAAdaptor;
 
 import com.example.Hospital.Management.System.Mapper.NurseMapper;
+import com.example.Hospital.Management.System.Mapper.MapperUtils;
+import com.example.Hospital.Management.System.Model.DBModel.NurseEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Nurse;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBNurseRepository;
@@ -20,21 +22,51 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
 
     @Override
     public void save(Nurse domain) {
+        RepositoryValidationUtils.requireDomainNonNull(domain, "Asistentul Medical");
+
+        // 1. VALIDARE BUSINESS: Unicitatea Email-ului
+        if (domain.getStaffID() == null || !isExistingEmail(domain)) {
+            // Presupunând că existsByStaffEmail există în DBNurseRepository
+            if (jpaRepository.existsByStaffEmail(domain.getStaffEmail())) {
+                // ✅ MESAJ LIZIBIL PENTRU UTILIZATOR
+                throw new RuntimeException("Adresa de email '" + domain.getStaffEmail() + "' este deja utilizată de un alt membru al personalului.");
+            }
+        }
+
+        // 2. Validare FK (Department ID) ar trebui să fie aici.
+
         jpaRepository.save(NurseMapper.toEntity(domain));
     }
 
+    private boolean isExistingEmail(Nurse domain) {
+        if (domain.getStaffID() == null) return false;
+        try {
+            Long id = MapperUtils.parseLong(domain.getStaffID());
+            // Presupunând că NurseEntity are getStaffEmail
+            return jpaRepository.findById(id)
+                    .map(NurseEntity::getStaffEmail)
+                    .filter(email -> email.equals(domain.getStaffEmail()))
+                    .isPresent();
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+
     @Override
     public void delete(Nurse domain) {
-        if (domain.getStaffID() != null) {
-            jpaRepository.deleteById(Long.valueOf(domain.getStaffID()));
-        }
+        RepositoryValidationUtils.requireDomainNonNull(domain, "Asistentul Medical");
+        RepositoryValidationUtils.requireIdForDelete(domain.getStaffID(), "ID-ul asistentului");
+
+        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getStaffID(), "ID-ul asistentului este invalid.");
+        jpaRepository.deleteById(id);
     }
 
     @Override
     public Nurse findById(String id) {
-        try {
-            return jpaRepository.findById(Long.valueOf(id)).map(NurseMapper::toDomain).orElse(null);
-        } catch (NumberFormatException e) { return null; }
+        Long parsed = RepositoryValidationUtils.parseIdOrNull(id);
+        if (parsed == null) return null;
+        return jpaRepository.findById(parsed).map(NurseMapper::toDomain).orElse(null);
     }
 
     @Override

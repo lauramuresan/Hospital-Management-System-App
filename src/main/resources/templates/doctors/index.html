@@ -9,6 +9,9 @@
 <div class="container mt-5">
     <h2>Doctori</h2>
 
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
     <a th:href="@{/}" class="btn btn-sm btn-info me-3">
         < Inapoi la Meniu
     </a>

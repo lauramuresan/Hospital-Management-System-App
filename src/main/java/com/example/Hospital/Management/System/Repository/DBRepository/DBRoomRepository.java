@@ -13,4 +13,5 @@ public interface DBRoomRepository extends JpaRepository<RoomEntity, Long> {
      * @return true dacă o cameră cu acest număr există deja, false altfel.
      */
     boolean existsByNumber(String number);
+    boolean existsByNumberAndHospitalId(String number, Long hospitalId);
 }

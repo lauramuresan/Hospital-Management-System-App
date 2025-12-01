@@ -1,11 +1,8 @@
 package com.example.Hospital.Management.System.Mapper;
 
-import com.example.Hospital.Management.System.Model.GeneralModel.Department;
 import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
-// import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity; // Nu e necesar aici
-// import com.example.Hospital.Management.System.Mapper.MapperUtils; // Presupunând că e deja importată
-
-import java.util.stream.Collectors;
+import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity;
+import com.example.Hospital.Management.System.Model.GeneralModel.Department;
 
 public class DepartmentMapper {
 
@@ -13,27 +10,12 @@ public class DepartmentMapper {
         if (domain == null) return null;
         DepartmentEntity entity = new DepartmentEntity();
 
-        String idString = domain.getDepartmentID();
-
-        // 🟢 CORECȚIA CRITICĂ: Verifică String-ul gol ("")
-        if (idString != null && !idString.trim().isEmpty()) {
-            try {
-                // Dacă avem un String non-gol, încercăm să-l mapăm la Long
-                entity.setId(MapperUtils.parseLong(idString));
-            } catch (NumberFormatException e) {
-                // Dacă nu este un număr valid, lăsăm ID-ul null.
-                entity.setId(null);
-            }
-        } else {
-            // Dacă idString este null SAU gol (""), forțăm ID-ul entității să fie null (pentru INSERT)
-            entity.setId(null);
-        }
-        // END CORECȚIE
-
+        entity.setId(domain.getDepartmentID() != null ? MapperUtils.parseLong(domain.getDepartmentID()) : null);
         entity.setDepartmentName(domain.getDepartmentName());
 
-        // Atenție: Hospital-ul ar trebui setat în Adaptor pe baza domain.getHospitalID()
-        // Acest Mapper NU are cod pentru a seta HospitalEntity, ceea ce este corect
+        // ✅ CORECȚIA ESENȚIALĂ: Mapează HospitalID la HospitalEntity (Proxy)
+        // Acesta asigură că hospital_id este inclus în statement-ul INSERT/UPDATE.
+        entity.setHospital(MapperUtils.createEntityProxy(HospitalEntity.class, domain.getHospitalID()));
 
         return entity;
     }
@@ -45,10 +27,10 @@ public class DepartmentMapper {
         domain.setDepartmentID(entity.getId() != null ? String.valueOf(entity.getId()) : null);
         domain.setDepartmentName(entity.getDepartmentName());
 
-        // Verificăm dacă HospitalEntity nu este null și are ID înainte de a-l extrage
-        if (entity.getHospital() != null && entity.getHospital().getId() != null) {
+        // Mapează HospitalEntity înapoi la HospitalID
+        if (entity.getHospital() != null && entity.getHospital().getId() != null)
             domain.setHospitalID(String.valueOf(entity.getHospital().getId()));
-        }
+
         return domain;
     }
 }

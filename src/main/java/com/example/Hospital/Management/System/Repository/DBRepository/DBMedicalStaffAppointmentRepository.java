@@ -19,4 +19,8 @@ public interface DBMedicalStaffAppointmentRepository extends JpaRepository<Medic
             "LEFT JOIN FETCH m.doctor " +
             "LEFT JOIN FETCH m.nurse")
     List<MedicalStaffAppointmentEntity> findAllWithStaffAndAppointment();
+
+    boolean existsByAppointmentIdAndDoctorId(Long appointmentId, Long doctorId);
+
+    boolean existsByAppointmentIdAndNurseId(Long appointmentId, Long nurseId);
 }
