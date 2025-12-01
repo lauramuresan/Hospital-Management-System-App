@@ -9,4 +9,6 @@ public interface DBDepartmentRepository extends JpaRepository<DepartmentEntity, 
 
     // Metodă pentru a verifica dacă un departament cu un anumit nume există deja în spitalul dat.
     Optional<DepartmentEntity> findByDepartmentNameAndHospitalId(String departmentName, Long hospitalId);
+    boolean existsByDepartmentNameAndHospitalId(String departmentName, Long hospitalId);
 }
+

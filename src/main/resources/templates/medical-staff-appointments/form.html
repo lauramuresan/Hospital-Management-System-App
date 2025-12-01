@@ -8,6 +8,8 @@
 <body class="container mt-4">
 <h2 th:text="${assignment.medicalStaffAppointmentID != null and not #strings.isEmpty(assignment.medicalStaffAppointmentID) ? 'Editează Alocare' : 'Adaugă Alocare'}">Formular Alocare</h2>
 
+<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
+
 <form th:action="@{/medical-staff-appointments}" th:object="${assignment}" method="post">
     <input type="hidden" th:field="*{medicalStaffAppointmentID}"/>
 
@@ -15,12 +17,14 @@
         <label for="appointmentID" class="form-label">ID Programare</label>
         <input id="appointmentID" class="form-control" th:field="*{appointmentID}"
                placeholder="Ex: APP001" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('appointmentID')}" th:errors="*{appointmentID}"></div>
     </div>
 
     <div class="mb-3">
         <label for="medicalStaffID" class="form-label">ID Personal Medical</label>
         <input id="medicalStaffID" class="form-control" th:field="*{medicalStaffID}"
                placeholder="Ex: STF001" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('medicalStaffID')}" th:errors="*{medicalStaffID}"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Salvează</button>

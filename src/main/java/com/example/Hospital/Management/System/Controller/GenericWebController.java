@@ -6,7 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.Optional; // Import adăugat, deși nu e folosit direct aici, e o practică bună
+
+import java.lang.reflect.Method; // Import adăugat pentru reflexie (deducere ID)
 
 public abstract class GenericWebController<T> {
 
@@ -32,11 +33,11 @@ public abstract class GenericWebController<T> {
     public abstract String showForm(Model model);
 
     /**
-     * Metoda unică de salvare/actualizare (@PostMapping)
+     * Metoda unică de salvare/actualizare (@PostMapping).
      * Gestionează INSERT (dacă ID-ul este nul) și UPDATE (dacă ID-ul este populat).
      */
     @PostMapping
-    public String createOrUpdate(@Valid @ModelAttribute T entity, // Am redenumit în createOrUpdate
+    public String createOrUpdate(@Valid @ModelAttribute T entity,
                                  BindingResult result,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
@@ -46,20 +47,27 @@ public abstract class GenericWebController<T> {
             return viewPath + "/form";
         }
 
+        // Deducem dacă este o actualizare sau o creare înainte de a salva
+        String action = "salvat";
         try {
-            // service.create(entity) apelează save() în adaptor, care folosește jpaRepository.save(entity)
+            // Tentativă de a obține ID-ul pentru a determina acțiunea
+            Method getIdMethod = entity.getClass().getMethod(String.format("get%sID", modelName.substring(0, 1).toUpperCase() + modelName.substring(1)));
+            Object idValue = getIdMethod.invoke(entity);
+
+            if (idValue != null && !String.valueOf(idValue).isBlank()) {
+                action = "actualizat";
+            }
+        } catch (Exception ignored) {
+            // Ignorăm erorile de reflexie dacă nu putem obține ID-ul. Presupunem 'salvat'/'actualizat'.
+        }
+
+        try {
             service.create(entity);
-
-            // Determină dacă a fost o actualizare sau o creare pe baza prezenței unui ID
-            // (Presupunând că DTO-ul T are o metodă getID/getName sau că putem deduce din context)
-            String action = "salvat";
-
-            // ATENȚIE: Aici am folosi logica DTO-ului (ex: if (entity.getID() != null))
-            // Dar din motive de generic, presupunem că salvarea a fost OK.
-
             redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost " + action + " cu succes.");
             return "redirect:/" + viewPath;
+
         } catch (Exception e) {
+            // EROARE DE VALIDARE BUSINESS (ex: unicitate, FK lipsă)
             model.addAttribute(modelName, entity);
             model.addAttribute("globalError", "Eroare: " + e.getMessage());
             return viewPath + "/form";
@@ -70,10 +78,14 @@ public abstract class GenericWebController<T> {
     public String details(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             T entity = service.getById(id);
+            if (entity == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu a fost găsit.");
+                return "redirect:/" + viewPath;
+            }
             model.addAttribute(modelName, entity);
             return viewPath + "/details";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu a fost găsit.");
+            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu a fost găsit sau ID invalid.");
             return "redirect:/" + viewPath;
         }
     }
@@ -82,17 +94,19 @@ public abstract class GenericWebController<T> {
     public String editForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             T entity = service.getById(id);
+            if (entity == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu poate fi editat: nu a fost găsit.");
+                return "redirect:/" + viewPath;
+            }
             model.addAttribute(modelName, entity);
-            // Formularul va folosi ID-ul populat pentru a declanșa operația de UPDATE în @PostMapping de mai sus
             return viewPath + "/form";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu poate fi editat: nu a fost găsit.");
+            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu poate fi editat: ID invalid.");
             return "redirect:/" + viewPath;
         }
     }
 
-    // ❌ METODA @PostMapping("/{id}/edit") A FOST ȘTEARSĂ!
-    // Logica ei a fost preluată de @PostMapping fără path (metoda createOrUpdate)
+    // ❌ METODA @PostMapping("/{id}/edit") A FOST ȘTEARSĂ
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") String id, RedirectAttributes redirectAttributes) {

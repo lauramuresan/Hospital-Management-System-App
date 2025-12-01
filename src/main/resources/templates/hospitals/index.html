@@ -9,6 +9,9 @@
 
 <h2>Spitale</h2>
 
+<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
 <a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
 <a th:href="@{/hospitals/new}" class="btn btn-success mb-3">+ Adaugă Spital</a>
 

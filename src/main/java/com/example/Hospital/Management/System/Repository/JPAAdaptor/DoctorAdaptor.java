@@ -22,28 +22,40 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
 
     @Override
     public void save(Doctor domain) {
-        // Business Validation: Unicitatea LicenseNumber.
-        // Verifică unicitatea DOAR dacă este o înregistrare nouă (ID null)
-        // sau dacă se face update și s-a schimbat LicenseNumber.
-        if (domain.getStaffID() == null || !isExistingLicense(domain)) {
-            if (jpaRepository.existsByLicenseNumber(domain.getLicenseNumber())) {
-                throw new RuntimeException("Numărul licenței " + domain.getLicenseNumber() + " este deja înregistrat.");
+        RepositoryValidationUtils.requireDomainNonNull(domain, "Doctorul");
+
+        if (domain.getMedicalSpeciality() == null) {
+            throw new RuntimeException("Specializarea medicală este obligatorie.");
+        }
+
+        // 1. VALIDARE BUSINESS: Unicitatea pe Email + Specializare
+        if (domain.getStaffID() == null || !isExistingDoctorInSpeciality(domain)) {
+            // Presupunând că existsByStaffEmailAndMedicalSpeciality primește Enum
+            if (jpaRepository.existsByStaffEmailAndMedicalSpeciality(
+                    domain.getStaffEmail(),
+                    domain.getMedicalSpeciality() // Trimite Enum-ul
+            )) {
+                // ✅ MESAJ LIZIBIL PENTRU UTILIZATOR
+                throw new RuntimeException("Doctorul cu email-ul '" + domain.getStaffEmail() +
+                        "' este deja înregistrat pentru specializarea: " + domain.getMedicalSpeciality() +
+                        ". Puteți adăuga același doctor, dar doar cu o altă specializare.");
             }
         }
+
+        // 2. Validare FK (Department ID) ar trebui să fie aici.
+        // RepositoryValidationUtils.parseIdOrThrow(domain.getDepartmentID(), "ID-ul Departamentului este invalid.");
 
         jpaRepository.save(DoctorMapper.toEntity(domain));
     }
 
-    /**
-     * Verifică dacă licența existentă aparține aceluiași Doctor la update.
-     */
-    private boolean isExistingLicense(Doctor domain) {
+    private boolean isExistingDoctorInSpeciality(Doctor domain) {
         if (domain.getStaffID() == null) return false;
         try {
             Long id = MapperUtils.parseLong(domain.getStaffID());
+            // Verificăm dacă email-ul ȘI specializarea NU s-au schimbat la update.
             return jpaRepository.findById(id)
-                    .map(DoctorEntity::getLicenseNumber)
-                    .filter(license -> license.equals(domain.getLicenseNumber()))
+                    .filter(entity -> entity.getStaffEmail().equals(domain.getStaffEmail()) &&
+                            entity.getMedicalSpeciality().equals(domain.getMedicalSpeciality()))
                     .isPresent();
         } catch (NumberFormatException e) {
             return false;
@@ -52,16 +64,18 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
 
     @Override
     public void delete(Doctor domain) {
-        if (domain.getStaffID() != null) {
-            jpaRepository.deleteById(MapperUtils.parseLong(domain.getStaffID()));
-        }
+        RepositoryValidationUtils.requireDomainNonNull(domain, "Doctorul");
+        RepositoryValidationUtils.requireIdForDelete(domain.getStaffID(), "ID-ul doctorului");
+
+        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getStaffID(), "ID-ul doctorului este invalid.");
+        jpaRepository.deleteById(id);
     }
 
     @Override
     public Doctor findById(String id) {
-        try {
-            return jpaRepository.findById(MapperUtils.parseLong(id)).map(DoctorMapper::toDomain).orElse(null);
-        } catch (NumberFormatException e) { return null; }
+        Long parsed = RepositoryValidationUtils.parseIdOrNull(id);
+        if (parsed == null) return null;
+        return jpaRepository.findById(parsed).map(DoctorMapper::toDomain).orElse(null);
     }
 
     @Override

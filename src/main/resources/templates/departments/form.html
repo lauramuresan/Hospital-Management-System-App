@@ -8,17 +8,23 @@
 <body class="container mt-4">
 <h2 th:text="${department.departmentID != null and not #strings.isEmpty(department.departmentID) ? 'Editează Departament' : 'Adaugă Departament'}">Formular Departament</h2>
 
+<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
+<div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+
+
 <form th:action="@{/departments}" th:object="${department}" method="post">
     <input type="hidden" th:field="*{departmentID}"/>
 
     <div class="mb-3">
         <label for="departmentName" class="form-label">Nume Departament</label>
         <input id="departmentName" class="form-control" th:field="*{departmentName}" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('departmentName')}" th:errors="*{departmentName}"></div>
     </div>
 
     <div class="mb-3">
         <label for="hospitalID" class="form-label">ID Spital</label>
         <input id="hospitalID" class="form-control" th:field="*{hospitalID}" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('hospitalID')}" th:errors="*{hospitalID}"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Salvează</button>
