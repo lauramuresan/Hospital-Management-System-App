@@ -67,10 +67,6 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
         }
     }
 
-    /**
-     * 🟢 CORECȚIE MAPARE: Am mutat metoda la un path nou (/save-custom)
-     * pentru a evita conflictul cu GenericWebController#createOrUpdate.
-     */
     @PostMapping("/save-custom")
     public String save(@Valid @ModelAttribute("appointment") Appointment domain,
                        BindingResult bindingResult,
@@ -84,7 +80,6 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
 
         try {
             service.save(domain);
-
             redirectAttributes.addFlashAttribute("successMessage", modelName + " salvat cu succes!");
             return "redirect:/" + viewPath;
 
@@ -106,7 +101,6 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
     public String details(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Appointment appointment = service.getById(id);
-
             Patient patient = patientService.findById(appointment.getPatientID());
             Room room = roomService.findById(appointment.getRoomID());
 

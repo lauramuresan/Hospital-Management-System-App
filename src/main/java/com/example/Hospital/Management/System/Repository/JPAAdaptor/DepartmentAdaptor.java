@@ -51,20 +51,12 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
         jpaRepository.save(DepartmentMapper.toEntity(domain));
     }
 
-    /**
-     * Verifică dacă la update, numele departamentului s-a schimbat față de cel existent
-     * și este necesară o nouă verificare de unicitate.
-     */
     private boolean isExistingDepartmentNameInHospital(Department domain) {
         if (domain.getDepartmentID() == null) return false;
         try {
-            // ✅ CORECTAT: Folosim RepositoryValidationUtils.parseIdOrNull, care este singura metodă similară
-            // disponibilă în clasa ta RepositoryValidationUtils.
-            // Alternativ, am putea folosi MapperUtils.parseLong(domain.getDepartmentID()) dacă acesta e importat.
             Long id = RepositoryValidationUtils.parseIdOrNull(domain.getDepartmentID());
 
             if (id == null) {
-                // Dacă ID-ul este invalid, dar nu null, aruncăm o eroare în loc să returnăm false
                 throw new NumberFormatException("ID-ul departamentului nu este valid.");
             }
 

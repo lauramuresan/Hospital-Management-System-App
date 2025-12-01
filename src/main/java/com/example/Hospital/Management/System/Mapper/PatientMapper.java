@@ -10,8 +10,6 @@ public class PatientMapper {
         PatientEntity entity = new PatientEntity();
 
         String idString = domain.getPatientID();
-
-        // CORECȚIE ID: Asigură că ID-ul este NULL pentru INSERT-uri
         if (idString != null && !idString.trim().isEmpty()) {
             try {
                 entity.setId(MapperUtils.parseLong(idString));
@@ -21,8 +19,6 @@ public class PatientMapper {
         } else {
             entity.setId(null);
         }
-        // END CORECȚIE
-
         entity.setPatientName(domain.getPatientName());
         entity.setPacientEmail(domain.getPacientEmail());
         entity.setPatientBirthDate(domain.getPatientBirthDate());

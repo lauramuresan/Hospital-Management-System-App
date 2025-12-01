@@ -9,8 +9,6 @@ public abstract class MedicalStaffMapper {
     protected static <D extends MedicalStaff, E extends MedicalStaffEntity> E mapBaseToEntity(D domain, E entity) {
 
         String idString = domain.getStaffID();
-
-        // CORECȚIE ID: Asigură că ID-ul este NULL pentru INSERT-uri
         if (idString != null && !idString.trim().isEmpty()) {
             try {
                 entity.setId(MapperUtils.parseLong(idString));
@@ -20,8 +18,6 @@ public abstract class MedicalStaffMapper {
         } else {
             entity.setId(null);
         }
-        // END CORECȚIE
-
         entity.setStaffName(domain.getStaffName());
         entity.setStaffEmail(domain.getStaffEmail());
         entity.setDepartment(MapperUtils.createEntityProxy(DepartmentEntity.class, domain.getDepartmentID()));

@@ -16,7 +16,7 @@ public class AppointmentEntity {
     private Long id;
 
     @NotNull(message = "Data și ora programării sunt obligatorii.")
-    @Column(name = "appointment_date_time") // <<< CORECȚIA ESENȚIALĂ AICI
+    @Column(name = "appointment_date_time")
     private LocalDateTime admissionDate;
 
     @Enumerated(EnumType.STRING)

@@ -15,13 +15,9 @@ public class DepartmentWebController extends GenericWebController<Department> {
         super(service, "departments", "department", "departments");
     }
 
-    // Metoda care afișează formularul pentru ADAUGARE și EDITARE
     @Override
-    @GetMapping("/new") // Asigurați-vă că folosiți ruta corectă pentru formularul nou
+    @GetMapping("/new")
     public String showForm(Model model) {
-        // CORECȚIA: Folosim constructorul implicit (fără argumente)
-        // pentru a ne asigura că departmentID (și hospitalID) sunt null.
-        // Aceasta declanșează un INSERT corect în JPA.
         model.addAttribute("department", new Department());
         return "departments/form";
     }

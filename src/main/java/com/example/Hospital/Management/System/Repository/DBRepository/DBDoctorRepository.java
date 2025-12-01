@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DBDoctorRepository extends JpaRepository<DoctorEntity, Long> {
 
-    // Metodă standard JpaRepository pentru a verifica existența după LicenseNumber.
     boolean existsByLicenseNumber(String licenseNumber);
 
     boolean existsByStaffEmail(String staffEmail);

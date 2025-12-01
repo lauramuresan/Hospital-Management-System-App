@@ -9,8 +9,9 @@
 
 <h2><span th:text="${appointment.appointmentID != null ? 'Editează Programare' : 'Adaugă Programare'}"></span></h2>
 
-<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
-
+<div th:if="${globalError}" class="alert alert-danger mt-3" role="alert">
+    <strong>Eroare la Salvare:</strong> <span th:text="${globalError}"></span>
+</div>
 <form th:action="@{/appointments/save-custom}" th:object="${appointment}" method="post">
 
     <input type="hidden" th:field="*{appointmentID}" />

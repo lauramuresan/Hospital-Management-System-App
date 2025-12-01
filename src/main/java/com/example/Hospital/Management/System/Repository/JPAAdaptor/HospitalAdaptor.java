@@ -23,11 +23,9 @@ public class HospitalAdaptor implements AbstractRepository<Hospital> {
     public void save(Hospital domain) {
         RepositoryValidationUtils.requireDomainNonNull(domain, "Spitalul");
 
-        // 1. VALIDARE BUSINESS: Unicitatea Numelui Spitalului
+        // 1. Unicitatea Numelui Spitalului
         if (domain.getHospitalID() == null || !isExistingHospitalName(domain)) {
-            // Presupunând că existsByHospitalName există în DBHospitalRepository
             if (jpaRepository.existsByHospitalName(domain.getHospitalName())) {
-                // ✅ MESAJ LIZIBIL PENTRU UTILIZATOR
                 throw new RuntimeException("Numele spitalului '" + domain.getHospitalName() + "' există deja. Fiecare spital trebuie să aibă un nume unic.");
             }
         }

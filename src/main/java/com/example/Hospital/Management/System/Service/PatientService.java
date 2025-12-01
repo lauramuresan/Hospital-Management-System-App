@@ -4,11 +4,11 @@ import com.example.Hospital.Management.System.Model.GeneralModel.Patient;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.RepositoryFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // Adăugat
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional // Adăugat
+@Transactional
 public class PatientService extends BaseService<Patient>{
 
     private final AbstractRepository<Patient> patientRepository;

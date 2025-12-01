@@ -18,7 +18,6 @@ public class RepositoryChooserController {
     @GetMapping({"/", "/HospitalManagementSystem"})
     public String chooseForm(Model model) {
         model.addAttribute("currentMode", modeHolder.getMode());
-        // Această pagină (choose-repo.html) va afișa cele 3 butoane/opțiuni
         return "choose-repo";
     }
 

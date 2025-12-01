@@ -29,9 +29,8 @@ public class RoomAdaptor implements AbstractRepository<Room> {
                 domain.getHospitalID(),
                 "ID-ul Spitalului este obligatoriu și trebuie să fie un număr valid."
         );
-        // (Verificarea existenței spitalului ar trebui adăugată aici, dacă este necesar)
 
-        // 2. VALIDARE BUSINESS: Unicizare Număr Cameră PER SPITAL
+        // 2. Unicizare Număr Cameră PER SPITAL
         if (domain.getRoomID() == null || domain.getRoomID().isBlank() || !isExistingRoomNumber(domain)) {
 
             // ✅ CORECȚIE LOGICĂ: Verifică unicitatea numărului camerei doar în spitalul specificat
@@ -46,16 +45,12 @@ public class RoomAdaptor implements AbstractRepository<Room> {
         jpaRepository.save(RoomMapper.toEntity(domain));
     }
 
-    /**
-     * Verifică dacă numărul camerei și ID-ul spitalului NU s-au schimbat la UPDATE.
-     * Această metodă este necesară pentru a permite editarea altor câmpuri fără a arunca excepții de unicitate.
-     */
     private boolean isExistingRoomNumber(Room domain) {
         if (domain.getRoomID() == null || domain.getRoomID().isBlank()) return false;
 
         try {
             Long id = MapperUtils.parseLong(domain.getRoomID());
-            Long hospitalId = MapperUtils.parseLong(domain.getHospitalID()); // Extragem și ID-ul spitalului curent
+            Long hospitalId = MapperUtils.parseLong(domain.getHospitalID());
 
             if (id == null || hospitalId == null) return false;
 
