@@ -19,7 +19,7 @@ public class DepartmentService extends BaseService<Department>{
     }
 
     @Override
-    protected void save(Department entity){
+    public void save(Department entity){
         departmentRepository.save(entity);
     }
 

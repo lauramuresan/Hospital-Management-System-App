@@ -10,11 +10,29 @@ public class HospitalMapper {
     public static HospitalEntity toEntity(Hospital domain) {
         if (domain == null) return null;
         HospitalEntity entity = new HospitalEntity();
-        entity.setId(domain.getHospitalID() != null ? MapperUtils.parseLong(domain.getHospitalID()) : null);
+
+        // CORECȚIA CRITICĂ: Verificăm dacă hospitalID este null SAU un String gol.
+        String idString = domain.getHospitalID();
+
+        if (idString != null && !idString.trim().isEmpty()) {
+            try {
+                // Folosim MapperUtils pentru a converti String-ul valid în Long
+                entity.setId(MapperUtils.parseLong(idString));
+            } catch (NumberFormatException e) {
+                // Dacă String-ul nu este un număr valid, lăsăm ID-ul null
+                entity.setId(null);
+            }
+        } else {
+            // Dacă idString este null SAU gol (""), forțăm ID-ul entității să fie null
+            entity.setId(null);
+        }
+        // END CORECȚIE
+
         entity.setHospitalName(domain.getHospitalName());
         entity.setCity(domain.getCity());
 
         // Mapare Departamente + setare relație inversă
+        // (Presupunând că metodele MapperUtils și mapListWithParent sunt corecte)
         entity.setDepartments(MapperUtils.mapListWithParent(domain.getDepartments(), DepartmentMapper::toEntity, d -> d.setHospital(entity)));
 
         // Mapare Camere + setare relație inversă (PRESUPUNÂND EXISTENȚA RoomMapper)

@@ -2,24 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Doctors List</title>
+    <title>Lista Doctori</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
-    <h2>Doctors</h2>
-    <a th:href="@{/doctors/new}" class="btn btn-primary mb-3">Add New Doctor</a>
+    <h2>Doctori</h2>
+
+    <a th:href="@{/}" class="btn btn-sm btn-info me-3">
+        < Inapoi la Meniu
+    </a>
+
+    <a th:href="@{/doctors/new}" class="btn btn-primary mb-3">Adaugă Doctor Nou</a>
 
     <table class="table table-bordered">
         <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th>Nume</th>
             <th>Email</th>
-            <th>Department</th>
-            <th>License</th>
-            <th>Specialty</th>
-            <th>Actions</th>
+            <th>Departament</th>
+            <th>Licență</th>
+            <th>Specialitate</th>
+            <th>Acțiuni</th>
         </tr>
         </thead>
         <tbody>
@@ -31,11 +36,11 @@
             <td th:text="${doctor.licenseNumber}"></td>
             <td th:text="${doctor.medicalSpeciality}"></td>
             <td>
-                <a th:href="@{'/doctors/' + ${doctor.staffID}}" class="btn btn-info btn-sm">Details</a>
-                <a th:href="@{'/doctors/' + ${doctor.staffID} + '/edit'}" class="btn btn-warning btn-sm">Edit</a>
+                <a th:href="@{'/doctors/' + ${doctor.staffID}}" class="btn btn-info btn-sm">Detalii</a>
+                <a th:href="@{'/doctors/' + ${doctor.staffID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
                 <form th:action="@{'/doctors/' + ${doctor.staffID} + '/delete'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Are you sure?');">Delete</button>
+                            onclick="return confirm('Sunteți sigur?');">Șterge</button>
                 </form>
             </td>
         </tr>

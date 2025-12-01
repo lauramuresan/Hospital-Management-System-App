@@ -17,7 +17,7 @@ public class NurseService extends BaseService<Nurse> {
     }
 
     @Override
-    protected void save(Nurse entity){
+    public void save(Nurse entity){
         nurseRepository.save(entity);
     }
     @Override

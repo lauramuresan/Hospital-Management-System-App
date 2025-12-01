@@ -10,10 +10,8 @@
 
     <h2 th:text="${doctor != null and doctor.staffID != null and doctor.staffID != ''} ? 'Edit Doctor' : 'Create Doctor'">Create/Edit Doctor</h2>
 
-    <!-- FORM SIMPLIFICAT - același endpoint pentru ambele operații -->
     <form th:object="${doctor}" th:action="@{/doctors}" method="post">
 
-        <!-- Hidden field pentru ID (doar la editare) -->
         <input type="hidden" th:if="${doctor != null and doctor.staffID != null and doctor.staffID != ''}" th:field="*{staffID}" />
 
         <div class="mb-3">
@@ -29,6 +27,11 @@
         <div class="mb-3">
             <label for="departmentID" class="form-label">Department ID</label>
             <input type="text" class="form-control" id="departmentID" th:field="*{departmentID}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="licenseNumber" class="form-label">License Number</label>
+            <input type="text" class="form-control" id="licenseNumber" th:field="*{licenseNumber}" required>
         </div>
 
         <div class="mb-3">

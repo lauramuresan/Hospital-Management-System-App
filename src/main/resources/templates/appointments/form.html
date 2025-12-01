@@ -9,11 +9,11 @@
 
 <h2><span th:text="${appointment.appointmentID != null ? 'Editează Programare' : 'Adaugă Programare'}"></span></h2>
 
-<form th:action="@{/appointments}" th:object="${appointment}" method="post">
+<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
+
+<form th:action="@{/appointments/save-custom}" th:object="${appointment}" method="post">
 
     <input type="hidden" th:field="*{appointmentID}" />
-    <input type="hidden" th:field="*{departmentID}" />
-    <input type="hidden" th:field="*{medicalStaffList}" />
 
     <div class="mb-3">
         <label for="patientID" class="form-label">Pacient</label>
@@ -58,8 +58,6 @@
     <button type="submit" class="btn btn-primary">Salvează</button>
     <a th:href="@{/appointments}" class="btn btn-secondary">Anulează</a>
 </form>
-
-<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
 
 </body>
 </html>

@@ -7,7 +7,21 @@ import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
 public abstract class MedicalStaffMapper {
 
     protected static <D extends MedicalStaff, E extends MedicalStaffEntity> E mapBaseToEntity(D domain, E entity) {
-        entity.setId(domain.getStaffID() != null ? MapperUtils.parseLong(domain.getStaffID()) : null);
+
+        String idString = domain.getStaffID();
+
+        // CORECȚIE ID: Asigură că ID-ul este NULL pentru INSERT-uri
+        if (idString != null && !idString.trim().isEmpty()) {
+            try {
+                entity.setId(MapperUtils.parseLong(idString));
+            } catch (NumberFormatException e) {
+                entity.setId(null);
+            }
+        } else {
+            entity.setId(null);
+        }
+        // END CORECȚIE
+
         entity.setStaffName(domain.getStaffName());
         entity.setStaffEmail(domain.getStaffEmail());
         entity.setDepartment(MapperUtils.createEntityProxy(DepartmentEntity.class, domain.getDepartmentID()));

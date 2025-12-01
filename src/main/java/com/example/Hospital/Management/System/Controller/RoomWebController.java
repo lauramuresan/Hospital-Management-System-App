@@ -18,7 +18,7 @@ public class RoomWebController extends GenericWebController<Room> {
 
     @Override
     public String showForm(Model model) {
-        model.addAttribute("room", new Room("", "", 0.0, "", null, new ArrayList<>()));
+        model.addAttribute("room", new Room("", "", 0, "", null, new ArrayList<>()));
         return "rooms/form";
     }
 }

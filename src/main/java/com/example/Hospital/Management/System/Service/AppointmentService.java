@@ -17,7 +17,7 @@ public class AppointmentService extends BaseService<Appointment>{
     }
 
     @Override
-    protected void save(Appointment entity){ // Vizibilitate uniformizată și @Override
+    public void save(Appointment entity){ // Vizibilitate uniformizată și @Override
         appointmentRepository.save(entity);
     }
     @Override

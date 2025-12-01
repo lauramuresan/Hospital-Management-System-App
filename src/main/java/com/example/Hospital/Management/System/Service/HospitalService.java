@@ -20,7 +20,7 @@ public class HospitalService extends BaseService<Hospital>{
 
 
     @Override
-    protected void save(Hospital entity){
+    public void save(Hospital entity){
         hospitalRepository.save(entity);
     }
 

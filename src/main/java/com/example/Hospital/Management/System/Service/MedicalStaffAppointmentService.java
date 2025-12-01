@@ -17,7 +17,7 @@ public class MedicalStaffAppointmentService extends BaseService<MedicalStaffAppo
     }
 
     @Override
-    protected void save(MedicalStaffAppointment entity){
+    public void save(MedicalStaffAppointment entity){
         medicalStaffAppointmentRepository.save(entity);
     }
     @Override
