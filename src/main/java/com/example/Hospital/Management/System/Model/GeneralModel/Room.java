@@ -7,13 +7,13 @@ import java.util.List;
 public class Room {
     private String roomID;
     private String hospitalID;
-    private double capacity;
+    private Integer capacity;
     private String number;
     private RoomAvailability status;
     private List<Appointment> appointments;
     public Room() {
     }
-    public Room(String roomID, String hospitalID, double capacity, String number, RoomAvailability status, List<Appointment> appointments) {
+    public Room(String roomID, String hospitalID, Integer capacity, String number, RoomAvailability status, List<Appointment> appointments) {
         this.roomID = roomID;
         this.hospitalID = hospitalID;
         this.capacity = capacity;
@@ -27,7 +27,7 @@ public class Room {
     public String getHospitalID() {
         return hospitalID;
     }
-    public double getCapacity() {
+    public Integer getCapacity() {
         return capacity;
     }
     public String getNumber() {
@@ -45,7 +45,7 @@ public class Room {
     public void setHospitalID(String hospitalID) {
         this.hospitalID = hospitalID;
     }
-    public void setCapacity(double capacity) {
+    public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
     public void setNumber(String number) {

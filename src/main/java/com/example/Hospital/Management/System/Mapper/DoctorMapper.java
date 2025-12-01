@@ -8,7 +8,7 @@ public class DoctorMapper extends MedicalStaffMapper {
     public static DoctorEntity toEntity(Doctor domain) {
         if (domain == null) return null;
         DoctorEntity entity = new DoctorEntity();
-        mapBaseToEntity(domain, entity);
+        mapBaseToEntity(domain, entity); // Folosește logica de ID corectată
         entity.setLicenseNumber(domain.getLicenseNumber());
         entity.setMedicalSpeciality(domain.getMedicalSpeciality());
         return entity;

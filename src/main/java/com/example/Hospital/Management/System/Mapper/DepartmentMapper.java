@@ -2,23 +2,38 @@ package com.example.Hospital.Management.System.Mapper;
 
 import com.example.Hospital.Management.System.Model.GeneralModel.Department;
 import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
-import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity;
-import com.example.Hospital.Management.System.Mapper.MapperUtils; // Presupunând că folosiți clasa utilitară
+// import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity; // Nu e necesar aici
+// import com.example.Hospital.Management.System.Mapper.MapperUtils; // Presupunând că e deja importată
+
+import java.util.stream.Collectors;
 
 public class DepartmentMapper {
 
-    // Metodă ajutătoare pentru a converti de la Domeniu la Entitate (fără a seta HospitalEntity)
     public static DepartmentEntity toEntity(Department domain) {
         if (domain == null) return null;
         DepartmentEntity entity = new DepartmentEntity();
 
-        if (domain.getDepartmentID() != null) {
-            // Nu mai folosim try-catch, presupunând că ID-ul este validat de Adaptor sau Controller
-            entity.setId(MapperUtils.parseLong(domain.getDepartmentID()));
+        String idString = domain.getDepartmentID();
+
+        // 🟢 CORECȚIA CRITICĂ: Verifică String-ul gol ("")
+        if (idString != null && !idString.trim().isEmpty()) {
+            try {
+                // Dacă avem un String non-gol, încercăm să-l mapăm la Long
+                entity.setId(MapperUtils.parseLong(idString));
+            } catch (NumberFormatException e) {
+                // Dacă nu este un număr valid, lăsăm ID-ul null.
+                entity.setId(null);
+            }
+        } else {
+            // Dacă idString este null SAU gol (""), forțăm ID-ul entității să fie null (pentru INSERT)
+            entity.setId(null);
         }
+        // END CORECȚIE
+
         entity.setDepartmentName(domain.getDepartmentName());
 
-        // Atenție: NU MAI SETĂM SPITALUL AICI! Spitalul este setat în Adaptor.
+        // Atenție: Hospital-ul ar trebui setat în Adaptor pe baza domain.getHospitalID()
+        // Acest Mapper NU are cod pentru a seta HospitalEntity, ceea ce este corect
 
         return entity;
     }

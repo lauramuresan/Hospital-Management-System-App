@@ -4,12 +4,13 @@ import com.example.Hospital.Management.System.Mapper.MedicalStaffAppointmentMapp
 import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffAppointment;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBMedicalStaffAppointmentRepository;
-import com.example.Hospital.Management.System.Repository.DBRepository.DBDoctorRepository; // NOU
-import com.example.Hospital.Management.System.Repository.DBRepository.DBNurseRepository;  // NOU
+import com.example.Hospital.Management.System.Repository.DBRepository.DBDoctorRepository;
+import com.example.Hospital.Management.System.Repository.DBRepository.DBNurseRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class MedicalStaffAppointmentAdaptor implements AbstractRepository<MedicalStaffAppointment> {
@@ -66,9 +67,31 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
         }
     }
 
+    /**
+     * Implementarea findById: Caută o alocare după ID și o mapează la obiectul de domeniu.
+     * Deși corect, pentru a evita Lazy Loading, un repository custom ar fi ideal și aici.
+     */
     @Override
-    public MedicalStaffAppointment findById(String id) { return null; }
+    public MedicalStaffAppointment findById(String id) {
+        if (id == null) return null;
+        try {
+            Long longId = Long.valueOf(id);
+            return jpaRepository.findById(longId)
+                    .map(MedicalStaffAppointmentMapper::toDomain)
+                    .orElse(null);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 
+    /**
+     * Implementarea findAll: Preia toate alocările folosind interogarea EAGER
+     * și le mapează la lista de obiecte de domeniu.
+     */
     @Override
-    public List<MedicalStaffAppointment> findAll() { return List.of(); }
+    public List<MedicalStaffAppointment> findAll() {
+        return jpaRepository.findAllWithStaffAndAppointment().stream() // Folosim metoda EAGER
+                .map(MedicalStaffAppointmentMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 }

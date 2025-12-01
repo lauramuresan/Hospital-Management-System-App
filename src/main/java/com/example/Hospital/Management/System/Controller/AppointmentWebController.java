@@ -9,11 +9,13 @@ import com.example.Hospital.Management.System.Service.PatientService;
 import com.example.Hospital.Management.System.Service.RoomService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/appointments")
@@ -32,57 +34,73 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
         this.roomService = roomService;
     }
 
-    /**
-     * ✅ REZOLVĂ EROAREA DE COMPILARE (Problema #2)
-     * Implementează metoda abstractă 'showForm(Model)' pentru calea GET /appointments/new.
-     * Inițializează un obiect 'Appointment' nou și îl adaugă sub numele 'appointment' în Model.
-     */
-    @Override
-    @GetMapping("/new")
-    public String showForm(Model model) {
-        // Inițializează obiectul nou Appointment
-        Appointment appointment = new Appointment("", "", "", "",
-                LocalDateTime.now(),
-                AppointmentStatus.ACTIVE,
-                new ArrayList<>());
-
-        // ADĂUGAREA OBIECTULUI ÎN MODEL ESTE CRITICĂ PENTRU THYMELEAF
-        model.addAttribute(modelName, appointment); // modelName este 'appointment'
-
-        // Adaugă listele necesare pentru dropdown-uri
+    private void addDropdownsToModel(Model model) {
         model.addAttribute("patients", patientService.findAll());
         model.addAttribute("rooms", roomService.findAll());
         model.addAttribute("statuses", AppointmentStatus.values());
+    }
+
+    @Override
+    @GetMapping("/new")
+    public String showForm(Model model) {
+        Appointment appointment = new Appointment("", "", "", "",
+                LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0),
+                AppointmentStatus.ACTIVE,
+                new ArrayList<>());
+
+        model.addAttribute(modelName, appointment);
+        addDropdownsToModel(model);
 
         return viewPath + "/form";
     }
 
-    /**
-     * Suprascrie editForm pentru a adăuga listele necesare la editare.
-     */
     @Override
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            // Preluăm entitatea prin metoda părintelui (care adaugă 'appointment' la Model)
             String view = super.editForm(id, model, redirectAttributes);
-
-            // Adăugăm listele suplimentare pe model
-            model.addAttribute("patients", patientService.findAll());
-            model.addAttribute("rooms", roomService.findAll());
-            model.addAttribute("statuses", AppointmentStatus.values());
-
+            addDropdownsToModel(model);
             return view;
         } catch (Exception e) {
-            // Eroarea este gestionată deja de metoda super
+            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu a fost găsit.");
             return "redirect:/" + viewPath;
         }
     }
 
-
     /**
-     * @Override: Suprascrie metoda details pentru a îmbogăți modelul.
+     * 🟢 CORECȚIE MAPARE: Am mutat metoda la un path nou (/save-custom)
+     * pentru a evita conflictul cu GenericWebController#createOrUpdate.
      */
+    @PostMapping("/save-custom")
+    public String save(@Valid @ModelAttribute("appointment") Appointment domain,
+                       BindingResult bindingResult,
+                       Model model,
+                       RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            addDropdownsToModel(model);
+            return viewPath + "/form";
+        }
+
+        try {
+            service.save(domain);
+
+            redirectAttributes.addFlashAttribute("successMessage", modelName + " salvat cu succes!");
+            return "redirect:/" + viewPath;
+
+        } catch (RuntimeException e) {
+            model.addAttribute("globalError", e.getMessage());
+            addDropdownsToModel(model);
+            return viewPath + "/form";
+
+        } catch (Exception e) {
+            model.addAttribute("globalError", "A apărut o eroare neașteptată: " + e.getMessage());
+            addDropdownsToModel(model);
+            return viewPath + "/form";
+        }
+    }
+
+
     @Override
     @GetMapping("/{id}")
     public String details(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {

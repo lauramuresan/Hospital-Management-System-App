@@ -18,7 +18,7 @@ public class RoomService extends BaseService<Room> {
     }
 
     @Override
-    protected void save(Room entity){
+    public void save(Room entity){
         roomRepository.save(entity);
     }
     @Override

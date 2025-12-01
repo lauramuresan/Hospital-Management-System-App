@@ -25,11 +25,11 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
         // Business Validation: Unicitatea PacientEmail
         // Verifică unicitatea DOAR dacă este o înregistrare nouă (ID null)
         // sau dacă se face update și s-a schimbat email-ul.
-        if (domain.getPatientID() == null || !isExistingEmail(domain)) {
-            if (jpaRepository.existsByPacientEmail(domain.getPacientEmail())) {
-                throw new RuntimeException("Emailul " + domain.getPacientEmail() + " este deja înregistrat.");
-            }
-        }
+//        if (domain.getPatientID() == null || !isExistingEmail(domain)) {
+//            if (jpaRepository.existsByPacientEmail(domain.getPacientEmail())) {
+//                throw new RuntimeException("Emailul " + domain.getPacientEmail() + " este deja înregistrat.");
+//            }
+//        }
 
         PatientEntity entity = PatientMapper.toEntity(domain);
         PatientEntity savedEntity = jpaRepository.save(entity);
