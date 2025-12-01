@@ -6,25 +6,37 @@
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body class="container mt-4">
-<h2>Detalii Programare</h2>
 
-<table class="table table-striped">
+<h3>Detalii Programare</h3>
+<table class="table table-bordered">
     <tr><th>ID Programare</th><td th:text="${appointment.appointmentID}"></td></tr>
-    <tr><th>ID Pacient</th><td th:text="${appointment.patientID}"></td></tr>
+
+    <tr>
+        <th>Pacient</th>
+        <td th:text="${patientDetails != null ? patientDetails.patientName : 'N/A'} + ' (ID: ' + ${appointment.patientID} + ')'"></td>
+    </tr>
+    <tr>
+        <th>Cameră</th>
+        <td th:text="${roomDetails != null ? roomDetails.roomNumber : 'N/A'} + ' (ID: ' + ${appointment.roomID} + ')'"></td>
+    </tr>
+
     <tr><th>ID Departament</th><td th:text="${appointment.departmentID}"></td></tr>
-    <tr><th>Data/Ora Internare</th><td th:text="${#temporals.format(appointment.admissionDate, 'yyyy-MM-dd HH:mm')}"></td></tr>
+
+    <tr><th>Data/Ora</th><td th:text="${#temporals.format(appointment.admissionDate, 'yyyy-MM-dd HH:mm')}"></td></tr>
     <tr><th>Status</th><td th:text="${appointment.status}"></td></tr>
     <tr>
-        <th>Personal Medical (ID-uri)</th>
+        <th>Personal Medical Alocat</th>
         <td>
-            <ul class="list-unstyled">
-                <li th:each="staff : ${appointment.medicalStaffList}" th:text="${staff.staffID}">Staff ID</li>
+            <ul th:if="${appointment.medicalStaffList != null and not #lists.isEmpty(appointment.medicalStaffList)}">
+                <li th:each="staff : ${appointment.medicalStaffList}" th:text="${staff.staffName}"></li>
             </ul>
-            <span th:if="${#lists.isEmpty(appointment.medicalStaffList)}">Niciun personal alocat.</span>
+            <span th:if="${appointment.medicalStaffList == null or #lists.isEmpty(appointment.medicalStaffList)}">Niciun personal alocat.</span>
         </td>
     </tr>
 </table>
 
 <a th:href="@{/appointments}" class="btn btn-secondary">Înapoi la Listă</a>
+<a th:href="@{/appointments/{id}/edit(id=${appointment.appointmentID})}" class="btn btn-warning">Editează</a>
+
 </body>
 </html>

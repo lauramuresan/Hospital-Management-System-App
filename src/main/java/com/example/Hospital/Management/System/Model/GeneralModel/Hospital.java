@@ -9,6 +9,7 @@ public class Hospital {
     private String city;
     private List<Department> departments;
     private List<Room> rooms;
+
     public Hospital() {
     }
     public Hospital(String hospitalID, String hospitalName, String city) {
@@ -18,6 +19,7 @@ public class Hospital {
         this.departments = new ArrayList<>();
         this.rooms = new ArrayList<>();
     }
+
     public String getHospitalID() {
         return hospitalID;
     }
@@ -31,7 +33,7 @@ public class Hospital {
         this.city = city;
     }
     public void setDepartments(List<Department> departments) {
-        departments = departments;
+        this.departments = departments; // CORECTAT
     }
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;

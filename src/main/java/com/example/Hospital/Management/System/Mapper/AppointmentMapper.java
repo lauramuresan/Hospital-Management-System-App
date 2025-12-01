@@ -10,7 +10,7 @@ public class AppointmentMapper {
         if (domain == null) return null;
         AppointmentEntity entity = new AppointmentEntity();
         entity.setId(domain.getAppointmentID() != null ? MapperUtils.parseLong(domain.getAppointmentID()) : null);
-        entity.setAppointmentDateTime(domain.getAdmissionDate());
+        entity.setAdmissionDate(domain.getAdmissionDate());
         entity.setStatus(domain.getStatus());
         entity.setPatient(MapperUtils.createEntityProxy(PatientEntity.class, domain.getPatientID()));
         return entity;
@@ -20,7 +20,7 @@ public class AppointmentMapper {
         if (entity == null) return null;
         Appointment domain = new Appointment();
         domain.setAppointmentID(entity.getId() != null ? String.valueOf(entity.getId()) : null);
-        domain.setAdmissionDate(entity.getAppointmentDateTime());
+        domain.setAdmissionDate(entity.getAdmissionDate());
         domain.setStatus(entity.getStatus());
         if (entity.getPatient() != null && entity.getPatient().getId() != null)
             domain.setPatientID(String.valueOf(entity.getPatient().getId()));

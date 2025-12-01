@@ -4,9 +4,11 @@ import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffApp
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.RepositoryFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Adăugat
 import java.util.List;
 
 @Service
+@Transactional // Adăugat
 public class MedicalStaffAppointmentService extends BaseService<MedicalStaffAppointment>{
     private final AbstractRepository<MedicalStaffAppointment> medicalStaffAppointmentRepository;
 
@@ -18,13 +20,16 @@ public class MedicalStaffAppointmentService extends BaseService<MedicalStaffAppo
     protected void save(MedicalStaffAppointment entity){
         medicalStaffAppointmentRepository.save(entity);
     }
-    protected void delete(MedicalStaffAppointment entity){
+    @Override
+    protected void delete(MedicalStaffAppointment entity){ // Adăugat @Override
         medicalStaffAppointmentRepository.delete(entity);
     }
-    protected MedicalStaffAppointment findById(String id){
+    @Override
+    protected MedicalStaffAppointment findById(String id){ // Adăugat @Override
         return medicalStaffAppointmentRepository.findById(id);
     }
-    protected List<MedicalStaffAppointment> findAll(){
+    @Override
+    protected List<MedicalStaffAppointment> findAll(){ // Adăugat @Override
         return medicalStaffAppointmentRepository.findAll();
     }
 }
