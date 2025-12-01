@@ -8,7 +8,6 @@ public class RoomMapper {
 
     /**
      * Mapează de la modelul de domeniu (Room) la entitatea JPA (RoomEntity).
-     * Asigură că ID-ul este NULL pentru o nouă înregistrare.
      */
     public static RoomEntity toEntity(Room domain) {
         if (domain == null) return null;

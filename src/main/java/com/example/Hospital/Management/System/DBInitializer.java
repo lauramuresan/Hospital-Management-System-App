@@ -4,7 +4,7 @@ import com.example.Hospital.Management.System.Model.DBModel.*;
 import com.example.Hospital.Management.System.Model.Enums.AppointmentStatus;
 import com.example.Hospital.Management.System.Model.Enums.MedicalSpecialty;
 import com.example.Hospital.Management.System.Model.Enums.RoomAvailability;
-import com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification; // Importat
+import com.example.Hospital.Management.System.Model.Enums.NurseLevelQualification;
 import com.example.Hospital.Management.System.Repository.DBRepository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -28,9 +28,9 @@ public class DBInitializer implements CommandLineRunner {
     private final DBMedicalStaffAppointmentRepository staffAppointmentRepository;
 
     public DBInitializer(DBHospitalRepository hospitalRepository, DBDepartmentRepository departmentRepository,
-                               DBRoomRepository roomRepository, DBPatientRepository patientRepository,
-                               DBDoctorRepository doctorRepository, DBNurseRepository nurseRepository,
-                               DBAppointmentRepository appointmentRepository, DBMedicalStaffAppointmentRepository staffAppointmentRepository) {
+                         DBRoomRepository roomRepository, DBPatientRepository patientRepository,
+                         DBDoctorRepository doctorRepository, DBNurseRepository nurseRepository,
+                         DBAppointmentRepository appointmentRepository, DBMedicalStaffAppointmentRepository staffAppointmentRepository) {
         this.hospitalRepository = hospitalRepository;
         this.departmentRepository = departmentRepository;
         this.roomRepository = roomRepository;
@@ -49,14 +49,13 @@ public class DBInitializer implements CommandLineRunner {
             return;
         }
 
-
-
+        // 1. HOSPITAL ENTITIES (3 spitale principale)
         HospitalEntity h1 = new HospitalEntity("Spitalul Terapie Intensiva", "Cluj-Napoca", new ArrayList<>(), new ArrayList<>());
         HospitalEntity h2 = new HospitalEntity("Clinica Pediatrica", "Bucuresti", new ArrayList<>(), new ArrayList<>());
         HospitalEntity h3 = new HospitalEntity("Maternitatea", "Cluj-Napoca", new ArrayList<>(), new ArrayList<>());
-
         List<HospitalEntity> hospitals = hospitalRepository.saveAll(List.of(h1, h2, h3));
 
+        // 2. DEPARTMENT ENTITIES (12 departamente)
         DepartmentEntity dep1 = new DepartmentEntity("Cardiologie", h1);
         DepartmentEntity dep2 = new DepartmentEntity("Neurologie", h1);
         DepartmentEntity dep3 = new DepartmentEntity("Pediatrie", h2);
@@ -73,15 +72,16 @@ public class DBInitializer implements CommandLineRunner {
         List<DepartmentEntity> departments = List.of(dep1, dep2, dep3, dep4, dep5, dep6, dep7, dep8, dep9, dep10, dep11, dep12);
         List<DepartmentEntity> savedDepartments = departmentRepository.saveAll(departments);
 
+        // Actualizează relațiile bidirecționale (OneToMany)
         h1.getDepartments().addAll(List.of(dep1, dep2, dep4, dep6, dep9, dep12));
         h2.getDepartments().addAll(List.of(dep3, dep7, dep10));
         h3.getDepartments().addAll(List.of(dep5, dep8, dep11));
-
         hospitalRepository.saveAll(hospitals);
 
+        // 3. ROOM ENTITIES (12 camere)
         RoomEntity r1 = new RoomEntity("A101", 1, h1, RoomAvailability.AVAILABLE);
         RoomEntity r2 = new RoomEntity("A102", 2, h1, RoomAvailability.AVAILABLE);
-        RoomEntity r3 = new RoomEntity("B201", 3, h2, RoomAvailability.OCCUPIED);
+        RoomEntity r3 = new RoomEntity("B201", 3, h2, RoomAvailability.OCCUPIED); // Ocupata pentru test suprapunere
         RoomEntity r4 = new RoomEntity("B202", 2, h2, RoomAvailability.AVAILABLE);
         RoomEntity r5 = new RoomEntity("C301", 1, h3, RoomAvailability.AVAILABLE);
         RoomEntity r6 = new RoomEntity("C302", 2, h3, RoomAvailability.AVAILABLE);
@@ -90,11 +90,13 @@ public class DBInitializer implements CommandLineRunner {
         RoomEntity r9 = new RoomEntity("E501", 1, h2, RoomAvailability.AVAILABLE);
         RoomEntity r10 = new RoomEntity("E502", 3, h3, RoomAvailability.AVAILABLE);
         RoomEntity r11 = new RoomEntity("F601", 2, h1, RoomAvailability.AVAILABLE);
+        RoomEntity r12 = new RoomEntity("F602", 4, h2, RoomAvailability.AVAILABLE); // Nou adaugata
 
-        List<RoomEntity> rooms = List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11);
+        List<RoomEntity> rooms = List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12);
         List<RoomEntity> savedRooms = roomRepository.saveAll(rooms);
 
 
+        // 4. PATIENT ENTITIES (12 pacienți)
         PatientEntity p1 = new PatientEntity("Popescu Ioan", "ioan.pop@mail.com", LocalDate.of(1975, 10, 10));
         PatientEntity p2 = new PatientEntity("Vasilescu Ana", "ana.vas@mail.com", LocalDate.of(1990, 5, 20));
         PatientEntity p3 = new PatientEntity("Ionescu Maria", "maria.i@mail.com", LocalDate.of(1960, 1, 15));
@@ -106,10 +108,12 @@ public class DBInitializer implements CommandLineRunner {
         PatientEntity p9 = new PatientEntity("Neagu Cosmin", "cosmin.n@mail.com", LocalDate.of(2010, 6, 18));
         PatientEntity p10 = new PatientEntity("Radu Andreea", "andreea.r@mail.com", LocalDate.of(1993, 2, 7));
         PatientEntity p11 = new PatientEntity("Petrescu Calin", "calin.p@mail.com", LocalDate.of(1968, 12, 5));
+        PatientEntity p12 = new PatientEntity("Toma Victor", "victor.t@mail.com", LocalDate.of(1955, 6, 1)); // Nou adaugat
 
-        List<PatientEntity> patients = List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
+        List<PatientEntity> patients = List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12);
         List<PatientEntity> savedPatients = patientRepository.saveAll(patients);
 
+        // 5. DOCTOR ENTITIES (12 doctori)
         DoctorEntity d1 = new DoctorEntity("Dr. Popescu", "dr.pop@mail.com", dep1, "D1001", MedicalSpecialty.CARDIOLOGY);
         DoctorEntity d2 = new DoctorEntity("Dr. Vasilescu", "dr.vas@mail.com", dep2, "D1002", MedicalSpecialty.NEUROLOGY);
         DoctorEntity d3 = new DoctorEntity("Dr. Ionescu", "dr.io@mail.com", dep3, "D1003", MedicalSpecialty.PEDRIATICS);
@@ -121,10 +125,12 @@ public class DBInitializer implements CommandLineRunner {
         DoctorEntity d9 = new DoctorEntity("Dr. Neagu", "dr.ne@mail.com", dep9, "D1009", MedicalSpecialty.ORTHOPEDICS);
         DoctorEntity d10 = new DoctorEntity("Dr. Radu", "dr.ra@mail.com", dep10, "D1010", MedicalSpecialty.GENERAL_SURGERY);
         DoctorEntity d11 = new DoctorEntity("Dr. Petrescu", "dr.pet@mail.com", dep11, "D1011", MedicalSpecialty.OTORHINOLARYNGOLOGY);
+        DoctorEntity d12 = new DoctorEntity("Dr. Zamfir", "dr.zam@mail.com", dep12, "D1012", MedicalSpecialty.ENDOCRINOLOGY); // Nou adaugat
 
-        List<DoctorEntity> doctors = List.of(d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11);
+        List<DoctorEntity> doctors = List.of(d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12);
         List<DoctorEntity> savedDoctors = doctorRepository.saveAll(doctors);
 
+        // 6. NURSE ENTITIES (12 asistente - lista era deja 12, păstrată)
         NurseEntity n1 = new NurseEntity("As. Andreea", "as.andreea@mail.com", dep1, NurseLevelQualification.REGISTERED);
         NurseEntity n2 = new NurseEntity("As. Cosmin", "as.cosmin@mail.com", dep2, NurseLevelQualification.PRACTICAL);
         NurseEntity n3 = new NurseEntity("As. Elena", "as.elena@mail.com", dep3, NurseLevelQualification.REGISTERED);
@@ -141,22 +147,28 @@ public class DBInitializer implements CommandLineRunner {
         List<NurseEntity> nurses = List.of(n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12);
         List<NurseEntity> savedNurses = nurseRepository.saveAll(nurses);
 
-        AppointmentEntity a1 = new AppointmentEntity(LocalDateTime.now().plusDays(1).plusHours(10), AppointmentStatus.ACTIVE, p1, r1);
-        AppointmentEntity a2 = new AppointmentEntity(LocalDateTime.now().plusDays(2).plusHours(11), AppointmentStatus.ACTIVE, p2, r2);
-        AppointmentEntity a3 = new AppointmentEntity(LocalDateTime.now().minusDays(3).plusHours(9), AppointmentStatus.COMPLETED, p3, r3);
-        AppointmentEntity a4 = new AppointmentEntity(LocalDateTime.now().plusDays(5).plusHours(14), AppointmentStatus.ACTIVE, p4, r4);
-        AppointmentEntity a5 = new AppointmentEntity(LocalDateTime.now().plusDays(6).plusHours(15), AppointmentStatus.ACTIVE, p5, r5);
-        AppointmentEntity a6 = new AppointmentEntity(LocalDateTime.now().plusDays(7).plusHours(8), AppointmentStatus.ACTIVE, p6, r6);
-        AppointmentEntity a7 = new AppointmentEntity(LocalDateTime.now().minusDays(1).plusHours(16), AppointmentStatus.COMPLETED, p7, r7);
-        AppointmentEntity a8 = new AppointmentEntity(LocalDateTime.now().plusDays(9).plusHours(12), AppointmentStatus.ACTIVE, p8, r8);
-        AppointmentEntity a9 = new AppointmentEntity(LocalDateTime.now().plusDays(10).plusHours(13), AppointmentStatus.ACTIVE, p9, r9);
-        AppointmentEntity a10 = new AppointmentEntity(LocalDateTime.now().plusDays(11).plusHours(10), AppointmentStatus.ACTIVE, p10, r10);
-        AppointmentEntity a11 = new AppointmentEntity(LocalDateTime.now().plusDays(12).plusHours(11), AppointmentStatus.ACTIVE, p11, r11);
-        AppointmentEntity a12 = new AppointmentEntity(LocalDateTime.now().plusDays(13).plusHours(14), AppointmentStatus.ACTIVE, p1, r1);
+        // 7. APPOINTMENT ENTITIES (14 programări)
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
 
-        List<AppointmentEntity> appointments = List.of(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
+        AppointmentEntity a1 = new AppointmentEntity(now.plusDays(1).plusHours(10), AppointmentStatus.ACTIVE, p1, r1);
+        AppointmentEntity a2 = new AppointmentEntity(now.plusDays(2).plusHours(11), AppointmentStatus.ACTIVE, p2, r2);
+        AppointmentEntity a3 = new AppointmentEntity(now.minusDays(3).plusHours(9), AppointmentStatus.COMPLETED, p3, r3);
+        AppointmentEntity a4 = new AppointmentEntity(now.plusDays(5).plusHours(14), AppointmentStatus.ACTIVE, p4, r4);
+        AppointmentEntity a5 = new AppointmentEntity(now.plusDays(6).plusHours(15), AppointmentStatus.ACTIVE, p5, r5);
+        AppointmentEntity a6 = new AppointmentEntity(now.plusDays(7).plusHours(8), AppointmentStatus.ACTIVE, p6, r6);
+        AppointmentEntity a7 = new AppointmentEntity(now.minusDays(1).plusHours(16), AppointmentStatus.COMPLETED, p7, r7);
+        AppointmentEntity a8 = new AppointmentEntity(now.plusDays(9).plusHours(12), AppointmentStatus.ACTIVE, p8, r8);
+        AppointmentEntity a9 = new AppointmentEntity(now.plusDays(10).plusHours(13), AppointmentStatus.ACTIVE, p9, r9);
+        AppointmentEntity a10 = new AppointmentEntity(now.plusDays(11).plusHours(10), AppointmentStatus.ACTIVE, p10, r10);
+        AppointmentEntity a11 = new AppointmentEntity(now.plusDays(12).plusHours(11), AppointmentStatus.ACTIVE, p11, r11);
+        AppointmentEntity a12 = new AppointmentEntity(now.plusDays(13).plusHours(14), AppointmentStatus.ACTIVE, p12, r1); // Pacient p12, Camera r1
+        AppointmentEntity a13 = new AppointmentEntity(now.plusDays(14).plusHours(9), AppointmentStatus.ACTIVE, p1, r2); // P1, R2
+        AppointmentEntity a14 = new AppointmentEntity(now.plusDays(14).plusHours(10), AppointmentStatus.ACTIVE, p2, r2); // P2, R2 (Va bloca suprapunerea pentru r2 la 10:00)
+
+        List<AppointmentEntity> appointments = List.of(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
         List<AppointmentEntity> savedAppointments = appointmentRepository.saveAll(appointments);
 
+        // 8. MEDICAL STAFF APPOINTMENT ENTITIES (14 alocări)
         MedicalStaffAppointmentEntity msa1 = new MedicalStaffAppointmentEntity(a1, d1, n1);
         MedicalStaffAppointmentEntity msa2 = new MedicalStaffAppointmentEntity(a2, d2, n2);
         MedicalStaffAppointmentEntity msa3 = new MedicalStaffAppointmentEntity(a3, d3, n3);
@@ -167,13 +179,17 @@ public class DBInitializer implements CommandLineRunner {
         MedicalStaffAppointmentEntity msa8 = new MedicalStaffAppointmentEntity(a8, d8, n8);
         MedicalStaffAppointmentEntity msa9 = new MedicalStaffAppointmentEntity(a9, d9, n9);
         MedicalStaffAppointmentEntity msa10 = new MedicalStaffAppointmentEntity(a10, d10, n10);
+        MedicalStaffAppointmentEntity msa11 = new MedicalStaffAppointmentEntity(a11, d11, n11);
+        MedicalStaffAppointmentEntity msa12 = new MedicalStaffAppointmentEntity(a12, d12, n12); // D12, N12
 
-        MedicalStaffAppointmentEntity msa11 = new MedicalStaffAppointmentEntity(a11, d11, null);
-        MedicalStaffAppointmentEntity msa12 = new MedicalStaffAppointmentEntity(a12, d1, n2);
+        // Alocări multiple pentru un singur doctor/asistentă
+        MedicalStaffAppointmentEntity msa13 = new MedicalStaffAppointmentEntity(a13, d1, n1); // D1, N1 (Alocare multiplă)
+        MedicalStaffAppointmentEntity msa14 = new MedicalStaffAppointmentEntity(a14, d2, n2); // D2, N2 (Alocare multiplă)
 
-        List<MedicalStaffAppointmentEntity> staffAppointments = List.of(msa1, msa2, msa3, msa4, msa5, msa6, msa7, msa8, msa9, msa10, msa11, msa12);
+
+        List<MedicalStaffAppointmentEntity> staffAppointments = List.of(msa1, msa2, msa3, msa4, msa5, msa6, msa7, msa8, msa9, msa10, msa11, msa12, msa13, msa14);
         staffAppointmentRepository.saveAll(staffAppointments);
 
-        System.out.println("--- SUCCES: Baza de date inițializată cu date explicite. ---");
+        System.out.println("--- SUCCES: Baza de date inițializată cu minim 10 înregistrări per entitate. ---");
     }
 }

@@ -23,7 +23,7 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
     public void save(MedicalStaffAppointment domain) {
         RepositoryValidationUtils.requireDomainNonNull(domain, "Alocarea Personalului Medical");
 
-        // 1. Validare FK (ID Programare și ID Personal Medical)
+        // 1. Validare FK compus (ID Programare și ID Personal Medical)
         String appointmentIdString = domain.getAppointmentID();
         String medicalStaffIdString = domain.getMedicalStaffID();
 

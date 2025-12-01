@@ -3,7 +3,7 @@ package com.example.Hospital.Management.System.Mapper;
 import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
 import com.example.Hospital.Management.System.Model.DBModel.AppointmentEntity;
 import com.example.Hospital.Management.System.Model.DBModel.PatientEntity;
-import com.example.Hospital.Management.System.Model.DBModel.RoomEntity; // NOU: Import necesar
+import com.example.Hospital.Management.System.Model.DBModel.RoomEntity;
 
 public class AppointmentMapper {
 
