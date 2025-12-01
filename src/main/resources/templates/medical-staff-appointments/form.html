@@ -1,34 +1,49 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Formular Alocare Personal Medical</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-</head>
-<body class="container mt-4">
-<h2 th:text="${assignment.medicalStaffAppointmentID != null and not #strings.isEmpty(assignment.medicalStaffAppointmentID) ? 'Editează Alocare' : 'Adaugă Alocare'}">Formular Alocare</h2>
+<form th:action="@{/appointments}" th:object="${appointment}" method="post">
 
-<div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
-
-<form th:action="@{/medical-staff-appointments}" th:object="${assignment}" method="post">
-    <input type="hidden" th:field="*{medicalStaffAppointmentID}"/>
+    <input type="hidden" th:field="*{appointmentID}" />
+    <input type="hidden" th:field="*{departmentID}" />
+    <input type="hidden" th:field="*{medicalStaffList}" />
 
     <div class="mb-3">
-        <label for="appointmentID" class="form-label">ID Programare</label>
-        <input id="appointmentID" class="form-control" th:field="*{appointmentID}"
-               placeholder="Ex: APP001" required/>
-        <div class="alert alert-warning" th:if="${#fields.hasErrors('appointmentID')}" th:errors="*{appointmentID}"></div>
+        <label for="patientID" class="form-label">Pacient</label>
+        <select id="patientID" class="form-select" th:field="*{patientID}" required>
+            <option value="">-- Selectează un Pacient --</option>
+            <option th:each="patient : ${patients}"
+                    th:value="${patient.patientID}"
+                    th:text="${patient.patientName} + ' (ID: ' + ${patient.patientID} + ')'">
+            </option>
+        </select>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('patientID')}" th:errors="*{patientID}"></div>
     </div>
 
     <div class="mb-3">
-        <label for="medicalStaffID" class="form-label">ID Personal Medical</label>
-        <input id="medicalStaffID" class="form-control" th:field="*{medicalStaffID}"
-               placeholder="Ex: STF001" required/>
-        <div class="alert alert-warning" th:if="${#fields.hasErrors('medicalStaffID')}" th:errors="*{medicalStaffID}"></div>
+        <label for="roomID" class="form-label">Cameră</label>
+        <select id="roomID" class="form-select" th:field="*{roomID}" required>
+            <option value="">-- Selectează o Cameră --</option>
+            <option th:each="room : ${rooms}"
+                    th:value="${room.roomID}"
+                    th:text="${room.number} + ' (Spital: ' + ${room.hospitalID} + ')'">
+            </option>
+        </select>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('roomID')}" th:errors="*{roomID}"></div>
+    </div>
+
+    <div class="mb-3">
+        <label for="admissionDate" class="form-label">Data și Ora Programării</label>
+        <input type="datetime-local" id="admissionDate" class="form-control"
+               th:field="*{admissionDate}" required/>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('admissionDate')}" th:errors="*{admissionDate}"></div>
+    </div>
+
+    <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" class="form-select" th:field="*{status}" required>
+            <option value="">-- Selectează Status --</option>
+            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+        </select>
+        <div class="alert alert-warning" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Salvează</button>
-    <a th:href="@{/medical-staff-appointments}" class="btn btn-secondary">Anulează</a>
+    <a th:href="@{/appointments}" class="btn btn-secondary">Anulează</a>
 </form>
-</body>
-</html>
