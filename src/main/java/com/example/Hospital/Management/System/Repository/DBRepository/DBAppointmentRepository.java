@@ -16,8 +16,4 @@ public interface DBAppointmentRepository extends JpaRepository<AppointmentEntity
             @Param("roomId") Long roomId,
             @Param("startWindow") LocalDateTime startWindow,
             @Param("endWindow") LocalDateTime endWindow);
-
-    // ✅ NOU: Metodă optimizată pentru a prelua toate programările ÎMPREUNĂ cu Pacientul și Camera (rezolvă N+1)
-    @Query("SELECT a FROM AppointmentEntity a JOIN FETCH a.patient p JOIN FETCH a.room r")
-    List<AppointmentEntity> findAllWithPatientAndRoom();
 }

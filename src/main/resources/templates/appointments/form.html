@@ -14,8 +14,6 @@
 <form th:action="@{/appointments/save-custom}" th:object="${appointment}" method="post">
 
     <input type="hidden" th:field="*{appointmentID}" />
-    <input type="hidden" th:field="*{departmentID}" />
-    <input type="hidden" th:field="*{medicalStaffList}" />
 
     <div class="mb-3">
         <label for="patientID" class="form-label">Pacient</label>

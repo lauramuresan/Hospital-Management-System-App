@@ -9,7 +9,7 @@ import com.example.Hospital.Management.System.Repository.DBRepository.DBAppointm
 import com.example.Hospital.Management.System.Repository.DBRepository.DBPatientRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBRoomRepository;
 import org.springframework.stereotype.Component;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,54 +18,69 @@ import java.util.stream.Collectors;
 public class AppointmentAdaptor implements AbstractRepository<Appointment> {
 
     private final DBAppointmentRepository jpaRepository;
-    private final DBPatientRepository patientJpaRepository;
     private final DBRoomRepository roomJpaRepository;
+    private final DBPatientRepository patientJpaRepository;
 
-    public AppointmentAdaptor(DBAppointmentRepository jpaRepository,
-                              DBPatientRepository patientJpaRepository,
-                              DBRoomRepository roomJpaRepository) {
+    public AppointmentAdaptor(DBAppointmentRepository jpaRepository, DBRoomRepository roomJpaRepository, DBPatientRepository patientJpaRepository) {
         this.jpaRepository = jpaRepository;
-        this.patientJpaRepository = patientJpaRepository;
         this.roomJpaRepository = roomJpaRepository;
+        this.patientJpaRepository = patientJpaRepository;
     }
 
     @Override
+    @Transactional
     public void save(Appointment domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Programarea");
 
-        // 1. Validare FK (Patient & Room)
-        Long patientId = RepositoryValidationUtils.parseIdOrThrow(domain.getPatientID(), "ID-ul Pacientului este invalid sau lipsește.");
-        Long roomId = RepositoryValidationUtils.parseIdOrThrow(domain.getRoomID(), "ID-ul Camerei este invalid sau lipsește.");
-
-        if (!patientJpaRepository.existsById(patientId)) {
-            throw new RuntimeException("Pacientul cu ID-ul " + patientId + " nu există. Vă rugăm selectați un pacient valid.");
-        }
-        if (!roomJpaRepository.existsById(roomId)) {
-            throw new RuntimeException("Camera cu ID-ul " + roomId + " nu există. Vă rugăm selectați o cameră validă.");
+        // 1. Validare Data/Ora (Business Validation: trecut)
+        if (domain.getAdmissionDate() != null && domain.getAdmissionDate().isBefore(LocalDateTime.now().minusMinutes(1))) {
+            throw new RuntimeException("Programarea nu poate fi stabilită pentru o dată/oră din trecut.");
         }
 
-        // 2. Validare Suprapunere (Business Logic)
+        // Convertirea și validarea ID-urilor
+        Long roomId = MapperUtils.parseLong(domain.getRoomID());
+        Long patientId = MapperUtils.parseLong(domain.getPatientID());
+
+        // 2. Validare existență FK (ID invalid sau inexistent)
+        if (roomId == null || !roomJpaRepository.existsById(roomId)) {
+            // Aruncă eroarea dacă ID-ul este null (eșec parseLong) sau nu există în DB
+            throw new RuntimeException("Camera specificată nu există sau ID-ul este invalid.");
+        }
+        if (patientId == null || !patientJpaRepository.existsById(patientId)) {
+            // Aruncă eroarea dacă ID-ul este null (eșec parseLong) sau nu există în DB
+            throw new RuntimeException("Pacientul specificat nu există sau ID-ul este invalid.");
+        }
+
+        // 3. Validare Suprapunere Programări (Business Validation Complexă)
         if (isRoomOccupied(roomId, domain.getAdmissionDate(), domain.getAppointmentID())) {
-            throw new RuntimeException("Camera " + domain.getRoomID() + " este ocupată la data și ora specificată. Vă rugăm alegeți alt interval (presupus de 1 oră).");
+            throw new RuntimeException("Camera " + domain.getRoomID() + " este ocupată la data și ora specificată.");
         }
 
+        // 4. Salvarea entității (folosind mapper-ul corectat)
         jpaRepository.save(AppointmentMapper.toEntity(domain));
     }
 
+    /**
+     * Metodă pentru verificarea suprapunerii programărilor.
+     * Presupune că o programare durează 1 oră.
+     */
     private boolean isRoomOccupied(Long roomId, LocalDateTime appointmentDateTime, String currentAppointmentId) {
-        // Intervalul noii programări: [startTime, endTime)
+        // Programarea nouă: începe la 'startTime' și se termină la 'endTime'
         LocalDateTime startTime = appointmentDateTime;
         LocalDateTime endTime = appointmentDateTime.plusHours(1);
 
-        // Fereastra de căutare pentru programările existente care ar putea începe și suprapune intervalul
+        // Fereastra de start pentru programările existente care se suprapun (Overlap Check):
+        // Programările existente care încep în intervalul [startTime - 1h + 1m, endTime - 1m]
+        // sunt considerate suprapuse cu intervalul [startTime, endTime].
         LocalDateTime startWindow = startTime.minusHours(1).plusMinutes(1);
         LocalDateTime endWindow = endTime.minusMinutes(1);
 
+        // Căutăm programări existente în intervalul de timp pentru camera dată
         List<AppointmentEntity> overlappingAppointments = jpaRepository.findByRoomIdAndAppointmentDateTimeBetween(
                 roomId, startWindow, endWindow
         );
 
-        if (currentAppointmentId != null && !currentAppointmentId.isBlank()) {
+        // Dacă este o actualizare, ignorăm programarea curentă din rezultate
+        if (currentAppointmentId != null) {
             Long currentId = MapperUtils.parseLong(currentAppointmentId);
             overlappingAppointments.removeIf(app -> app.getId() != null && app.getId().equals(currentId));
         }
@@ -76,24 +91,23 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
 
     @Override
     public void delete(Appointment domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Programarea");
-        RepositoryValidationUtils.requireIdForDelete(domain.getAppointmentID(), "ID-ul programării");
-
-        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getAppointmentID(), "ID-ul programării este invalid.");
-        jpaRepository.deleteById(id);
+        if (domain.getAppointmentID() != null) {
+            jpaRepository.deleteById(MapperUtils.parseLong(domain.getAppointmentID()));
+        }
     }
 
     @Override
     public Appointment findById(String id) {
-        Long parsed = RepositoryValidationUtils.parseIdOrNull(id);
-        if (parsed == null) return null;
-        return jpaRepository.findById(parsed).map(AppointmentMapper::toDomain).orElse(null);
+        try {
+            return jpaRepository.findById(MapperUtils.parseLong(id))
+                    .map(AppointmentMapper::toDomain)
+                    .orElse(null);
+        } catch (NumberFormatException e) { return null; }
     }
 
     @Override
     public List<Appointment> findAll() {
-        // ✅ CORECTAT: Utilizează metoda optimizată JOIN FETCH
-        return jpaRepository.findAllWithPatientAndRoom().stream()
+        return jpaRepository.findAll().stream()
                 .map(AppointmentMapper::toDomain)
                 .collect(Collectors.toList());
     }
