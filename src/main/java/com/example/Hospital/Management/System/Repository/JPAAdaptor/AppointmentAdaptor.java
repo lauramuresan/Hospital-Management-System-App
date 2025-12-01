@@ -36,50 +36,36 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
             throw new RuntimeException("Programarea nu poate fi stabilită pentru o dată/oră din trecut.");
         }
 
-        // Convertirea și validarea ID-urilor
         Long roomId = MapperUtils.parseLong(domain.getRoomID());
         Long patientId = MapperUtils.parseLong(domain.getPatientID());
 
         // 2. Validare existență FK (ID invalid sau inexistent)
         if (roomId == null || !roomJpaRepository.existsById(roomId)) {
-            // Aruncă eroarea dacă ID-ul este null (eșec parseLong) sau nu există în DB
             throw new RuntimeException("Camera specificată nu există sau ID-ul este invalid.");
         }
         if (patientId == null || !patientJpaRepository.existsById(patientId)) {
-            // Aruncă eroarea dacă ID-ul este null (eșec parseLong) sau nu există în DB
             throw new RuntimeException("Pacientul specificat nu există sau ID-ul este invalid.");
         }
 
-        // 3. Validare Suprapunere Programări (Business Validation Complexă)
+        // 3. Validare Suprapunere Programări
         if (isRoomOccupied(roomId, domain.getAdmissionDate(), domain.getAppointmentID())) {
             throw new RuntimeException("Camera " + domain.getRoomID() + " este ocupată la data și ora specificată.");
         }
 
-        // 4. Salvarea entității (folosind mapper-ul corectat)
         jpaRepository.save(AppointmentMapper.toEntity(domain));
     }
 
-    /**
-     * Metodă pentru verificarea suprapunerii programărilor.
-     * Presupune că o programare durează 1 oră.
-     */
     private boolean isRoomOccupied(Long roomId, LocalDateTime appointmentDateTime, String currentAppointmentId) {
-        // Programarea nouă: începe la 'startTime' și se termină la 'endTime'
         LocalDateTime startTime = appointmentDateTime;
         LocalDateTime endTime = appointmentDateTime.plusHours(1);
 
-        // Fereastra de start pentru programările existente care se suprapun (Overlap Check):
-        // Programările existente care încep în intervalul [startTime - 1h + 1m, endTime - 1m]
-        // sunt considerate suprapuse cu intervalul [startTime, endTime].
         LocalDateTime startWindow = startTime.minusHours(1).plusMinutes(1);
         LocalDateTime endWindow = endTime.minusMinutes(1);
 
-        // Căutăm programări existente în intervalul de timp pentru camera dată
         List<AppointmentEntity> overlappingAppointments = jpaRepository.findByRoomIdAndAppointmentDateTimeBetween(
                 roomId, startWindow, endWindow
         );
 
-        // Dacă este o actualizare, ignorăm programarea curentă din rezultate
         if (currentAppointmentId != null) {
             Long currentId = MapperUtils.parseLong(currentAppointmentId);
             overlappingAppointments.removeIf(app -> app.getId() != null && app.getId().equals(currentId));

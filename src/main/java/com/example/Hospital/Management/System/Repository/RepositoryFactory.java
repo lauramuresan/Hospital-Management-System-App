@@ -51,10 +51,6 @@ public class RepositoryFactory {
         repoMap.put(Room.class.getSimpleName(), new RepoSet<>(roomInMemory, roomInFile, roomAdaptor));
     }
 
-    /**
-     * Creează și returnează o instanță AbstractRepository care deleagă
-     * operațiunile către repository-ul activ (InFile, InMemory sau JPA Adaptor).
-     */
     public <T> AbstractRepository<T> createRepository(Class<T> entityType) {
         RepoSet<T> set = (RepoSet<T>) repoMap.get(entityType.getSimpleName());
 
@@ -62,10 +58,7 @@ public class RepositoryFactory {
             throw new IllegalArgumentException("No repository registered for type: " + entityType.getSimpleName());
         }
 
-        // Returnează o implementare anonimă a AbstractRepository care implementează comutarea la runtime
         return new AbstractRepository<>() {
-
-            // Metoda care decide ce repository să folosească la momentul apelului
             private AbstractRepository<T> activeRepo() {
                 RepositoryMode mode = modeHolder.getMode();
 
@@ -78,7 +71,6 @@ public class RepositoryFactory {
                 }
             }
 
-            // Delegarea operațiunilor CRUD
             @Override public void save(T entity) { activeRepo().save(entity); }
             @Override public void delete(T entity) { activeRepo().delete(entity); }
             @Override public T findById(String id) { return activeRepo().findById(id); }
@@ -86,9 +78,6 @@ public class RepositoryFactory {
         };
     }
 
-    /**
-     * Clasa internă pentru a stoca cele trei implementări ale repository-ului pentru aceeași entitate.
-     */
     private static final class RepoSet<T> {
         private final AbstractRepository<T> inMemoryRepo;
         private final AbstractRepository<T> inFileRepo;

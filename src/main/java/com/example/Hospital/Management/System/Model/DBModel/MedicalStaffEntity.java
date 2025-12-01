@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "medical_staff")
-@Inheritance(strategy = InheritanceType.JOINED) // Strategia de moștenire corectă
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class MedicalStaffEntity {
 
     @Id
@@ -25,7 +25,6 @@ public abstract class MedicalStaffEntity {
     @JoinColumn(name = "department_id", nullable = false)
     private DepartmentEntity department;
 
-    // Metoda abstractă pentru a returna lista de programări (utilă pentru genericitate)
     public abstract List<MedicalStaffAppointmentEntity> getMedicalStaffAppointments();
 
     public MedicalStaffEntity() {}

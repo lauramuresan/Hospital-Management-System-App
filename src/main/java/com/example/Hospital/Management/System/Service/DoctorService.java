@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional; // Adăugat
 import java.util.List;
 
 @Service
-@Transactional // Adăugat
+@Transactional
 public class DoctorService extends BaseService<Doctor>{
     private final AbstractRepository<Doctor> doctorRepository;
 

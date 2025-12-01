@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional; // Importul nec
 import java.util.List;
 
 @Service
-@Transactional // <<< Adăugați @Transactional aici!
+@Transactional
 public class DepartmentService extends BaseService<Department>{
 
     private final AbstractRepository<Department> departmentRepository;
@@ -22,18 +22,15 @@ public class DepartmentService extends BaseService<Department>{
     public void save(Department entity){
         departmentRepository.save(entity);
     }
-
-    @Override // Adăugați @Override pentru consistență
+    @Override
     protected void delete(Department entity){
         departmentRepository.delete(entity);
     }
-
-    @Override // Adăugați @Override pentru consistență
+    @Override
     protected Department findById(String id){
         return departmentRepository.findById(id);
     }
-
-    @Override // Adăugați @Override pentru consistență
+    @Override
     protected List<Department> findAll(){
         return departmentRepository.findAll();
     }

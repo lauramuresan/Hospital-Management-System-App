@@ -32,13 +32,11 @@ public class RoomEntity {
     @NotNull(message = "Statusul camerei este obligatoriu.")
     private RoomAvailability status;
 
-    // Relație One-to-Many cu AppointmentEntity
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AppointmentEntity> appointments = new ArrayList<>();
 
     public RoomEntity() {
     }
-
 
     public RoomEntity(String number, Integer capacity, HospitalEntity hospital, RoomAvailability status) {
         this.number = number;
@@ -46,7 +44,6 @@ public class RoomEntity {
         this.hospital = hospital;
         this.status = status;
     }
-
 
     public Long getId() {
         return id;

@@ -10,10 +10,6 @@ import java.util.List;
 @Repository
 public interface DBMedicalStaffAppointmentRepository extends JpaRepository<MedicalStaffAppointmentEntity, Long> {
 
-    /**
-     * Preia toate alocările, încărcând EAGER relațiile necesare
-     * pentru a preveni LazyInitializationException în afara tranzacției.
-     */
     @Query("SELECT m FROM MedicalStaffAppointmentEntity m " +
             "LEFT JOIN FETCH m.appointment " +
             "LEFT JOIN FETCH m.doctor " +

@@ -7,13 +7,12 @@ import java.util.List;
 public class Patient {
     private String patientID;
     private String patientName;
-    private List<Appointment> appointmentList = new ArrayList<>(); // INITIALIZEAZĂ lista!
+    private List<Appointment> appointmentList = new ArrayList<>();
     private String pacientEmail;
     private LocalDate patientBirthDate;
 
-    // Constructor implicit
     public Patient() {
-        this.appointmentList = new ArrayList<>(); // asigură-te că lista e inițializată
+        this.appointmentList = new ArrayList<>();
     }
 
     public Patient(String patientID, String patientName, List<Appointment> appointmentList,
@@ -25,7 +24,6 @@ public class Patient {
         this.patientBirthDate = patientBirthDate;
     }
 
-    // Getters și Setters
     public String getPatientID() { return patientID; }
     public void setPatientID(String patientID) { this.patientID = patientID; }
 

@@ -25,10 +25,8 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
         RepositoryValidationUtils.requireDomainNonNull(domain, "Pacientul");
 
         // 1. VALIDARE BUSINESS: Unicitatea Email
-        // Verificăm unicitatea doar dacă este o înregistrare nouă SAU dacă email-ul s-a schimbat la update.
         if (domain.getPatientID() == null || domain.getPatientID().isBlank() || !isExistingEmail(domain)) {
             if (jpaRepository.existsByPacientEmail(domain.getPacientEmail())) {
-                // ✅ MESAJ NOU, GENERAL PENTRU UTILIZATOR
                 throw new RuntimeException("Eroare la salvare: Pacientul există deja în baza de date cu aceste date esențiale (Email).");
             }
         }
@@ -36,17 +34,11 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
         PatientEntity entity = PatientMapper.toEntity(domain);
         PatientEntity savedEntity = jpaRepository.save(entity);
 
-        // Actualizăm ID-ul în domeniul modelului după salvare (pentru entitățile nou create)
         if (savedEntity.getId() != null) {
             domain.setPatientID(String.valueOf(savedEntity.getId()));
         }
     }
 
-    /**
-     * Verifică dacă email-ul existent aparține aceluiași Pacient la update.
-     * @param domain Modelul de domeniu al Pacientului.
-     * @return true dacă ID-ul este valid și email-ul nu s-a schimbat, false altfel.
-     */
     private boolean isExistingEmail(Patient domain) {
         if (domain.getPatientID() == null || domain.getPatientID().isBlank()) return false;
         try {
@@ -71,7 +63,7 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
         // Asigură că ID-ul nu lipsește
         RepositoryValidationUtils.requireIdForDelete(domain.getPatientID(), "ID-ul pacientului");
 
-        // Asigură că ID-ul este un număr valid (pentru mesajul de eroare lizibil)
+        // Asigură că ID-ul este un număr valid
         Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getPatientID(), "ID-ul pacientului este invalid sau lipsește pentru ștergere.");
         jpaRepository.deleteById(id);
     }

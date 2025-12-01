@@ -13,7 +13,7 @@ public class NurseEntity extends MedicalStaffEntity {
 
     @NotNull(message = "Categoria este obligatorie.")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false) // ADĂUGAT: Forțează NOT NULL în DB
+    @Column(nullable = false)
     private NurseLevelQualification nurseCategory;
 
     @OneToMany(mappedBy = "nurse", cascade = CascadeType.ALL, orphanRemoval = true)

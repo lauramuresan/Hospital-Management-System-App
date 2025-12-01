@@ -30,12 +30,10 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
 
         // 1. VALIDARE BUSINESS: Unicitatea pe Email + Specializare
         if (domain.getStaffID() == null || !isExistingDoctorInSpeciality(domain)) {
-            // Presupunând că existsByStaffEmailAndMedicalSpeciality primește Enum
             if (jpaRepository.existsByStaffEmailAndMedicalSpeciality(
                     domain.getStaffEmail(),
-                    domain.getMedicalSpeciality() // Trimite Enum-ul
+                    domain.getMedicalSpeciality()
             )) {
-                // ✅ MESAJ LIZIBIL PENTRU UTILIZATOR
                 throw new RuntimeException("Doctorul cu email-ul '" + domain.getStaffEmail() +
                         "' este deja înregistrat pentru specializarea: " + domain.getMedicalSpeciality() +
                         ". Puteți adăuga același doctor, dar doar cu o altă specializare.");
@@ -43,8 +41,6 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
         }
 
         // 2. Validare FK (Department ID) ar trebui să fie aici.
-        // RepositoryValidationUtils.parseIdOrThrow(domain.getDepartmentID(), "ID-ul Departamentului este invalid.");
-
         jpaRepository.save(DoctorMapper.toEntity(domain));
     }
 
@@ -52,7 +48,6 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
         if (domain.getStaffID() == null) return false;
         try {
             Long id = MapperUtils.parseLong(domain.getStaffID());
-            // Verificăm dacă email-ul ȘI specializarea NU s-au schimbat la update.
             return jpaRepository.findById(id)
                     .filter(entity -> entity.getStaffEmail().equals(domain.getStaffEmail()) &&
                             entity.getMedicalSpeciality().equals(domain.getMedicalSpeciality()))

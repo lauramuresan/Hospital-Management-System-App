@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository("patientInFile")
 public class PatientInFileRepository extends InFileRepository<Patient> {
 
-    // Forțăm calea să fie EXACT: "./data/patients.json"
     public PatientInFileRepository(ObjectMapper mapper) {
         super(mapper, "./data", "patients.json");
     }

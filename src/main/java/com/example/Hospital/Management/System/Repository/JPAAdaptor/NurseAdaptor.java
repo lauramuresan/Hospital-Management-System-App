@@ -26,15 +26,10 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
 
         // 1. VALIDARE BUSINESS: Unicitatea Email-ului
         if (domain.getStaffID() == null || !isExistingEmail(domain)) {
-            // Presupunând că existsByStaffEmail există în DBNurseRepository
             if (jpaRepository.existsByStaffEmail(domain.getStaffEmail())) {
-                // ✅ MESAJ LIZIBIL PENTRU UTILIZATOR
                 throw new RuntimeException("Adresa de email '" + domain.getStaffEmail() + "' este deja utilizată de un alt membru al personalului.");
             }
         }
-
-        // 2. Validare FK (Department ID) ar trebui să fie aici.
-
         jpaRepository.save(NurseMapper.toEntity(domain));
     }
 
@@ -42,7 +37,6 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
         if (domain.getStaffID() == null) return false;
         try {
             Long id = MapperUtils.parseLong(domain.getStaffID());
-            // Presupunând că NurseEntity are getStaffEmail
             return jpaRepository.findById(id)
                     .map(NurseEntity::getStaffEmail)
                     .filter(email -> email.equals(domain.getStaffEmail()))
