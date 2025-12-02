@@ -4,8 +4,10 @@ import com.example.Hospital.Management.System.Mapper.DoctorMapper;
 import com.example.Hospital.Management.System.Mapper.MapperUtils;
 import com.example.Hospital.Management.System.Model.DBModel.DoctorEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Doctor;
+import com.example.Hospital.Management.System.Model.GeneralModel.Department;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBDoctorRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,9 +17,16 @@ import java.util.stream.Collectors;
 public class DoctorAdaptor implements AbstractRepository<Doctor> {
 
     private final DBDoctorRepository jpaRepository;
+    // Injectăm repository-ul pentru Departament pentru validarea FK
+    private final AbstractRepository<Department> departmentRepository;
 
-    public DoctorAdaptor(DBDoctorRepository jpaRepository) {
+    public DoctorAdaptor(
+            DBDoctorRepository jpaRepository,
+            // Specificăm exact ce implementare a AbstractRepository<Department> dorim să injectăm
+            @Qualifier("departmentAdaptor") AbstractRepository<Department> departmentRepository
+    ) {
         this.jpaRepository = jpaRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Override
@@ -28,7 +37,10 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
             throw new RuntimeException("Specializarea medicală este obligatorie.");
         }
 
-        // 1. VALIDARE BUSINESS: Unicitatea pe Email + Specializare
+        // 1. VALIDARE FK: Verificarea existenței Departamentului
+        validateDepartmentExists(domain.getDepartmentID());
+
+        // 2. VALIDARE BUSINESS: Unicitatea pe Email + Specializare
         if (domain.getStaffID() == null || !isExistingDoctorInSpeciality(domain)) {
             if (jpaRepository.existsByStaffEmailAndMedicalSpeciality(
                     domain.getStaffEmail(),
@@ -40,8 +52,23 @@ public class DoctorAdaptor implements AbstractRepository<Doctor> {
             }
         }
 
-        // 2. Validare FK (Department ID) ar trebui să fie aici.
+        // 3. Salvarea
         jpaRepository.save(DoctorMapper.toEntity(domain));
+    }
+
+    /**
+     * Verifică dacă ID-ul de Departament furnizat există. Aruncă excepție
+     * dacă departamentul nu este găsit.
+     */
+    private void validateDepartmentExists(String departmentId) {
+        if (departmentId != null) {
+            Department department = departmentRepository.findById(departmentId);
+
+            if (department == null) {
+                throw new RuntimeException("Departamentul cu ID-ul '" + departmentId +
+                        "' nu există. Vă rugați să introduceți un ID de departament valid.");
+            }
+        }
     }
 
     private boolean isExistingDoctorInSpeciality(Doctor domain) {
