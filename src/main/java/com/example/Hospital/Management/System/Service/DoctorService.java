@@ -29,7 +29,7 @@ public class DoctorService extends BaseService<Doctor>{
         return doctorRepository.findById(id);
     }
     @Override
-    protected List<Doctor> findAll(){ // Adăugat @Override
+    public List<Doctor> findAll(){ // Adăugat @Override
         return doctorRepository.findAll();
     }
 }

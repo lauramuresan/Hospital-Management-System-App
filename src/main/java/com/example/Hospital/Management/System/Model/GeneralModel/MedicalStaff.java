@@ -5,7 +5,7 @@ import java.util.List;
 public abstract class MedicalStaff {
     private String staffID;
     private String departmentID;
-    private String staffName;
+    public String staffName;
     private String staffEmail;
     private List<Appointment> appointments;
     public MedicalStaff() {
