@@ -29,7 +29,7 @@ public class NurseService extends BaseService<Nurse> {
         return nurseRepository.findById(id);
     }
     @Override
-    protected List<Nurse> findAll(){ // Adăugat @Override
+    public List<Nurse> findAll(){ // Adăugat @Override
         return nurseRepository.findAll();
     }
 }

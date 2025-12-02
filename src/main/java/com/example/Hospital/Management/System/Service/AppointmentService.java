@@ -29,7 +29,7 @@ public class AppointmentService extends BaseService<Appointment>{
         return appointmentRepository.findById(id);
     }
     @Override
-    protected List<Appointment> findAll(){
+    public List<Appointment> findAll(){
         return appointmentRepository.findAll();
     }
 }
