@@ -8,6 +8,7 @@ import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBPatientRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class PatientAdaptor implements AbstractRepository<Patient> {
 
     private final DBPatientRepository jpaRepository;
+
 
     public PatientAdaptor(DBPatientRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
@@ -24,7 +26,16 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
     public void save(Patient domain) {
         RepositoryValidationUtils.requireDomainNonNull(domain, "Pacientul");
 
-        // 1. VALIDARE BUSINESS: Unicitatea Email
+        // 1. VALIDARE BUSINESS: Data de Naștere în Viitor
+        if (domain.getPatientBirthDate() != null && domain.getPatientBirthDate().isAfter(LocalDate.now())) {
+            throw new RuntimeException("Eroare la salvare: Data de naștere (" + domain.getPatientBirthDate() + ") nu poate fi în viitor.");
+        }
+
+        // 2. VALIDARE BUSINESS: Unicitatea Email
+        // Se verifică unicitatea doar dacă:
+        // a) este o salvare nouă (ID-ul lipsește)
+        // SAU
+        // b) este un update, dar pacientul existent NU are deja acest email
         if (domain.getPatientID() == null || domain.getPatientID().isBlank() || !isExistingEmail(domain)) {
             if (jpaRepository.existsByPacientEmail(domain.getPacientEmail())) {
                 throw new RuntimeException("Eroare la salvare: Pacientul există deja în baza de date cu aceste date esențiale (Email).");
@@ -34,11 +45,13 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
         PatientEntity entity = PatientMapper.toEntity(domain);
         PatientEntity savedEntity = jpaRepository.save(entity);
 
+        // Actualizează ID-ul modelului Domain cu cel generat de DB
         if (savedEntity.getId() != null) {
             domain.setPatientID(String.valueOf(savedEntity.getId()));
         }
     }
 
+    // Metoda isExistingEmail() este păstrată
     private boolean isExistingEmail(Patient domain) {
         if (domain.getPatientID() == null || domain.getPatientID().isBlank()) return false;
         try {

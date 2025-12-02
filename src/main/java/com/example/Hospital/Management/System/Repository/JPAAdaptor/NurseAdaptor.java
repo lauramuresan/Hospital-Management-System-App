@@ -4,8 +4,10 @@ import com.example.Hospital.Management.System.Mapper.NurseMapper;
 import com.example.Hospital.Management.System.Mapper.MapperUtils;
 import com.example.Hospital.Management.System.Model.DBModel.NurseEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Nurse;
+import com.example.Hospital.Management.System.Model.GeneralModel.Department; // << NOU
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBNurseRepository;
+import org.springframework.beans.factory.annotation.Qualifier; // << NECESAR
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,22 +17,48 @@ import java.util.stream.Collectors;
 public class NurseAdaptor implements AbstractRepository<Nurse> {
 
     private final DBNurseRepository jpaRepository;
+    // 💡 Injectăm repository-ul pentru Departament pentru validarea FK
+    private final AbstractRepository<Department> departmentRepository; // << NOU
 
-    public NurseAdaptor(DBNurseRepository jpaRepository) {
+    public NurseAdaptor(
+            DBNurseRepository jpaRepository,
+            @Qualifier("departmentAdaptor") AbstractRepository<Department> departmentRepository // << Constructor Modificat
+    ) {
         this.jpaRepository = jpaRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     @Override
     public void save(Nurse domain) {
         RepositoryValidationUtils.requireDomainNonNull(domain, "Asistentul Medical");
 
-        // 1. VALIDARE BUSINESS: Unicitatea Email-ului
+        // 1. VALIDARE FK: Verificarea existenței Departamentului
+        validateDepartmentExists(domain.getDepartmentID());
+
+        // 2. VALIDARE BUSINESS: Unicitatea Email-ului
         if (domain.getStaffID() == null || !isExistingEmail(domain)) {
             if (jpaRepository.existsByStaffEmail(domain.getStaffEmail())) {
                 throw new RuntimeException("Adresa de email '" + domain.getStaffEmail() + "' este deja utilizată de un alt membru al personalului.");
             }
         }
         jpaRepository.save(NurseMapper.toEntity(domain));
+    }
+
+    /**
+     * Verifică dacă ID-ul de Departament furnizat există. Aruncă excepție
+     * dacă departamentul nu este găsit.
+     */
+    private void validateDepartmentExists(String departmentId) {
+        if (departmentId != null) {
+            // Caută departamentul după ID folosind repository-ul injectat
+            Department department = departmentRepository.findById(departmentId);
+
+            // Dacă departamentul nu este găsit, aruncă o eroare lizibilă
+            if (department == null) {
+                throw new RuntimeException("Departamentul cu ID-ul '" + departmentId +
+                        "' nu există. Vă rugăm să introduceți un ID de departament valid pentru asistentul medical.");
+            }
+        }
     }
 
     private boolean isExistingEmail(Nurse domain) {
@@ -45,7 +73,6 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
             return false;
         }
     }
-
 
     @Override
     public void delete(Nurse domain) {
