@@ -25,7 +25,7 @@ public class DoctorService extends BaseService<Doctor>{
         doctorRepository.delete(entity);
     }
     @Override
-    protected Doctor findById(String id){ // Adăugat @Override
+    public Doctor findById(String id){ // Adăugat @Override
         return doctorRepository.findById(id);
     }
     @Override

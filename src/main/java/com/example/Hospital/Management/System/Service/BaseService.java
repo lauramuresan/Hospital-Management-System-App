@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class BaseService<T> {
 
-    protected abstract T findById(String id);
+    public abstract T findById(String id);
     public abstract void save(T entity);
     protected abstract void delete(T entity);
     protected abstract List<T> findAll();

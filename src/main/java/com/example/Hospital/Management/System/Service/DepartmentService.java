@@ -27,7 +27,7 @@ public class DepartmentService extends BaseService<Department>{
         departmentRepository.delete(entity);
     }
     @Override
-    protected Department findById(String id){
+    public Department findById(String id){
         return departmentRepository.findById(id);
     }
     @Override

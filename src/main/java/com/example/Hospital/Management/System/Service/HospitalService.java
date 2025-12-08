@@ -27,7 +27,7 @@ public class HospitalService extends BaseService<Hospital>{
         hospitalRepository.delete(entity);
     }
     @Override
-    protected Hospital findById(String id){
+    public Hospital findById(String id){
         return hospitalRepository.findById(id);
     }
     @Override

@@ -25,7 +25,7 @@ public class AppointmentService extends BaseService<Appointment>{
         appointmentRepository.delete(entity);
     }
     @Override
-    protected Appointment findById(String id){
+    public Appointment findById(String id){
         return appointmentRepository.findById(id);
     }
     @Override
