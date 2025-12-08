@@ -25,7 +25,7 @@ public class MedicalStaffAppointmentService extends BaseService<MedicalStaffAppo
         medicalStaffAppointmentRepository.delete(entity);
     }
     @Override
-    protected MedicalStaffAppointment findById(String id){ // Adăugat @Override
+    public MedicalStaffAppointment findById(String id){ // Adăugat @Override
         return medicalStaffAppointmentRepository.findById(id);
     }
     @Override

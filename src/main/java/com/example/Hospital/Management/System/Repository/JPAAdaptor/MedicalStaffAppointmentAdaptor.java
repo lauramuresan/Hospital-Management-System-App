@@ -1,7 +1,7 @@
 package com.example.Hospital.Management.System.Repository.JPAAdaptor;
 
 import com.example.Hospital.Management.System.Mapper.MedicalStaffAppointmentMapper;
-import com.example.Hospital.Management.System.Mapper.MapperUtils;
+import com.example.Hospital.Management.System.Model.DBModel.MedicalStaffAppointmentEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffAppointment;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBMedicalStaffAppointmentRepository;
@@ -23,31 +23,44 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
     public void save(MedicalStaffAppointment domain) {
         RepositoryValidationUtils.requireDomainNonNull(domain, "Alocarea Personalului Medical");
 
-        // 1. Validare FK compus (ID Programare și ID Personal Medical)
+        // 1. Verifică ID-ul alocării pentru a determina INSERT sau UPDATE
+        String domainIdString = domain.getMedicalStaffAppointmentID();
+        Long existingId = RepositoryValidationUtils.parseIdOrNull(domainIdString);
+
+        // 2. Extrage și validează ID-urile relațiilor
         String appointmentIdString = domain.getAppointmentID();
         String medicalStaffIdString = domain.getMedicalStaffID();
 
         Long appointmentIdLong = RepositoryValidationUtils.parseIdOrThrow(appointmentIdString, "ID-ul Programării este invalid sau lipsește.");
         Long medicalStaffIdLong = RepositoryValidationUtils.parseIdOrThrow(medicalStaffIdString, "ID-ul Personalului Medical este invalid sau lipsește.");
 
-        // 2. Extragem rolul pentru validarea de unicitate
-        String staffIdString = medicalStaffIdString;
-
         // 3. VALIDARE BUSINESS: Unicitate Programare + Personal
-        if (domain.getMedicalStaffAppointmentID() == null || domain.getMedicalStaffAppointmentID().isBlank()) {
-
-            Long doctorId = medicalStaffIdLong;
-            Long nurseId = null;
-
-            if (jpaRepository.existsByAppointmentIdAndDoctorId(appointmentIdLong, doctorId)) {
+        // Aplicăm validarea doar dacă este o intrare nouă (INSERT)
+        if (existingId == null) {
+            // Verificarea de unicitate: Programare + Personal Medical
+            if (jpaRepository.existsByAppointmentIdAndDoctorId(appointmentIdLong, medicalStaffIdLong)) {
                 throw new RuntimeException("Eroare: Personalul medical cu ID-ul " + medicalStaffIdString + " este deja alocat programării " + appointmentIdString + ".");
             }
         }
 
-        String doctorIdToMap = medicalStaffIdString;
-        String nurseIdToMap = null;
-        String appointmentIdToMap = appointmentIdString;
-        jpaRepository.save(MedicalStaffAppointmentMapper.createEntityFromIds(appointmentIdToMap, doctorIdToMap, nurseIdToMap));
+        // 4. MAPARE ȘI SALVARE (Logică UPDATE/INSERT)
+
+        MedicalStaffAppointmentEntity entity;
+
+        if (existingId != null) {
+            // OPERAȚIE UPDATE: Încărcăm entitatea existentă din DB
+            entity = jpaRepository.findById(existingId)
+                    .orElseThrow(() -> new RuntimeException("Alocarea cu ID-ul " + existingId + " nu a fost găsită pentru actualizare."));
+
+            // Mapăm noile date pe entitatea existentă
+            MedicalStaffAppointmentMapper.mapDomainToEntity(domain, entity);
+        } else {
+            // OPERAȚIE INSERT: Cream o entitate nouă și o mapăm
+            entity = MedicalStaffAppointmentMapper.mapDomainToEntity(domain, null);
+        }
+
+        // Salvarea va face UPDATE sau INSERT în funcție de prezența ID-ului pe entitate
+        jpaRepository.save(entity);
     }
 
     @Override

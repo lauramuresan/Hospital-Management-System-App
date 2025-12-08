@@ -25,7 +25,7 @@ public class NurseService extends BaseService<Nurse> {
         nurseRepository.delete(entity);
     }
     @Override
-    protected Nurse findById(String id){ // Adăugat @Override
+    public Nurse findById(String id){ // Adăugat @Override
         return nurseRepository.findById(id);
     }
     @Override
