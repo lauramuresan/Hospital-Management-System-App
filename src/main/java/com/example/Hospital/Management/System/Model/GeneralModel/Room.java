@@ -60,13 +60,13 @@ public class Room {
 
     @Override
     public String toString() {
+        if (number == null) {
+            return "ID=" + roomID;
+        }
         return "Room{" +
-                "roomID='" + roomID + '\'' +
-                ", hospitalID='" + hospitalID + '\'' +
-                ", capacity=" + capacity +
-                ", number='" + number + '\'' +
-                ", status='" + status + '\'' +
-                ", appointments=" + appointments +
+                "ID='" + roomID + '\'' +
+                ", Number='" + number + '\'' +
+                ", Appointments=" + appointments +
                 '}';
     }
 }

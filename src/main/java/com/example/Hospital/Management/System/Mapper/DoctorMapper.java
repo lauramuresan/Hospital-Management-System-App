@@ -17,6 +17,7 @@ public class DoctorMapper extends MedicalStaffMapper {
     public static Doctor toDomain(DoctorEntity entity) {
         if (entity == null) return null;
         Doctor domain = new Doctor();
+        // Apelează logica de bază care acum gestionează corect lista (doar ID-uri)
         mapBaseToDomain(entity, domain);
         domain.setLicenseNumber(entity.getLicenseNumber());
         domain.setMedicalSpeciality(entity.getMedicalSpeciality());

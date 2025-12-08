@@ -43,11 +43,14 @@ public class Patient {
 
     @Override
     public String toString() {
+        if (patientName == null) {
+            return "ID=" + patientID;
+        }
         return "Patient{" +
-                "patientID='" + patientID + '\'' +
-                ", patientName='" + patientName + '\'' +
-                ", pacientEmail='" + pacientEmail + '\'' +
-                ", patientBirthDate='" + patientBirthDate + '\'' +
+                "ID='" + patientID + '\'' +
+                ", Name='" + patientName + '\'' +
+                ", Email='" + pacientEmail + '\'' +
+                ", Appointments=" + appointmentList +
                 '}';
     }
 }

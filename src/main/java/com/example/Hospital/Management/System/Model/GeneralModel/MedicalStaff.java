@@ -50,12 +50,14 @@ public abstract class MedicalStaff {
 
     @Override
     public String toString() {
+        if (staffName == null) {
+            return "ID=" + staffID;
+        }
         return "MedicalStaff{" +
-                "staffID='" + staffID + '\'' +
-                ", departmentID='" + departmentID + '\'' +
-                ", staffName='" + staffName + '\'' +
-                ", staffEmail='" + staffEmail + '\'' +
-                ", appointments=" + appointments +
+                "ID='" + staffID + '\'' +
+                ", Name='" + staffName + '\'' +
+                ", Email='" + staffEmail + '\'' +
+                ", Appointments=" + appointments +
                 '}';
     }
 }

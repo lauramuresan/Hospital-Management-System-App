@@ -16,6 +16,7 @@ public class NurseMapper extends MedicalStaffMapper {
     public static Nurse toDomain(NurseEntity entity) {
         if (entity == null) return null;
         Nurse domain = new Nurse();
+        // Apelează logica de bază care acum gestionează corect lista (doar ID-uri)
         mapBaseToDomain(entity, domain);
         domain.setQualificationLevel(entity.getNurseCategory());
         return domain;

@@ -44,14 +44,16 @@ public class Appointment {
 
     @Override
     public String toString() {
+        if (status == null) {
+            return "ID=" + appointmentID;
+        }
         return "Appointment{" +
-                "appointmentID='" + appointmentID + '\'' +
-                ", patientID='" + patientID + '\'' +
-                ", departmentID='" + departmentID + '\'' +
-                ", roomID='" + roomID + '\'' +
-                ", admissionDate=" + admissionDate +
-                ", status=" + status +
-                ", medicalStaffList=" + medicalStaffList +
+                "ID='" + appointmentID + '\'' +
+                ", Patient='" + patientID + '\'' +
+                ", Room='" + roomID + '\'' +
+                ", Date=" + admissionDate +
+                ", Status=" + status +
+                ", Staff=" + medicalStaffList +
                 '}';
     }
 }
