@@ -17,7 +17,7 @@
     </tr>
     <tr>
         <th>Cameră</th>
-        <td th:text="${roomDetails != null ? roomDetails.roomNumber : 'N/A'} + ' (ID: ' + ${appointment.roomID} + ')'"></td>
+        <td th:text="${roomDetails != null ? roomDetails.number : 'N/A'} + ' (ID: ' + ${appointment.roomID} + ')'"></td>
     </tr>
 
     <tr><th>ID Departament</th><td th:text="${appointment.departmentID}"></td></tr>

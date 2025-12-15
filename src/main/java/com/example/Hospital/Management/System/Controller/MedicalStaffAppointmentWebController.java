@@ -37,6 +37,16 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
         this.nurseService = nurseService;
     }
 
+    @Override
+    @GetMapping
+    public String list(
+            Model model,
+            @RequestParam(defaultValue = "id") String sortField, // <-- Sortare implicită corectă
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        return super.list(model, sortField, sortDir);
+    }
+
     private void addDropdownsToModel(Model model) {
         model.addAttribute("appointments", appointmentService.findAll());
 
@@ -56,7 +66,6 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
         return viewPath + "/form";
     }
 
-    // Suprascrie metoda editForm din GenericWebController
     @Override
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
@@ -75,8 +84,6 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
         }
     }
 
-    // MAPARE NOUĂ: Interceptează formularul trimis la /medical-staff-appointments/save.
-    // Aceasta înlocuiește logica createOrUpdate din clasa părinte pentru această rută.
     @PostMapping("/save")
     public String save(@Valid @ModelAttribute("assignment") MedicalStaffAppointment domain,
                        BindingResult bindingResult,
@@ -89,7 +96,6 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
         }
 
         try {
-            // Folosim service.save(domain) pentru UPDATE/INSERT corect.
             ((MedicalStaffAppointmentService) service).save(domain);
 
             String message = domain.getMedicalStaffAppointmentID() != null && !domain.getMedicalStaffAppointmentID().isEmpty()

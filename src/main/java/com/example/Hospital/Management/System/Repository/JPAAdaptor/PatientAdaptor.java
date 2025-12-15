@@ -6,6 +6,7 @@ import com.example.Hospital.Management.System.Model.DBModel.PatientEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Patient;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBPatientRepository;
+import org.springframework.data.domain.Sort; // IMPORT NOU
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -28,36 +29,30 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
 
         // 1. VALIDARE BUSINESS: Data de Naștere în Viitor
         if (domain.getPatientBirthDate() != null && domain.getPatientBirthDate().isAfter(LocalDate.now())) {
-            throw new RuntimeException("Eroare la salvare: Data de naștere (" + domain.getPatientBirthDate() + ") nu poate fi în viitor.");
+            throw new RuntimeException("Eroare la salvare: Data de nastere (" + domain.getPatientBirthDate() + ") nu poate fi in viitor.");
         }
 
         // 2. VALIDARE BUSINESS: Unicitatea Email
-        // Se verifică unicitatea doar dacă:
-        // a) este o salvare nouă (ID-ul lipsește)
-        // SAU
-        // b) este un update, dar pacientul existent NU are deja acest email
         if (domain.getPatientID() == null || domain.getPatientID().isBlank() || !isExistingEmail(domain)) {
             if (jpaRepository.existsByPacientEmail(domain.getPacientEmail())) {
-                throw new RuntimeException("Eroare la salvare: Pacientul există deja în baza de date cu aceste date esențiale (Email).");
+                throw new RuntimeException("Eroare la salvare: Pacientul exista deja in baza de date cu aceste date esentiale (Email).");
             }
         }
 
         PatientEntity entity = PatientMapper.toEntity(domain);
         PatientEntity savedEntity = jpaRepository.save(entity);
 
-        // Actualizează ID-ul modelului Domain cu cel generat de DB
+        // Actualizeaza ID-ul modelului Domain cu cel generat de DB
         if (savedEntity.getId() != null) {
             domain.setPatientID(String.valueOf(savedEntity.getId()));
         }
     }
 
-    // Metoda isExistingEmail() este păstrată
     private boolean isExistingEmail(Patient domain) {
         if (domain.getPatientID() == null || domain.getPatientID().isBlank()) return false;
         try {
             Long id = MapperUtils.parseLong(domain.getPatientID());
 
-            // Asigurăm că ID-ul este valid înainte de a interoga DB
             if (id == null) return false;
 
             return jpaRepository.findById(id)
@@ -73,11 +68,9 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
     public void delete(Patient domain) {
         RepositoryValidationUtils.requireDomainNonNull(domain, "Pacientul");
 
-        // Asigură că ID-ul nu lipsește
         RepositoryValidationUtils.requireIdForDelete(domain.getPatientID(), "ID-ul pacientului");
 
-        // Asigură că ID-ul este un număr valid
-        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getPatientID(), "ID-ul pacientului este invalid sau lipsește pentru ștergere.");
+        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getPatientID(), "ID-ul pacientului este invalid sau lipseste pentru stergere.");
         jpaRepository.deleteById(id);
     }
 
@@ -91,5 +84,16 @@ public class PatientAdaptor implements AbstractRepository<Patient> {
     @Override
     public List<Patient> findAll() {
         return jpaRepository.findAll().stream().map(PatientMapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Patient> findAll(Sort sort) {
+        if (sort == null) {
+            return findAll();
+        }
+
+        return jpaRepository.findAll(sort).stream()
+                .map(PatientMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

@@ -39,6 +39,12 @@ public class HospitalEntity {
     public Long getId() {
         return id;
     }
+
+    // 🔴 ADAUGAT: Getter Alias. Permite sortarea/căutarea după 'hospitalID' în JPA.
+    public Long getHospitalID() {
+        return id;
+    }
+
     public String getHospitalName() {
         return hospitalName;
     }

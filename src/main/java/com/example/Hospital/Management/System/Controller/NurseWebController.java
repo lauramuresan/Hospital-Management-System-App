@@ -17,10 +17,19 @@ public class NurseWebController extends GenericWebController<Nurse> {
         this.nurseService = service;
     }
 
+    @Override
+    @GetMapping
+    public String list(
+            Model model,
+            @RequestParam(defaultValue = "staffName") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        return super.list(model, sortField, sortDir);
+    }
+
     @GetMapping("/new")
     public String showForm(Model model) {
         model.addAttribute("nurse", new Nurse());
         return "nurses/form";
     }
-
 }

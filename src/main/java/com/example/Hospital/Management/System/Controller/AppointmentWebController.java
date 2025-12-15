@@ -34,7 +34,18 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
         this.roomService = roomService;
     }
 
+    @Override
+    @GetMapping
+    public String list(
+            Model model,
+            @RequestParam(defaultValue = "admissionDate") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+
+        return super.list(model, sortField, sortDir);
+    }
+
     private void addDropdownsToModel(Model model) {
+        // Asigurati-va ca findAll returneaza DTO-uri (Patient, Room) sau Entitati.
         model.addAttribute("patients", patientService.findAll());
         model.addAttribute("rooms", roomService.findAll());
         model.addAttribute("statuses", AppointmentStatus.values());
@@ -55,7 +66,7 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
     }
 
     @Override
-    @GetMapping("/{id}/edit")
+    @GetMapping("/{id}/edit") // Mapeaza /appointments/{id}/edit
     public String editForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             String view = super.editForm(id, model, redirectAttributes);
@@ -67,6 +78,7 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
         }
     }
 
+    // Metoda de salvare (save-custom)
     @PostMapping("/save-custom")
     public String save(@Valid @ModelAttribute("appointment") Appointment domain,
                        BindingResult bindingResult,

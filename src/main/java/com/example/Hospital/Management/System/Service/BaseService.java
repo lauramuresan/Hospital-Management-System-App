@@ -1,5 +1,6 @@
 package com.example.Hospital.Management.System.Service;
 
+import org.springframework.data.domain.Sort;
 import java.util.List;
 
 public abstract class BaseService<T> {
@@ -8,6 +9,8 @@ public abstract class BaseService<T> {
     public abstract void save(T entity);
     protected abstract void delete(T entity);
     protected abstract List<T> findAll();
+
+    protected abstract List<T> findAll(Sort sort);
 
     public void create(T entity) {
         save(entity);
@@ -23,4 +26,7 @@ public abstract class BaseService<T> {
         return findAll();
     }
 
+    public List<T> getAll(Sort sort) {
+        return findAll(sort);
+    }
 }

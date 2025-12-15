@@ -5,6 +5,7 @@ import com.example.Hospital.Management.System.Repository.InFile.*;
 import com.example.Hospital.Management.System.Repository.InMemory.*;
 import com.example.Hospital.Management.System.Repository.JPAAdaptor.*;
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Sort; // ⬅️ NOU: Import necesar pentru Sort
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +76,15 @@ public class RepositoryFactory {
             @Override public void delete(T entity) { activeRepo().delete(entity); }
             @Override public T findById(String id) { return activeRepo().findById(id); }
             @Override public java.util.List<T> findAll() { return activeRepo().findAll(); }
+
+            @Override
+            public java.util.List<T> findAll(Sort sort) {
+                if (modeHolder.getMode() == RepositoryMode.MYSQL) {
+                    return activeRepo().findAll(sort);
+                } else {
+                    return activeRepo().findAll();
+                }
+            }
         };
     }
 

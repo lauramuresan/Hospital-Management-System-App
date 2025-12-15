@@ -1,12 +1,14 @@
 package com.example.Hospital.Management.System.Repository.JPAAdaptor;
 
 import com.example.Hospital.Management.System.Mapper.DepartmentMapper;
-import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity; // ✅ EROARE CORECTATĂ: Import adăugat
+import com.example.Hospital.Management.System.Mapper.MapperUtils;
+import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Department;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBDepartmentRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBHospitalRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,16 +26,18 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
 
     @Override
     public void save(Department domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Department");
+        if (domain == null) {
+            throw new IllegalArgumentException("Department nu poate fi null.");
+        }
 
-        // 1. Validare FK (Hospital ID)
-        Long hospitalId = RepositoryValidationUtils.parseIdOrThrow(
-                domain.getHospitalID(),
-                "ID-ul Spitalului este obligatoriu și trebuie să fie un număr valid."
-        );
+
+        Long hospitalId = MapperUtils.parseLong(domain.getHospitalID());
+        if (hospitalId == null) {
+            throw new IllegalArgumentException("ID-ul Spitalului este obligatoriu si trebuie sa fie un numar valid.");
+        }
 
         if (!hospitalJpaRepository.existsById(hospitalId)) {
-            throw new RuntimeException("Spitalul cu ID-ul " + hospitalId + " nu a fost găsit.");
+            throw new RuntimeException("Spitalul cu ID-ul " + hospitalId + " nu a fost gasit.");
         }
 
         // 2. Validare Unicitate (Nume + Hospital ID)
@@ -44,7 +48,7 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
         if (domain.getDepartmentID() == null || !isExistingDepartmentNameInHospital(domain)) {
             if (jpaRepository.existsByDepartmentNameAndHospitalId(domain.getDepartmentName(), hospitalId)) {
                 throw new RuntimeException("Departamentul '" + domain.getDepartmentName() +
-                        "' există deja în Spitalul cu ID-ul " + hospitalId + ".");
+                        "' exista deja in Spitalul cu ID-ul " + hospitalId + ".");
             }
         }
 
@@ -54,7 +58,7 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
     private boolean isExistingDepartmentNameInHospital(Department domain) {
         if (domain.getDepartmentID() == null) return false;
         try {
-            Long id = RepositoryValidationUtils.parseIdOrNull(domain.getDepartmentID());
+            Long id = MapperUtils.parseLong(domain.getDepartmentID());
 
             if (id == null) {
                 throw new NumberFormatException("ID-ul departamentului nu este valid.");
@@ -72,16 +76,24 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
 
     @Override
     public void delete(Department domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Department");
-        RepositoryValidationUtils.requireIdForDelete(domain.getDepartmentID(), "Department");
+        if (domain == null) {
+            throw new IllegalArgumentException("Department nu poate fi null.");
+        }
+        if (domain.getDepartmentID() == null || domain.getDepartmentID().trim().isEmpty()) {
+            throw new IllegalArgumentException("ID-ul Department trebuie specificat pentru stergere.");
+        }
 
-        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getDepartmentID(), "Invalid Department ID for delete");
+        Long id = MapperUtils.parseLong(domain.getDepartmentID());
+        if (id == null) {
+            throw new IllegalArgumentException("Invalid Department ID for delete");
+        }
+
         jpaRepository.deleteById(id);
     }
 
     @Override
     public Department findById(String id) {
-        Long parsed = RepositoryValidationUtils.parseIdOrNull(id);
+        Long parsed = MapperUtils.parseLong(id);
         if (parsed == null) return null;
         return jpaRepository.findById(parsed).map(DepartmentMapper::toDomain).orElse(null);
     }
@@ -89,5 +101,15 @@ public class DepartmentAdaptor implements AbstractRepository<Department> {
     @Override
     public List<Department> findAll() {
         return jpaRepository.findAll().stream().map(DepartmentMapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Department> findAll(Sort sort) {
+        if (sort == null) {
+            return findAll();
+        }
+        return jpaRepository.findAll(sort).stream()
+                .map(DepartmentMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

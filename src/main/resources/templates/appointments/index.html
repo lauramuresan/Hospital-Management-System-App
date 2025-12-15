@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Lista Programări</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        .sort-neutral {
+            color: #ccc;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body class="container mt-4">
 
@@ -21,11 +28,51 @@
 <table class="table table-striped">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Pacient (ID)</th>
-        <th>Camera (ID)</th>
-        <th>Data/Ora</th>
-        <th>Status</th>
+        <th>
+            <a th:href="@{/appointments(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+                ID
+                <span th:if="${sortField == 'id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/appointments(sortField='patient.id', sortDir=${sortField == 'patient.id' ? reverseSortDir : 'asc'})}">
+                Pacient (ID)
+                <span th:if="${sortField == 'patient.id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'patient.id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/appointments(sortField='room.id', sortDir=${sortField == 'room.id' ? reverseSortDir : 'asc'})}">
+                Camera (ID)
+                <span th:if="${sortField == 'room.id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'room.id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/appointments(sortField='admissionDate', sortDir=${sortField == 'admissionDate' ? reverseSortDir : 'asc'})}">
+                Data/Ora
+                <span th:if="${sortField == 'admissionDate'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'admissionDate'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/appointments(sortField='status', sortDir=${sortField == 'status' ? reverseSortDir : 'asc'})}">
+                Status
+                <span th:if="${sortField == 'status'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'status'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
         <th>Acțiuni</th>
     </tr>
     </thead>

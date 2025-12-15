@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Lista Departamente</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        .sort-neutral {
+            color: #ccc;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body class="container mt-4">
 <h2>Departamente</h2>
@@ -12,16 +19,40 @@
 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
 
-<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
-<a th:href="@{/departments/new}" class="btn btn-success mb-3">+ Adaugă Departament</a>
+<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
+<a th:href="@{/departments/new}" class="btn btn-success mb-3">+ Adauga Departament</a>
 
 <table class="table table-bordered table-hover">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Nume</th>
-        <th>Spital ID</th>
-        <th>Acțiuni</th>
+        <th>
+            <a th:href="@{/departments(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+                ID
+                <span th:if="${sortField == 'id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/departments(sortField='departmentName', sortDir=${sortField == 'departmentName' ? reverseSortDir : 'asc'})}">
+                Nume
+                <span th:if="${sortField == 'departmentName'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'departmentName'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/departments(sortField='hospital.id', sortDir=${sortField == 'hospital.id' ? reverseSortDir : 'asc'})}">
+                Spital ID
+                <span th:if="${sortField == 'hospital.id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'hospital.id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>Actiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -33,7 +64,7 @@
             <a th:href="@{'/departments/' + ${d.departmentID}}" class="btn btn-info btn-sm">Detalii</a>
             <a th:href="@{'/departments/' + ${d.departmentID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
             <form th:action="@{'/departments/' + ${d.departmentID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur?');">Sterge</button>
             </form>
         </td>
     </tr>

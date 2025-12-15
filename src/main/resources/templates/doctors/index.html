@@ -3,52 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista Doctori</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        /* Stil pentru săgeata neutră */
+        .sort-neutral {
+            color: #ccc;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
 </head>
-<body>
-<div class="container mt-5">
-    <h2>Doctori</h2>
+<body class="container mt-4">
+<h2>Doctori</h2>
 
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-    <a th:href="@{/}" class="btn btn-sm btn-info me-3">
-        < Inapoi la Meniu
-    </a>
+<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
+<a th:href="@{/doctors/new}" class="btn btn-success mb-3">+ Adauga Doctor</a>
 
-    <a th:href="@{/doctors/new}" class="btn btn-primary mb-3">Adaugă Doctor Nou</a>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/doctors(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+                ID
+                <span th:if="${sortField == 'id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/doctors(sortField='staffName', sortDir=${sortField == 'staffName' ? reverseSortDir : 'asc'})}">
+                Nume
+                <span th:if="${sortField == 'staffName'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'staffName'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/doctors(sortField='medicalSpeciality', sortDir=${sortField == 'medicalSpeciality' ? reverseSortDir : 'asc'})}">
+                Specializare
+                <span th:if="${sortField == 'medicalSpeciality'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'medicalSpeciality'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/doctors(sortField='department.id', sortDir=${sortField == 'department.id' ? reverseSortDir : 'asc'})}">
+                Dept ID
+                <span th:if="${sortField == 'department.id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'department.id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>Actiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="d : ${doctors}">
+        <td th:text="${d.staffID}"></td>
+        <td th:text="${d.staffName}"></td>
+        <td th:text="${d.medicalSpeciality}"></td>
+        <td th:text="${d.departmentID}"></td>
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nume</th>
-            <th>Email</th>
-            <th>Departament</th>
-            <th>Licență</th>
-            <th>Specialitate</th>
-            <th>Acțiuni</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="doctor : ${doctors}">
-            <td th:text="${doctor.staffID}"></td>
-            <td th:text="${doctor.staffName}"></td>
-            <td th:text="${doctor.staffEmail}"></td>
-            <td th:text="${doctor.departmentID}"></td>
-            <td th:text="${doctor.licenseNumber}"></td>
-            <td th:text="${doctor.medicalSpeciality}"></td>
-            <td>
-                <a th:href="@{'/doctors/' + ${doctor.staffID}}" class="btn btn-info btn-sm">Detalii</a>
-                <a th:href="@{'/doctors/' + ${doctor.staffID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-                <form th:action="@{'/doctors/' + ${doctor.staffID} + '/delete'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Sunteți sigur?');">Șterge</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        <td>
+            <a th:href="@{'/doctors/' + ${d.staffID}}" class="btn btn-info btn-sm">Detalii</a>
+            <a th:href="@{'/doctors/' + ${d.staffID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+            <form th:action="@{'/doctors/' + ${d.staffID} + '/delete'}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur?');">Sterge</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

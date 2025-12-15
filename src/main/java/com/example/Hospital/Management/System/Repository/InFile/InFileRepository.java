@@ -1,9 +1,11 @@
 package com.example.Hospital.Management.System.Repository.InFile;
 
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
+import com.example.Hospital.Management.System.Utils.ReflectionSorter; // ⬅️ IMPORT NOU
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
+import org.springframework.data.domain.Sort; // ⬅️ IMPORT NOU
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -116,5 +118,16 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
     @Override
     public synchronized List<T> findAll() {
         return new ArrayList<>(dataStore.values());
+    }
+
+
+    @Override
+    public synchronized List<T> findAll(Sort sort) {
+        List<T> list = findAll();
+        if (sort != null && sort.isSorted() && !list.isEmpty()) {
+            ReflectionSorter.sortList(list, entityType, sort);
+        }
+
+        return list;
     }
 }
