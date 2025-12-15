@@ -1,0 +1,34 @@
+/* Săgeată neutră pentru sortare */
+.sort-neutral {
+    color: #ccc;
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+/* Link-uri albe în tabele dark */
+.table-dark a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Hover pe list-group */
+.list-group-item-action:hover {
+    background-color: #f1f3f5;
+    transform: translateX(3px);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Card hover subtil */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
+}
+
+/* Butoane */
+.btn {
+    transition: all 0.2s ease;
+}

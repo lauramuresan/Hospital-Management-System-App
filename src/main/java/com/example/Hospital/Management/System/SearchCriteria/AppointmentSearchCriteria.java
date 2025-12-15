@@ -10,6 +10,7 @@ public class AppointmentSearchCriteria {
     private String patientID;
     private String roomID;
     private AppointmentStatus status;
+    private String departmentID;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime dateFrom;
@@ -19,6 +20,7 @@ public class AppointmentSearchCriteria {
 
     public AppointmentSearchCriteria() {}
 
+    // GETTERI ȘI SETTERI EXISTENȚI
     public String getPatientID() { return patientID; }
     public void setPatientID(String patientID) { this.patientID = patientID; }
 
@@ -33,4 +35,12 @@ public class AppointmentSearchCriteria {
 
     public LocalDateTime getDateTo() { return dateTo; }
     public void setDateTo(LocalDateTime dateTo) { this.dateTo = dateTo; }
+
+    public String getDepartmentID() {
+        return departmentID;
+    }
+
+    public void setDepartmentID(String departmentID) {
+        this.departmentID = departmentID;
+    }
 }

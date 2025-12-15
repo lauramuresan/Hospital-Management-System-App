@@ -2,52 +2,167 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Alegere Repository și Meniu</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <title>Meniu Principal și Selector Repository</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link th:href="@{/css/custom.css}" rel="stylesheet">
+
+    <style>
+        .text-primary-discreet {
+            color: #495057 !important;
+        }
+        .text-primary {
+            color: #004c4c !important;
+        }
+        .bg-primary {
+            background-color: #00796b !important;
+        }
+        .border-primary {
+            border-color: #00796b !important;
+        }
+        .btn-primary {
+            background-color: #00796b;
+            border-color: #00796b;
+        }
+        .btn-primary:hover {
+            background-color: #004c4c;
+            border-color: #004c4c;
+        }
+    </style>
 </head>
-<body class="container mt-4">
 
-<div class="row">
-    <!-- Alegere Modul Repository -->
-    <div class="col-md-6">
-        <h2>Alegere Mod Repository</h2>
-        <p>Modul curent: <strong th:text="${currentMode}"></strong></p>
+<body>
 
-        <form th:action="@{/choose-repo}" method="post" class="mb-4">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="mode" id="inMemory" value="INMEMORY"
-                       th:checked="${currentMode.name() == 'INMEMORY'}">
-                <label class="form-check-label" for="inMemory">INMEMORY (Date volatile)</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="mode" id="inFile" value="INFILE"
-                       th:checked="${currentMode.name() == 'INFILE'}">
-                <label class="form-check-label" for="inFile">INFILE (Date din JSON)</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="mode" id="mysql" value="MYSQL"
-                       th:checked="${currentMode.name() == 'MYSQL'}">
-                <label class="form-check-label" for="mysql">MYSQL (Date din baza de date)</label>
-            </div>
-            <button type="submit" class="btn btn-primary mt-2">Schimbă Modul și Reîncarcă</button>
-        </form>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" th:href="@{/}">
+            🏥 HMS – Hospital Management System
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/hospitals}">Spitale</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/doctors}">Doctori</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/patients}">Pacienți</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-light ms-3" th:href="@{/}">
+                        Meniu principal
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4 mb-5">
+
+    <div th:if="${successMessage}" class="mb-4">
+        <div class="alert alert-success alert-dismissible fade show text-center shadow-sm">
+            <span th:text="${successMessage}">
+                Modul a fost schimbat cu succes.
+            </span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     </div>
 
-    <!-- Navigare Meniu -->
-    <div class="col-md-6">
-        <h2>Navigare Meniu</h2>
-        <div class="list-group">
-            <a th:href="@{/hospitals}" class="list-group-item list-group-item-action">🏥 Spitale</a>
-            <a th:href="@{/departments}" class="list-group-item list-group-item-action">🏢 Departamente</a>
-            <a th:href="@{/doctors}" class="list-group-item list-group-item-action">🩺 Doctori</a>
-            <a th:href="@{/nurses}" class="list-group-item list-group-item-action">👩‍⚕️ Asistenți Medicali</a>
-            <a th:href="@{/patients}" class="list-group-item list-group-item-action">🛌 Pacienți</a>
-            <a th:href="@{/rooms}" class="list-group-item list-group-item-action">🚪 Camere</a>
-            <a th:href="@{/appointments}" class="list-group-item list-group-item-action">🗓️ Programări</a>
-            <a th:href="@{/medical-staff-appointments}" class="list-group-item list-group-item-action">🔗 Alocări Personal</a>
+    <h1 class="mb-5 text-center text-primary-discreet fw-bold">
+        Sistem de Management al Spitalului
+    </h1>
+
+    <div class="row g-5">
+
+        <div class="col-md-6">
+            <div class="card shadow-lg h-100 border-primary border-3">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0 fw-bold">Selectare mod de stocare</h4>
+                </div>
+
+                <div class="card-body">
+                    <p class="text-center lead mb-4">
+                        Modul curent activ:
+                        <strong th:text="${currentMode}" class="text-success"></strong>
+                    </p>
+
+                    <form th:action="@{/choose-repo}" method="post"
+                          class="p-4 bg-light rounded">
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio"
+                                   name="mode" id="inMemory" value="INMEMORY"
+                                   th:checked="${currentMode.name() == 'INMEMORY'}">
+                            <label class="form-check-label fw-semibold" for="inMemory">
+                                INMEMORY – date volatile
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio"
+                                   name="mode" id="inFile" value="INFILE"
+                                   th:checked="${currentMode.name() == 'INFILE'}">
+                            <label class="form-check-label fw-semibold" for="inFile">
+                                INFILE – date stocate în fișiere
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="radio"
+                                   name="mode" id="mysql" value="MYSQL"
+                                   th:checked="${currentMode.name() == 'MYSQL'}">
+                            <label class="form-check-label fw-semibold" for="mysql">
+                                MYSQL – bază de date relațională
+                            </label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg shadow-sm">
+                                Salvează modificările
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
         </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-lg h-100 border-primary border-3">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0 fw-bold">Navigare entități</h4>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a th:href="@{/hospitals}" class="list-group-item list-group-item-action">Spitale</a>
+                        <a th:href="@{/departments}" class="list-group-item list-group-item-action">Departamente</a>
+                        <a th:href="@{/doctors}" class="list-group-item list-group-item-action">Doctori</a>
+                        <a th:href="@{/nurses}" class="list-group-item list-group-item-action">Asistenți medicali</a>
+                        <a th:href="@{/patients}" class="list-group-item list-group-item-action">Pacienți</a>
+                        <a th:href="@{/rooms}" class="list-group-item list-group-item-action">Camere</a>
+                        <a th:href="@{/appointments}" class="list-group-item list-group-item-action">Programări</a>
+                        <a th:href="@{/medical-staff-appointments}" class="list-group-item list-group-item-action">
+                            Alocări personal
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

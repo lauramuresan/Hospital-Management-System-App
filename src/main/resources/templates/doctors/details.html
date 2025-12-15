@@ -2,30 +2,116 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Doctor Details</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="'Detalii Doctor: ' + ${doctor.staffName}"></title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link th:href="@{/css/custom.css}" rel="stylesheet">
+
+    <style>
+        /* [Stilurile Teal copiate] */
+        .text-primary-discreet { color: #495057 !important; }
+        .text-primary { color: #004c4c !important; }
+        .bg-primary { background-color: #00796b !important; }
+        .border-primary { border-color: #00796b !important; }
+        .btn-primary { background-color: #00796b; border-color: #00796b; }
+        .btn-primary:hover { background-color: #004c4c; border-color: #004c4c; }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2>Doctor Details</h2>
-    <table class="table table-bordered">
-        <tr><th>ID</th><td th:text="${doctor.staffID}">N/A</td></tr>
-        <tr><th>Name</th><td th:text="${doctor.staffName}">N/A</td></tr>
-        <tr><th>Email</th><td th:text="${doctor.staffEmail}">N/A</td></tr>
-        <tr><th>Department</th><td th:text="${doctor.departmentID}">N/A</td></tr>
-        <tr><th>License Number</th><td th:text="${doctor.licenseNumber}">N/A</td></tr>
-        <tr><th>Specialty</th><td th:text="${doctor.medicalSpeciality}">N/A</td></tr>
-        <tr>
-            <th>Appointments</th>
-            <td>
-                <ul th:if="${doctor.appointments != null}">
-                    <li th:each="appt : ${doctor.appointments}" th:text="${appt}"></li>
-                </ul>
-                <span th:unless="${doctor.appointments != null}">No appointments found.</span>
-            </td>
-        </tr>
-    </table>
-    <a th:href="@{/doctors}" class="btn btn-primary">Back to List</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            🏥 **HMS** (Hospital Management System)
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/hospitals}">Spitale</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/doctors}">Doctori</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/patients}">Pacienți</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-light ms-3" th:href="@{/}">Meniu Principal</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4 mb-5">
+
+    <h1 class="fw-semibold mb-4 text-primary">
+        <i class="fas fa-user-md me-2"></i> Detalii Doctor
+    </h1>
+
+    <div class="card shadow-lg mb-4 border-primary border-3">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0" th:text="'Informații complete despre Dr. ' + ${doctor.staffName}"></h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table mb-0 table-striped">
+                <tbody>
+                <tr>
+                    <th class="w-30 fw-semibold">ID</th>
+                    <td th:text="${doctor.staffID}">N/A</td>
+                </tr>
+                <tr>
+                    <th class="fw-semibold">Nume</th>
+                    <td th:text="${doctor.staffName}">N/A</td>
+                </tr>
+                <tr>
+                    <th class="fw-semibold">Email</th>
+                    <td th:text="${doctor.staffEmail}">N/A</td>
+                </tr>
+                <tr>
+                    <th class="fw-semibold">Departament ID</th>
+                    <td th:text="${doctor.departmentID}">N/A</td>
+                </tr>
+                <tr>
+                    <th class="fw-semibold">Număr Licență</th>
+                    <td th:text="${doctor.licenseNumber}">N/A</td>
+                </tr>
+                <tr>
+                    <th class="fw-semibold">Specialitate</th>
+                    <td th:text="${doctor.medicalSpeciality}">N/A</td>
+                </tr>
+                <tr>
+                    <th class="fw-semibold">Programări</th>
+                    <td>
+                        <div th:if="${doctor.appointments != null and not #lists.isEmpty(doctor.appointments)}">
+                            <ul class="list-unstyled mb-0">
+                                <li th:each="appt : ${doctor.appointments}" th:text="${appt}"></li>
+                            </ul>
+                        </div>
+                        <span th:unless="${doctor.appointments != null and not #lists.isEmpty(doctor.appointments)}" class="text-muted">Nu sunt programări înregistrate.</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a th:href="@{/doctors}" class="btn btn-outline-secondary shadow-sm">
+            <i class="fas fa-arrow-alt-circle-left me-1"></i> Înapoi la Listă
+        </a>
+        <a th:href="@{'/doctors/' + ${doctor.staffID} + '/edit'}"
+           class="btn btn-warning shadow-sm">
+            <i class="fas fa-edit me-1"></i> Editează
+        </a>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

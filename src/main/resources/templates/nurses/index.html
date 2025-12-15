@@ -2,146 +2,172 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lista Asistenți Medicali</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lista Asistenți Medicali | HMS</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link th:href="@{/css/custom.css}" rel="stylesheet">
+
     <style>
-        .sort-neutral { color: #ccc; font-size: 0.8em; margin-left: 5px; }
+        /* [Stilurile Teal copiate] */
+        .text-primary-discreet { color: #495057 !important; }
+        .text-primary { color: #004c4c !important; }
+        .bg-primary { background-color: #00796b !important; }
+        .border-primary { border-color: #00796b !important; }
+        .btn-primary { background-color: #00796b; border-color: #00796b; }
+        .btn-primary:hover { background-color: #004c4c; border-color: #004c4c; }
         a { text-decoration: none; }
     </style>
 </head>
-<body class="container mt-4">
+<body>
 
-<h2>Asistenți Medicali</h2>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            🏥 **HMS** (Hospital Management System)
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/hospitals}">Spitale</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/doctors}">Doctori</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/patients}">Pacienți</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-light ms-3" th:href="@{/}">Meniu Principal</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <a th:href="@{/}" class="btn btn-secondary">Înapoi la meniu</a>
+<div class="container mt-4 mb-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h1 class="fw-semibold text-primary mb-0">👩‍⚕️ Lista Asistenți Medicali</h1>
+        <a th:href="@{/nurses/new}" class="btn btn-success shadow-sm">
+            <i class="fas fa-plus-circle me-1"></i> Adaugă Asistent
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body">
+            <h5 class="card-title text-primary"><i class="fas fa-filter me-2"></i> Filtrare</h5>
+            <form th:action="@{/nurses}" method="get" th:object="${searchCriteria}" class="mt-3">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Nume:</label>
+                        <input type="text" class="form-control" th:field="*{staffName}" placeholder="Caută nume...">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Email:</label>
+                        <input type="text" class="form-control" th:field="*{staffEmail}" placeholder="Caută email...">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Calificare:</label>
+                        <select class="form-select" th:field="*{qualificationLevel}">
+                            <option value="">-- Toate --</option>
+                            <option th:each="q : ${qualifications}" th:value="${q}" th:text="${q}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Departament:</label>
+                        <select class="form-select" th:field="*{departmentID}">
+                            <option value="">-- Toate --</option>
+                            <option th:each="d : ${departments}" th:value="${d.departmentID}" th:text="${d.departmentName}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 d-flex justify-content-end gap-2">
+                        <input type="hidden" name="sortField" th:value="${sortField}">
+                        <input type="hidden" name="sortDir" th:value="${sortDir}">
+                        <button type="submit" class="btn btn-primary shadow-sm">
+                            <i class="fas fa-search me-1"></i> Filtrează
+                        </button>
+                        <a th:href="@{/nurses}" class="btn btn-outline-secondary shadow-sm">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" th:text="${successMessage}">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert" th:text="${errorMessage}">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">
+                            <a th:href="@{/nurses(sortField='staffID', sortDir=${sortField == 'staffID' ? reverseSortDir : 'asc'}, staffName=${searchCriteria.staffName}, staffEmail=${searchCriteria.staffEmail}, qualificationLevel=${searchCriteria.qualificationLevel}, departmentID=${searchCriteria.departmentID})}"
+                               class="text-white text-decoration-none d-block">
+                                ID <i th:classappend="${sortField=='staffID' ? (sortDir=='asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down') : 'fas fa-sort'}" class="ms-1"></i>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a th:href="@{/nurses(sortField='staffName', sortDir=${sortField == 'staffName' ? reverseSortDir : 'asc'}, staffName=${searchCriteria.staffName}, staffEmail=${searchCriteria.staffEmail}, qualificationLevel=${searchCriteria.qualificationLevel}, departmentID=${searchCriteria.departmentID})}"
+                               class="text-white text-decoration-none d-block">
+                                Nume <i th:classappend="${sortField=='staffName' ? (sortDir=='asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down') : 'fas fa-sort'}" class="ms-1"></i>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a th:href="@{/nurses(sortField='qualificationLevel', sortDir=${sortField == 'qualificationLevel' ? reverseSortDir : 'asc'}, staffName=${searchCriteria.staffName}, staffEmail=${searchCriteria.staffEmail}, qualificationLevel=${searchCriteria.qualificationLevel}, departmentID=${searchCriteria.departmentID})}"
+                               class="text-white text-decoration-none d-block">
+                                Calificare <i th:classappend="${sortField=='qualificationLevel' ? (sortDir=='asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down') : 'fas fa-sort'}" class="ms-1"></i>
+                            </a>
+                        </th>
+                        <th scope="col">
+                            <a th:href="@{/nurses(sortField='departmentID', sortDir=${sortField == 'departmentID' ? reverseSortDir : 'asc'}, staffName=${searchCriteria.staffName}, staffEmail=${searchCriteria.staffEmail}, qualificationLevel=${searchCriteria.qualificationLevel}, departmentID=${searchCriteria.departmentID})}"
+                               class="text-white text-decoration-none d-block">
+                                Departament ID <i th:classappend="${sortField=='departmentID' ? (sortDir=='asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down') : 'fas fa-sort'}" class="ms-1"></i>
+                            </a>
+                        </th>
+                        <th class="text-center" scope="col">Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(nurses)}">
+                        <td colspan="5" class="text-center text-muted py-3">Nu au fost găsiți asistenți medicali.</td>
+                    </tr>
+                    <tr th:each="n : ${nurses}">
+                        <td th:text="${n.staffID}"></td>
+                        <td th:text="${n.staffName}"></td>
+                        <td th:text="${n.qualificationLevel}"></td>
+                        <td th:text="${n.departmentID}"></td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm shadow-sm">
+                                <a th:href="@{'/nurses/' + ${n.staffID}}" class="btn btn-outline-info" title="Detalii"><i class="fas fa-info-circle"></i></a>
+                                <a th:href="@{'/nurses/' + ${n.staffID} + '/edit'}" class="btn btn-outline-warning" title="Editează"><i class="fas fa-edit"></i></a>
+                                <form th:action="@{'/nurses/' + ${n.staffID} + '/delete'}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger" title="Șterge" onclick="return confirm('Ești sigur că vrei să ștergi acest asistent?');"><i class="fas fa-trash-alt"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
-<form th:action="@{/nurses}" method="get" th:object="${searchCriteria}" class="mb-4 p-3 border rounded bg-light">
-    <h4>Filtrare</h4>
-    <div class="row">
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Nume:</label>
-            <input type="text" class="form-control" th:field="*{staffName}" placeholder="Caută nume...">
-        </div>
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Email:</label>
-            <input type="text" class="form-control" th:field="*{staffEmail}" placeholder="Caută email...">
-        </div>
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Calificare:</label>
-            <select class="form-select" th:field="*{qualificationLevel}">
-                <option value="">-- Toate --</option>
-                <option th:each="q : ${qualifications}" th:value="${q}" th:text="${q}"></option>
-            </select>
-        </div>
-        <div class="col-md-3 mb-3">
-            <label class="form-label">Departament:</label>
-            <select class="form-select" th:field="*{departmentID}">
-                <option value="">-- Toate --</option>
-                <option th:each="d : ${departments}" th:value="${d.departmentID}" th:text="${d.departmentName}"></option>
-            </select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12 d-flex justify-content-end">
-            <input type="hidden" name="sortField" th:value="${sortField}">
-            <input type="hidden" name="sortDir" th:value="${sortDir}">
-            <button type="submit" class="btn btn-primary me-2">Filtrează</button>
-            <a th:href="@{/nurses}" class="btn btn-outline-secondary">Reset</a>
-        </div>
-    </div>
-</form>
-
-<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-<a th:href="@{/nurses/new}" class="btn btn-success mb-3">+ Adaugă Asistent</a>
-
-<table class="table table-bordered table-hover">
-    <thead class="table-light">
-    <tr>
-        <th>
-            <a th:href="@{/nurses(
-                sortField='staffID',
-                sortDir=${sortField == 'staffID' ? reverseSortDir : 'asc'},
-                staffName=${searchCriteria.staffName},
-                staffEmail=${searchCriteria.staffEmail},
-                qualificationLevel=${searchCriteria.qualificationLevel},
-                departmentID=${searchCriteria.departmentID}
-            )}">
-                ID
-                <span th:if="${sortField == 'staffID'}">
-                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
-                </span>
-            </a>
-        </th>
-        <th>
-            <a th:href="@{/nurses(
-                sortField='staffName',
-                sortDir=${sortField == 'staffName' ? reverseSortDir : 'asc'},
-                staffName=${searchCriteria.staffName},
-                staffEmail=${searchCriteria.staffEmail},
-                qualificationLevel=${searchCriteria.qualificationLevel},
-                departmentID=${searchCriteria.departmentID}
-            )}">
-                Nume
-                <span th:if="${sortField == 'staffName'}">
-                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
-                </span>
-            </a>
-        </th>
-        <th>
-            <a th:href="@{/nurses(
-                sortField='qualificationLevel',
-                sortDir=${sortField == 'qualificationLevel' ? reverseSortDir : 'asc'},
-                staffName=${searchCriteria.staffName},
-                staffEmail=${searchCriteria.staffEmail},
-                qualificationLevel=${searchCriteria.qualificationLevel},
-                departmentID=${searchCriteria.departmentID}
-            )}">
-                Calificare
-                <span th:if="${sortField == 'qualificationLevel'}">
-                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
-                </span>
-            </a>
-        </th>
-        <th>
-            <a th:href="@{/nurses(
-                sortField='department.id',
-                sortDir=${sortField == 'department.id' ? reverseSortDir : 'asc'},
-                staffName=${searchCriteria.staffName},
-                staffEmail=${searchCriteria.staffEmail},
-                qualificationLevel=${searchCriteria.qualificationLevel},
-                departmentID=${searchCriteria.departmentID}
-            )}">
-                Departament
-                <span th:if="${sortField == 'department.id'}">
-                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
-                </span>
-            </a>
-        </th>
-        <th>Acțiuni</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="n : ${nurses}">
-        <td th:text="${n.staffID}"></td>
-        <td th:text="${n.staffName}"></td>
-        <td th:text="${n.qualificationLevel}"></td>
-        <td th:text="${n.departmentID}"></td>
-        <td>
-            <div class="btn-group">
-                <a th:href="@{'/nurses/' + ${n.staffID}}" class="btn btn-info btn-sm">Detalii</a>
-                <a th:href="@{'/nurses/' + ${n.staffID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-                <form th:action="@{'/nurses/' + ${n.staffID} + '/delete'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
-                </form>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
