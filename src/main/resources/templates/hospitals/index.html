@@ -5,60 +5,107 @@
     <title>Lista Spitalelor</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        /* Opțional: Stil pentru săgeata neutră */
-        .sort-neutral {
-            color: #ccc; /* Gri deschis */
-            font-size: 0.8em;
-            margin-left: 5px;
-        }
+        .sort-neutral { color: #ccc; font-size: 0.8em; margin-left: 5px; }
+        a { text-decoration: none; }
     </style>
 </head>
 <body class="container mt-4">
 
 <h2>Spitale</h2>
 
-<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
-<a th:href="@{/hospitals/new}" class="btn btn-success mb-3">+ Adauga Spital</a>
+<form th:action="@{/hospitals}" method="get" th:object="${searchCriteria}" class="mb-4 p-3 border rounded bg-light">
+    <h4>Filtrare Spitale</h4>
+    <div class="row">
+        <div class="col-md-5 mb-3">
+            <label for="nameFilter" class="form-label">Nume Spital:</label>
+            <input type="text" class="form-control" id="nameFilter" th:field="*{hospitalName}" placeholder="Caută nume...">
+        </div>
+        <div class="col-md-5 mb-3">
+            <label for="cityFilter" class="form-label">Oraș:</label>
+            <input type="text" class="form-control" id="cityFilter" th:field="*{city}" placeholder="Caută oraș...">
+        </div>
+        <div class="col-md-2 d-flex align-items-end mb-3">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <button type="submit" class="btn btn-primary w-100">Filtrează</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <a th:href="@{/hospitals}" class="btn btn-outline-secondary btn-sm">Resetează Filtrele</a>
+        </div>
+    </div>
+</form>
+
+<hr>
+
+<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
+<a th:href="@{/hospitals/new}" class="btn btn-success mb-3">+ Adaugă Spital</a>
+
 <table class="table table-bordered table-hover">
-    <thead>
+    <thead class="table-light">
     <tr>
         <th>
-            <a th:href="@{/hospitals(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/hospitals(
+                 sortField='hospitalID',
+                 sortDir=${sortField == 'hospitalID' ? reverseSortDir : 'asc'},
+                 hospitalName=${searchCriteria.hospitalName},
+                 city=${searchCriteria.city})}">
                 ID
-                <span th:if="${sortField == 'id'}">
-                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span> </span>
-                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span> </a>
+                <span th:if="${sortField == 'hospitalID'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'hospitalID'}" class="sort-neutral">↕</span>
+            </a>
         </th>
+
         <th>
-            <a th:href="@{/hospitals(sortField='hospitalName', sortDir=${sortField == 'hospitalName' ? reverseSortDir : 'asc'})}">
-                Nume
+            <a th:href="@{/hospitals(
+                 sortField='hospitalName',
+                 sortDir=${sortField == 'hospitalName' ? reverseSortDir : 'asc'},
+                 hospitalName=${searchCriteria.hospitalName},
+                 city=${searchCriteria.city})}">
+                Nume Spital
                 <span th:if="${sortField == 'hospitalName'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'hospitalName'}" class="sort-neutral">↑↓</span> </a>
+                <span th:unless="${sortField == 'hospitalName'}" class="sort-neutral">↕</span>
+            </a>
         </th>
+
         <th>
-            <a th:href="@{/hospitals(sortField='city', sortDir=${sortField == 'city' ? reverseSortDir : 'asc'})}">
-                Oras
+            <a th:href="@{/hospitals(
+                 sortField='city',
+                 sortDir=${sortField == 'city' ? reverseSortDir : 'asc'},
+                 hospitalName=${searchCriteria.hospitalName},
+                 city=${searchCriteria.city})}">
+                Oraș
                 <span th:if="${sortField == 'city'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'city'}" class="sort-neutral">↑↓</span> </a>
+                <span th:unless="${sortField == 'city'}" class="sort-neutral">↕</span>
+            </a>
         </th>
-        <th>Actiuni</th>
+
+        <th>Acțiuni</th>
     </tr>
     </thead>
     <tbody>
+    <tr th:if="${#lists.isEmpty(hospitals)}">
+        <td colspan="4" class="text-center">Nu au fost găsite spitale.</td>
+    </tr>
     <tr th:each="h : ${hospitals}">
         <td th:text="${h.hospitalID}"></td>
         <td th:text="${h.hospitalName}"></td>
         <td th:text="${h.city}"></td>
         <td>
-            <a th:href="@{'/hospitals/' + ${h.hospitalID}}" class="btn btn-info btn-sm">Detalii</a>
-            <a th:href="@{'/hospitals/' + ${h.hospitalID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-            <form th:action="@{'/hospitals/' + ${h.hospitalID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur?');">Sterge</button>
-            </form>
+            <div class="btn-group" role="group">
+                <a th:href="@{'/hospitals/' + ${h.hospitalID}}" class="btn btn-info btn-sm">Detalii</a>
+                <a th:href="@{'/hospitals/' + ${h.hospitalID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+                <form th:action="@{'/hospitals/' + ${h.hospitalID} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur că vrei să ștergi acest spital?');">Șterge</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

@@ -2,55 +2,76 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lista Alocări Personal Medical</title>
+    <title>Lista Alocări Personal</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        .sort-neutral {
-            color: #ccc;
-            font-size: 0.8em;
-            margin-left: 5px;
-        }
+        .sort-neutral { color: #ccc; font-size: 0.8em; margin-left: 5px; }
+        a { text-decoration: none; }
     </style>
 </head>
 <body class="container mt-4">
 <h2>Alocări Personal Medical la Programări</h2>
 
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a th:href="@{/}" class="btn btn-secondary">Înapoi la meniu</a>
+</div>
+
+<form th:action="@{/medical-staff-appointments}" method="get" th:object="${searchCriteria}" class="mb-4 p-3 border rounded bg-light">
+    <h4>Filtrare</h4>
+    <div class="row">
+        <div class="col-md-5 mb-3">
+            <label class="form-label">ID Programare:</label>
+            <input type="text" class="form-control" th:field="*{appointmentID}" placeholder="Ex: 1">
+        </div>
+        <div class="col-md-5 mb-3">
+            <label class="form-label">ID Personal (Doctor/Asistent):</label>
+            <input type="text" class="form-control" th:field="*{medicalStaffID}" placeholder="Ex: 10">
+        </div>
+        <div class="col-md-2 d-flex align-items-end mb-3">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <button type="submit" class="btn btn-primary w-100 me-2">Filtrează</button>
+            <a th:href="@{/medical-staff-appointments}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
 <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-
-<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
 <a th:href="@{/medical-staff-appointments/new}" class="btn btn-success mb-3">+ Adaugă Alocare</a>
 
 <table class="table table-bordered table-hover">
-    <thead>
+    <thead class="table-light">
     <tr>
         <th>
-            <a th:href="@{/medical-staff-appointments(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/medical-staff-appointments(
+                sortField='medicalStaffAppointmentID',
+                sortDir=${sortField == 'medicalStaffAppointmentID' ? reverseSortDir : 'asc'},
+                appointmentID=${searchCriteria.appointmentID},
+                medicalStaffID=${searchCriteria.medicalStaffID}
+            )}">
                 ID Alocare
-                <span th:if="${sortField == 'id'}">
+                <span th:if="${sortField == 'medicalStaffAppointmentID'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/medical-staff-appointments(sortField='appointment.id', sortDir=${sortField == 'appointment.id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/medical-staff-appointments(
+                sortField='appointment.id',
+                sortDir=${sortField == 'appointment.id' ? reverseSortDir : 'asc'},
+                appointmentID=${searchCriteria.appointmentID},
+                medicalStaffID=${searchCriteria.medicalStaffID}
+            )}">
                 ID Programare
                 <span th:if="${sortField == 'appointment.id'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'appointment.id'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/medical-staff-appointments(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
-                ID Personal Medical
-                <span th:if="${sortField == 'id'}">
-                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
-                </span>
-                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
-            </a>
+            ID Personal Medical
         </th>
         <th>Acțiuni</th>
     </tr>
@@ -61,11 +82,13 @@
         <td th:text="${assignment.appointmentID}"></td>
         <td th:text="${assignment.medicalStaffID}"></td>
         <td>
-            <a th:href="@{'/medical-staff-appointments/' + ${assignment.medicalStaffAppointmentID}}" class="btn btn-info btn-sm">Detalii</a>
-            <a th:href="@{'/medical-staff-appointments/' + ${assignment.medicalStaffAppointmentID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-            <form th:action="@{'/medical-staff-appointments/' + ${assignment.medicalStaffAppointmentID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
-            </form>
+            <div class="btn-group">
+                <a th:href="@{'/medical-staff-appointments/' + ${assignment.medicalStaffAppointmentID}}" class="btn btn-info btn-sm">Detalii</a>
+                <a th:href="@{'/medical-staff-appointments/' + ${assignment.medicalStaffAppointmentID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+                <form th:action="@{'/medical-staff-appointments/' + ${assignment.medicalStaffAppointmentID} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

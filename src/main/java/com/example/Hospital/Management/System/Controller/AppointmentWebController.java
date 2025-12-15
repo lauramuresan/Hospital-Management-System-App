@@ -4,6 +4,7 @@ import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
 import com.example.Hospital.Management.System.Model.GeneralModel.Patient;
 import com.example.Hospital.Management.System.Model.GeneralModel.Room;
 import com.example.Hospital.Management.System.Model.Enums.AppointmentStatus;
+import com.example.Hospital.Management.System.SearchCriteria.AppointmentSearchCriteria;
 import com.example.Hospital.Management.System.Service.AppointmentService;
 import com.example.Hospital.Management.System.Service.PatientService;
 import com.example.Hospital.Management.System.Service.RoomService;
@@ -21,31 +22,38 @@ import jakarta.validation.Valid;
 @RequestMapping("/appointments")
 public class AppointmentWebController extends GenericWebController<Appointment> {
 
+    private final AppointmentService appointmentService;
     private final PatientService patientService;
     private final RoomService roomService;
 
     public AppointmentWebController(AppointmentService appointmentService,
                                     PatientService patientService,
                                     RoomService roomService) {
-
         super(appointmentService, "appointments", "appointment", "appointments");
-
+        this.appointmentService = appointmentService;
         this.patientService = patientService;
         this.roomService = roomService;
     }
 
-    @Override
     @GetMapping
     public String list(
             Model model,
-            @RequestParam(defaultValue = "admissionDate") String sortField,
-            @RequestParam(defaultValue = "asc") String sortDir) {
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @ModelAttribute("searchCriteria") AppointmentSearchCriteria searchCriteria) {
 
-        return super.list(model, sortField, sortDir);
+        model.addAttribute("appointments", appointmentService.findAllFiltered(sortField, sortDir, searchCriteria));
+
+        addDropdownsToModel(model);
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        return "appointments/index";
     }
 
     private void addDropdownsToModel(Model model) {
-        // Asigurati-va ca findAll returneaza DTO-uri (Patient, Room) sau Entitati.
         model.addAttribute("patients", patientService.findAll());
         model.addAttribute("rooms", roomService.findAll());
         model.addAttribute("statuses", AppointmentStatus.values());
@@ -61,12 +69,11 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
 
         model.addAttribute(modelName, appointment);
         addDropdownsToModel(model);
-
         return viewPath + "/form";
     }
 
     @Override
-    @GetMapping("/{id}/edit") // Mapeaza /appointments/{id}/edit
+    @GetMapping("/{id}/edit")
     public String editForm(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             String view = super.editForm(id, model, redirectAttributes);
@@ -78,7 +85,6 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
         }
     }
 
-    // Metoda de salvare (save-custom)
     @PostMapping("/save-custom")
     public String save(@Valid @ModelAttribute("appointment") Appointment domain,
                        BindingResult bindingResult,
@@ -99,31 +105,10 @@ public class AppointmentWebController extends GenericWebController<Appointment> 
             model.addAttribute("globalError", e.getMessage());
             addDropdownsToModel(model);
             return viewPath + "/form";
-
         } catch (Exception e) {
-            model.addAttribute("globalError", "A apărut o eroare neașteptată: " + e.getMessage());
+            model.addAttribute("globalError", "Eroare: " + e.getMessage());
             addDropdownsToModel(model);
             return viewPath + "/form";
-        }
-    }
-
-
-    @Override
-    @GetMapping("/{id}")
-    public String details(@PathVariable("id") String id, Model model, RedirectAttributes redirectAttributes) {
-        try {
-            Appointment appointment = service.getById(id);
-            Patient patient = patientService.findById(appointment.getPatientID());
-            Room room = roomService.findById(appointment.getRoomID());
-
-            model.addAttribute(modelName, appointment);
-            model.addAttribute("patientDetails", patient);
-            model.addAttribute("roomDetails", room);
-
-            return viewPath + "/details";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", modelName + " nu a fost găsit.");
-            return "redirect:/" + viewPath;
         }
     }
 }

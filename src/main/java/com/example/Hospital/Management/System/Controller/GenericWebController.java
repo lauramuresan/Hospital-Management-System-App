@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.lang.reflect.Method;
+
 public abstract class GenericWebController<T> {
 
     protected final BaseService<T> service;
@@ -23,10 +24,9 @@ public abstract class GenericWebController<T> {
         this.listName = listName;
     }
 
-    @GetMapping
     public String list(
             Model model,
-            @RequestParam(defaultValue = "hospitalID") String sortField,
+            @RequestParam(defaultValue = "id") String sortField,
             @RequestParam(defaultValue = "asc") String sortDir
     ) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField);
@@ -36,7 +36,6 @@ public abstract class GenericWebController<T> {
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-
 
         return viewPath + "/index";
     }
@@ -56,18 +55,13 @@ public abstract class GenericWebController<T> {
         }
         String action = "salvat";
         try {
-            Method getIdMethod = entity.getClass().getMethod(String.format("get%sID", modelName.substring(0, 1).toUpperCase() + modelName.substring(1)));
-            Object idValue = getIdMethod.invoke(entity);
-
-            if (idValue != null && !String.valueOf(idValue).isBlank()) {
-                action = "actualizat";
-            }
+            Method getIdMethod = entity.getClass().getMethod("get" + capitalize(modelName) + "ID");
         } catch (Exception ignored) {
         }
 
         try {
             service.create(entity);
-            redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost " + action + " cu succes.");
+            redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost salvat cu succes.");
             return "redirect:/" + viewPath;
 
         } catch (Exception e) {
@@ -75,6 +69,12 @@ public abstract class GenericWebController<T> {
             model.addAttribute("globalError", "Eroare: " + e.getMessage());
             return viewPath + "/form";
         }
+    }
+
+    // Helper pentru nume
+    private String capitalize(String str) {
+        if(str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     @GetMapping("/{id}")
@@ -116,7 +116,6 @@ public abstract class GenericWebController<T> {
             redirectAttributes.addFlashAttribute("successMessage", modelName + " a fost șters.");
             return "redirect:/" + viewPath;
         } catch (Exception e) {
-
             redirectAttributes.addFlashAttribute("errorMessage", "Eroare la ștergere: " + e.getMessage());
             return "redirect:/" + viewPath;
         }

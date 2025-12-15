@@ -4,13 +4,16 @@ import com.example.Hospital.Management.System.Model.GeneralModel.Room;
 import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
 import com.example.Hospital.Management.System.Model.DBModel.RoomEntity;
 import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+@Component
 public class RoomMapper {
 
-    public static RoomEntity toEntity(Room domain) {
+
+    public RoomEntity toEntity(Room domain) {
         if (domain == null) return null;
         RoomEntity entity = new RoomEntity();
         String idString = domain.getRoomID();
@@ -30,7 +33,8 @@ public class RoomMapper {
         return entity;
     }
 
-    public static Room toDomain(RoomEntity entity) {
+
+    public Room toDomain(RoomEntity entity) {
         if (entity == null) return null;
         Room domain = new Room();
         domain.setRoomID(entity.getId() != null ? String.valueOf(entity.getId()) : null);
@@ -40,7 +44,6 @@ public class RoomMapper {
         if (entity.getHospital() != null && entity.getHospital().getId() != null)
             domain.setHospitalID(String.valueOf(entity.getHospital().getId()));
 
-        // --- FIX: Creăm obiecte Appointment "sumare" (doar cu ID) ---
         if (entity.getAppointments() != null) {
             domain.setAppointments(entity.getAppointments().stream()
                     .map(appEntity -> {

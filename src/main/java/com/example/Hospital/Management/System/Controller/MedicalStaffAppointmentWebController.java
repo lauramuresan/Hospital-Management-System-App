@@ -1,6 +1,7 @@
 package com.example.Hospital.Management.System.Controller;
 
 import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffAppointment;
+import com.example.Hospital.Management.System.SearchCriteria.MedicalStaffAppointmentSearchCriteria; // IMPORT
 import com.example.Hospital.Management.System.Service.MedicalStaffAppointmentService;
 import com.example.Hospital.Management.System.Service.AppointmentService;
 import com.example.Hospital.Management.System.Service.DoctorService;
@@ -20,6 +21,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/medical-staff-appointments")
 public class MedicalStaffAppointmentWebController extends GenericWebController<MedicalStaffAppointment> {
 
+    private final MedicalStaffAppointmentService msaService;
     private final AppointmentService appointmentService;
     private final DoctorService doctorService;
     private final NurseService nurseService;
@@ -31,20 +33,28 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
             NurseService nurseService) {
 
         super(service, "medical-staff-appointments", "assignment", "medicalStaffAppointments");
-
+        this.msaService = service;
         this.appointmentService = appointmentService;
         this.doctorService = doctorService;
         this.nurseService = nurseService;
     }
 
-    @Override
     @GetMapping
     public String list(
             Model model,
-            @RequestParam(defaultValue = "id") String sortField, // <-- Sortare implicită corectă
-            @RequestParam(defaultValue = "asc") String sortDir) {
+            @RequestParam(defaultValue = "medicalStaffAppointmentID") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @ModelAttribute("searchCriteria") MedicalStaffAppointmentSearchCriteria searchCriteria) {
 
-        return super.list(model, sortField, sortDir);
+        model.addAttribute("medicalStaffAppointments", msaService.findAllFiltered(sortField, sortDir, searchCriteria));
+
+        addDropdownsToModel(model);
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+        return "medical-staff-appointments/index";
     }
 
     private void addDropdownsToModel(Model model) {
@@ -53,7 +63,6 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
         List<Object> allStaff = new ArrayList<>();
         allStaff.addAll(doctorService.findAll());
         allStaff.addAll(nurseService.findAll());
-
         model.addAttribute("medicalStaff", allStaff);
     }
 
@@ -62,7 +71,6 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
     public String showForm(Model model) {
         model.addAttribute(modelName, new MedicalStaffAppointment("", "", ""));
         addDropdownsToModel(model);
-
         return viewPath + "/form";
     }
 
@@ -89,21 +97,16 @@ public class MedicalStaffAppointmentWebController extends GenericWebController<M
                        BindingResult bindingResult,
                        Model model,
                        RedirectAttributes redirectAttributes) {
-
         if (bindingResult.hasErrors()) {
             addDropdownsToModel(model);
             return viewPath + "/form";
         }
-
         try {
             ((MedicalStaffAppointmentService) service).save(domain);
-
             String message = domain.getMedicalStaffAppointmentID() != null && !domain.getMedicalStaffAppointmentID().isEmpty()
                     ? "actualizată" : "salvată";
-
             redirectAttributes.addFlashAttribute("successMessage", "Alocare " + message + " cu succes!");
             return "redirect:/" + viewPath;
-
         } catch (RuntimeException e) {
             model.addAttribute("globalError", e.getMessage());
             addDropdownsToModel(model);

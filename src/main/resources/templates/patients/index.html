@@ -11,57 +11,113 @@
             font-size: 0.8em;
             margin-left: 5px;
         }
+        a { text-decoration: none; }
     </style>
 </head>
 <body class="container mt-4">
 <h2>Pacienți</h2>
 
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a th:href="@{/}" class="btn btn-secondary">Înapoi la meniu</a>
+</div>
+
+<form th:action="@{/patients}" method="get" th:object="${searchCriteria}" class="mb-4 p-3 border rounded bg-light">
+    <h4>Filtrare</h4>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Nume:</label>
+            <input type="text" class="form-control" th:field="*{patientName}" placeholder="Caută nume...">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Email:</label>
+            <input type="text" class="form-control" th:field="*{pacientEmail}" placeholder="Caută email...">
+        </div>
+        <div class="col-md-2 mb-3">
+            <label class="form-label">Născut după:</label>
+            <input type="date" class="form-control" th:field="*{patientBirthDateFrom}">
+        </div>
+        <div class="col-md-2 mb-3">
+            <label class="form-label">Născut înainte de:</label>
+            <input type="date" class="form-control" th:field="*{patientBirthDateTo}">
+        </div>
+        <div class="col-md-2 d-flex align-items-end mb-3">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <button type="submit" class="btn btn-primary me-2">Filtrează</button>
+            <a th:href="@{/patients}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
 <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
-<a th:href="@{/patients/new}" class="btn btn-success mb-3">+ Adauga Pacient</a>
+<a th:href="@{/patients/new}" class="btn btn-success mb-3">+ Adaugă Pacient</a>
 
 <table class="table table-bordered table-hover">
-    <thead>
+    <thead class="table-light">
     <tr>
         <th>
-            <a th:href="@{/patients(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/patients(
+                sortField='patientID',
+                sortDir=${sortField == 'patientID' ? reverseSortDir : 'asc'},
+                patientName=*{patientName},
+                pacientEmail=*{pacientEmail},
+                patientBirthDateFrom=*{patientBirthDateFrom},
+                patientBirthDateTo=*{patientBirthDateTo}
+            )}">
                 ID
-                <span th:if="${sortField == 'id'}">
+                <span th:if="${sortField == 'patientID'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/patients(sortField='patientName', sortDir=${sortField == 'patientName' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/patients(
+                sortField='patientName',
+                sortDir=${sortField == 'patientName' ? reverseSortDir : 'asc'},
+                patientName=*{patientName},
+                pacientEmail=*{pacientEmail},
+                patientBirthDateFrom=*{patientBirthDateFrom},
+                patientBirthDateTo=*{patientBirthDateTo}
+            )}">
                 Nume
                 <span th:if="${sortField == 'patientName'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'patientName'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/patients(sortField='pacientEmail', sortDir=${sortField == 'pacientEmail' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/patients(
+                sortField='pacientEmail',
+                sortDir=${sortField == 'pacientEmail' ? reverseSortDir : 'asc'},
+                patientName=*{patientName},
+                pacientEmail=*{pacientEmail},
+                patientBirthDateFrom=*{patientBirthDateFrom},
+                patientBirthDateTo=*{patientBirthDateTo}
+            )}">
                 Email
                 <span th:if="${sortField == 'pacientEmail'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'pacientEmail'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/patients(sortField='patientBirthDate', sortDir=${sortField == 'patientBirthDate' ? reverseSortDir : 'asc'})}">
-                Data Nasterii
+            <a th:href="@{/patients(
+                sortField='patientBirthDate',
+                sortDir=${sortField == 'patientBirthDate' ? reverseSortDir : 'asc'},
+                patientName=*{patientName},
+                pacientEmail=*{pacientEmail},
+                patientBirthDateFrom=*{patientBirthDateFrom},
+                patientBirthDateTo=*{patientBirthDateTo}
+            )}">
+                Data Nașterii
                 <span th:if="${sortField == 'patientBirthDate'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'patientBirthDate'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
-        <th>Actiuni</th>
+        <th>Acțiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -71,11 +127,13 @@
         <td th:text="${p.pacientEmail}"></td>
         <td th:text="${p.patientBirthDate}"></td>
         <td>
-            <a th:href="@{'/patients/' + ${p.patientID}}" class="btn btn-info btn-sm">Detalii</a>
-            <a th:href="@{'/patients/' + ${p.patientID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-            <form th:action="@{'/patients/' + ${p.patientID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur?');">Sterge</button>
-            </form>
+            <div class="btn-group">
+                <a th:href="@{'/patients/' + ${p.patientID}}" class="btn btn-info btn-sm">Detalii</a>
+                <a th:href="@{'/patients/' + ${p.patientID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+                <form th:action="@{'/patients/' + ${p.patientID} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

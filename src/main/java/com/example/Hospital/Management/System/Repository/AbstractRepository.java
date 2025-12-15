@@ -8,4 +8,5 @@ public interface AbstractRepository<T> {
     T findById(String id);
     List<T> findAll();
     List<T> findAll(Sort sort);
+    List<T> findAll(Object searchCriteria, Sort sort);
 }
