@@ -1,61 +1,91 @@
 package com.example.Hospital.Management.System.Repository.JPAAdaptor;
 
+import com.example.Hospital.Management.System.Mapper.MapperUtils;
 import com.example.Hospital.Management.System.Mapper.MedicalStaffAppointmentMapper;
+import com.example.Hospital.Management.System.Model.DBModel.AppointmentEntity;
+import com.example.Hospital.Management.System.Model.DBModel.DoctorEntity;
 import com.example.Hospital.Management.System.Model.DBModel.MedicalStaffAppointmentEntity;
+import com.example.Hospital.Management.System.Model.DBModel.NurseEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffAppointment;
+import com.example.Hospital.Management.System.SearchCriteria.MedicalStaffAppointmentSearchCriteria;
+import com.example.Hospital.Management.System.Repository.JPA.MedicalStaffAppointmentSpecification;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
+import com.example.Hospital.Management.System.Repository.DBRepository.DBAppointmentRepository;
+import com.example.Hospital.Management.System.Repository.DBRepository.DBDoctorRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBMedicalStaffAppointmentRepository;
-import org.springframework.data.domain.Sort; // IMPORT NOU
+import com.example.Hospital.Management.System.Repository.DBRepository.DBNurseRepository;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class MedicalStaffAppointmentAdaptor implements AbstractRepository<MedicalStaffAppointment> {
 
     private final DBMedicalStaffAppointmentRepository jpaRepository;
+    private final DBAppointmentRepository appointmentRepository;
+    private final DBDoctorRepository doctorRepository;
+    private final DBNurseRepository nurseRepository;
+    private final MedicalStaffAppointmentMapper mapper;
 
-    public MedicalStaffAppointmentAdaptor(DBMedicalStaffAppointmentRepository jpaRepository) {
+    public MedicalStaffAppointmentAdaptor(
+            DBMedicalStaffAppointmentRepository jpaRepository,
+            DBAppointmentRepository appointmentRepository,
+            DBDoctorRepository doctorRepository,
+            DBNurseRepository nurseRepository,
+            MedicalStaffAppointmentMapper mapper) {
         this.jpaRepository = jpaRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.doctorRepository = doctorRepository;
+        this.nurseRepository = nurseRepository;
+        this.mapper = mapper;
     }
 
     @Override
+    @Transactional
     public void save(MedicalStaffAppointment domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Alocarea Personalului Medical");
+        if (domain == null) throw new IllegalArgumentException("Domeniul nu poate fi null.");
 
-        // 1. Verifică ID-ul alocării pentru a determina INSERT sau UPDATE
-        String domainIdString = domain.getMedicalStaffAppointmentID();
-        Long existingId = RepositoryValidationUtils.parseIdOrNull(domainIdString);
+        Long appId = MapperUtils.parseLong(domain.getAppointmentID());
+        Long staffId = MapperUtils.parseLong(domain.getMedicalStaffID());
 
-        // 2. Extrage și validează ID-urile relațiilor
-        String appointmentIdString = domain.getAppointmentID();
-        String medicalStaffIdString = domain.getMedicalStaffID();
-
-        Long appointmentIdLong = RepositoryValidationUtils.parseIdOrThrow(appointmentIdString, "ID-ul Programării este invalid sau lipsește.");
-        Long medicalStaffIdLong = RepositoryValidationUtils.parseIdOrThrow(medicalStaffIdString, "ID-ul Personalului Medical este invalid sau lipsește.");
-
-        // 3. VALIDARE BUSINESS: Unicitate Programare + Personal
-        // Aplicăm validarea doar dacă este o intrare nouă (INSERT)
-        if (existingId == null) {
-            // Verificarea de unicitate: Programare + Personal Medical
-            // Notă: Logica de unicitate din Adaptor ar trebui să fie mai robustă (verificând doctor_id ȘI nurse_id).
-            // Aici ne bazăm pe presupunerea că Mapper-ul a setat doctor_id conform logicii stabilite anterior.
-            if (jpaRepository.existsByAppointmentIdAndDoctorId(appointmentIdLong, medicalStaffIdLong)) {
-                throw new RuntimeException("Eroare: Personalul medical cu ID-ul " + medicalStaffIdString + " este deja alocat programării " + appointmentIdString + ".");
-            }
+        if (appId == null || !appointmentRepository.existsById(appId)) {
+            throw new RuntimeException("Programarea specificată nu există.");
         }
 
-        // 4. MAPARE ȘI SALVARE
-        MedicalStaffAppointmentEntity entity;
+        // Determinăm dacă staffId aparține unui Doctor sau Asistent
+        boolean isDoctor = doctorRepository.existsById(staffId);
+        boolean isNurse = nurseRepository.existsById(staffId);
 
-        if (existingId != null) {
-            entity = jpaRepository.findById(existingId)
-                    .orElseThrow(() -> new RuntimeException("Alocarea cu ID-ul " + existingId + " nu a fost găsită pentru actualizare."));
+        if (!isDoctor && !isNurse) {
+            throw new RuntimeException("ID-ul personalului medical nu este valid (nu există nici ca Doctor, nici ca Asistent).");
+        }
 
-            MedicalStaffAppointmentMapper.mapDomainToEntity(domain, entity);
+        // Verificăm duplicat
+        if (isDoctor && jpaRepository.existsByAppointmentIdAndDoctorId(appId, staffId)) {
+            throw new RuntimeException("Acest doctor este deja alocat la această programare.");
+        }
+        if (isNurse && jpaRepository.existsByAppointmentIdAndNurseId(appId, staffId)) {
+            throw new RuntimeException("Acest asistent este deja alocat la această programare.");
+        }
+
+        MedicalStaffAppointmentEntity entity = new MedicalStaffAppointmentEntity();
+        if (domain.getMedicalStaffAppointmentID() != null) {
+            entity.setId(MapperUtils.parseLong(domain.getMedicalStaffAppointmentID()));
+        }
+
+        entity.setAppointment(MapperUtils.createEntityProxy(AppointmentEntity.class, domain.getAppointmentID()));
+
+        if (isDoctor) {
+            entity.setDoctor(MapperUtils.createEntityProxy(DoctorEntity.class, domain.getMedicalStaffID()));
+            entity.setNurse(null);
         } else {
-            entity = MedicalStaffAppointmentMapper.mapDomainToEntity(domain, null);
+            entity.setNurse(MapperUtils.createEntityProxy(NurseEntity.class, domain.getMedicalStaffID()));
+            entity.setDoctor(null);
         }
 
         jpaRepository.save(entity);
@@ -63,32 +93,40 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
 
     @Override
     public void delete(MedicalStaffAppointment domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Alocarea Personalului Medical");
-        RepositoryValidationUtils.requireIdForDelete(domain.getMedicalStaffAppointmentID(), "ID-ul alocării");
-
-        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getMedicalStaffAppointmentID(), "ID-ul alocării este invalid.");
-        jpaRepository.deleteById(id);
+        if (domain != null && domain.getMedicalStaffAppointmentID() != null) {
+            jpaRepository.deleteById(MapperUtils.parseLong(domain.getMedicalStaffAppointmentID()));
+        }
     }
 
     @Override
     public MedicalStaffAppointment findById(String id) {
-        Long parsed = RepositoryValidationUtils.parseIdOrNull(id);
+        Long parsed = MapperUtils.parseLong(id);
         if (parsed == null) return null;
-        return jpaRepository.findById(parsed).map(MedicalStaffAppointmentMapper::toDomain).orElse(null);
+        return jpaRepository.findById(parsed).map(mapper::toDomain).orElse(null);
     }
 
     @Override
     public List<MedicalStaffAppointment> findAll() {
-        return jpaRepository.findAll().stream().map(MedicalStaffAppointmentMapper::toDomain).collect(Collectors.toList());
+        return jpaRepository.findAllWithStaffAndAppointment().stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<MedicalStaffAppointment> findAll(Sort sort) {
-        if (sort == null) {
-            return findAll();
+        return findAll(null, sort);
+    }
+
+    @Override
+    public List<MedicalStaffAppointment> findAll(Object searchCriteria, Sort sort) {
+        Specification<MedicalStaffAppointmentEntity> spec = null;
+
+        if (searchCriteria instanceof MedicalStaffAppointmentSearchCriteria) {
+            spec = MedicalStaffAppointmentSpecification.filterByCriteria((MedicalStaffAppointmentSearchCriteria) searchCriteria);
         }
-        return jpaRepository.findAll(sort).stream()
-                .map(MedicalStaffAppointmentMapper::toDomain)
+
+        return jpaRepository.findAll(spec, sort).stream()
+                .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
 }

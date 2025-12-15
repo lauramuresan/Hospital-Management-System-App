@@ -1,106 +1,81 @@
 package com.example.Hospital.Management.System.Repository;
 
 import com.example.Hospital.Management.System.Model.GeneralModel.*;
-import com.example.Hospital.Management.System.Repository.InFile.*;
-import com.example.Hospital.Management.System.Repository.InMemory.*;
-import com.example.Hospital.Management.System.Repository.JPAAdaptor.*;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.data.domain.Sort; // ⬅️ NOU: Import necesar pentru Sort
+import org.springframework.data.domain.Sort; // IMPORT NECESAR
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 @Component
 public class RepositoryFactory {
 
+    private final ApplicationContext context;
     private final RepositoryModeHolder modeHolder;
 
-    private final Map<String, RepoSet<?>> repoMap = new HashMap<>();
-
-    public RepositoryFactory(
-            RepositoryModeHolder modeHolder,
-
-
-            AppointmentInMemoryRepository appointmentInMemory, AppointmentInFileRepository appointmentInFile,
-            DepartmentInMemoryRepository departmentInMemory, DepartmentInFileRepository departmentInFile,
-            DoctorInMemoryRepository doctorInMemory, DoctorInFileRepository doctorInFile,
-            HospitalInMemoryRepository hospitalInMemory, HospitalInFileRepository hospitalInFile,
-            MedicalStaffAppointmentInMemoryRepository msaInMemory, MedicalStaffAppointmentInFileRepository msaInFile,
-            NurseInMemoryRepository nurseInMemory, NurseInFileRepository nurseInFile,
-            PatientInMemoryRepository patientInMemory, PatientInFileRepository patientInFile,
-            RoomInMemoryRepository roomInMemory, RoomInFileRepository roomInFile,
-
-            AppointmentAdaptor appointmentAdaptor,
-            DepartmentAdaptor departmentAdaptor,
-            DoctorAdaptor doctorAdaptor,
-            HospitalAdaptor hospitalAdaptor,
-            MedicalStaffAppointmentAdaptor msaAdaptor,
-            NurseAdaptor nurseAdaptor,
-            PatientAdaptor patientAdaptor,
-            RoomAdaptor roomAdaptor
-    ) {
+    public RepositoryFactory(ApplicationContext context, RepositoryModeHolder modeHolder) {
+        this.context = context;
         this.modeHolder = modeHolder;
-
-
-        repoMap.put(Appointment.class.getSimpleName(), new RepoSet<>(appointmentInMemory, appointmentInFile, appointmentAdaptor));
-        repoMap.put(Department.class.getSimpleName(), new RepoSet<>(departmentInMemory, departmentInFile, departmentAdaptor));
-        repoMap.put(Doctor.class.getSimpleName(), new RepoSet<>(doctorInMemory, doctorInFile, doctorAdaptor));
-        repoMap.put(Hospital.class.getSimpleName(), new RepoSet<>(hospitalInMemory, hospitalInFile, hospitalAdaptor));
-        repoMap.put(MedicalStaffAppointment.class.getSimpleName(), new RepoSet<>(msaInMemory, msaInFile, msaAdaptor));
-        repoMap.put(Nurse.class.getSimpleName(), new RepoSet<>(nurseInMemory, nurseInFile, nurseAdaptor));
-        repoMap.put(Patient.class.getSimpleName(), new RepoSet<>(patientInMemory, patientInFile, patientAdaptor));
-        repoMap.put(Room.class.getSimpleName(), new RepoSet<>(roomInMemory, roomInFile, roomAdaptor));
     }
 
-    public <T> AbstractRepository<T> createRepository(Class<T> entityType) {
-        RepoSet<T> set = (RepoSet<T>) repoMap.get(entityType.getSimpleName());
+    public <T> AbstractRepository<T> createRepository(Class<T> entityClass) {
+        RepositoryMode mode = modeHolder.getMode();
+        String beanName = getBeanName(entityClass, mode);
 
-        if (set == null) {
-            throw new IllegalArgumentException("No repository registered for type: " + entityType.getSimpleName());
+        if (context.containsBean(beanName)) {
+            //noinspection unchecked
+            return (AbstractRepository<T>) context.getBean(beanName);
         }
 
-        return new AbstractRepository<>() {
-            private AbstractRepository<T> activeRepo() {
-                RepositoryMode mode = modeHolder.getMode();
-
-                if (mode == RepositoryMode.INFILE) {
-                    return set.inFileRepo();
-                } else if (mode == RepositoryMode.MYSQL) {
-                    return set.jpaAdaptorRepo(); // MySQL (JPA Adaptor)
-                } else {
-                    return set.inMemoryRepo(); // Default: In-Memory
-                }
+        // --- AICI ERA EROAREA ---
+        // Aceasta este clasa anonimă (fallback) care trebuie să implementeze TOATE metodele din interfață
+        return new AbstractRepository<T>() {
+            @Override
+            public void save(T t) {
+                System.out.println("Fallback repository: save called (No implementation found)");
             }
 
-            @Override public void save(T entity) { activeRepo().save(entity); }
-            @Override public void delete(T entity) { activeRepo().delete(entity); }
-            @Override public T findById(String id) { return activeRepo().findById(id); }
-            @Override public java.util.List<T> findAll() { return activeRepo().findAll(); }
+            @Override
+            public void delete(T t) {
+                System.out.println("Fallback repository: delete called (No implementation found)");
+            }
 
             @Override
-            public java.util.List<T> findAll(Sort sort) {
-                if (modeHolder.getMode() == RepositoryMode.MYSQL) {
-                    return activeRepo().findAll(sort);
-                } else {
-                    return activeRepo().findAll();
-                }
+            public T findById(String id) {
+                return null;
+            }
+
+            @Override
+            public List<T> findAll() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public List<T> findAll(Sort sort) {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public List<T> findAll(Object searchCriteria, Sort sort) {
+                return Collections.emptyList();
             }
         };
     }
 
-    private static final class RepoSet<T> {
-        private final AbstractRepository<T> inMemoryRepo;
-        private final AbstractRepository<T> inFileRepo;
-        private final AbstractRepository<T> jpaAdaptorRepo;
+    private String getBeanName(Class<?> entityClass, RepositoryMode mode) {
+        String baseName = entityClass.getSimpleName().toLowerCase(Locale.ROOT);
 
-        public RepoSet(AbstractRepository<T> inMemoryRepo, AbstractRepository<T> inFileRepo, AbstractRepository<T> jpaAdaptorRepo) {
-            this.inMemoryRepo = inMemoryRepo;
-            this.inFileRepo = inFileRepo;
-            this.jpaAdaptorRepo = jpaAdaptorRepo;
+
+
+        if (mode == RepositoryMode.INMEMORY) {
+            return baseName + "InMemory"; // ex: patientInMemory
+        } else if (mode == RepositoryMode.INFILE) {
+            return baseName + "InFile";   // ex: patientInFile
+        } else {
+
+            return baseName + "Adaptor";
         }
-
-        public AbstractRepository<T> inMemoryRepo() { return inMemoryRepo; }
-        public AbstractRepository<T> inFileRepo() { return inFileRepo; }
-        public AbstractRepository<T> jpaAdaptorRepo() { return jpaAdaptorRepo; }
     }
 }

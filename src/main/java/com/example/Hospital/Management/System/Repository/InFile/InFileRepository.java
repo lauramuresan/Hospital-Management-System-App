@@ -1,22 +1,24 @@
 package com.example.Hospital.Management.System.Repository.InFile;
 
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
-import com.example.Hospital.Management.System.Utils.ReflectionSorter; // ⬅️ IMPORT NOU
+import com.example.Hospital.Management.System.Utils.ReflectionSorter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
-import org.springframework.data.domain.Sort; // ⬅️ IMPORT NOU
+import org.springframework.data.domain.Sort;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public abstract class InFileRepository<T> implements AbstractRepository<T> {
 
@@ -48,15 +50,12 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
         try {
             File file = new File(filePath);
 
-            // Creează folderul și fișierul dacă nu există
             if (!file.exists()) {
-                System.out.println("Fișierul nu există, îl creez: " + filePath);
                 file.getParentFile().mkdirs();
                 mapper.writeValue(file, new ArrayList<T>());
                 return;
             }
 
-            // Dacă fișierul există, îl citim
             try (InputStream inputStream = new FileInputStream(file)) {
                 List<T> entities = mapper.readValue(
                         inputStream,
@@ -65,10 +64,6 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
                 );
 
                 entities.forEach(e -> dataStore.put(getId(e), e));
-
-                System.out.println(dataStore.size() + " "
-                        + entityType.getSimpleName()
-                        + " încărcate din " + filePath);
             }
 
         } catch (Exception e) {
@@ -84,7 +79,6 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
             List<T> entities = new ArrayList<>(dataStore.values());
             mapper.writeValue(file, entities);
 
-            System.out.println("Date salvate în " + filePath);
         } catch (IOException e) {
             throw new RuntimeException("Eroare la scrierea datelor în " + filePath, e);
         }
@@ -120,14 +114,57 @@ public abstract class InFileRepository<T> implements AbstractRepository<T> {
         return new ArrayList<>(dataStore.values());
     }
 
-
     @Override
     public synchronized List<T> findAll(Sort sort) {
+        return findAll(null, sort);
+    }
+
+    @Override
+    public synchronized List<T> findAll(Object searchCriteria, Sort sort) {
         List<T> list = findAll();
+
+        if (searchCriteria != null) {
+            list = list.stream().filter(entity -> matchesCriteria(entity, searchCriteria)).collect(Collectors.toList());
+        }
+
         if (sort != null && sort.isSorted() && !list.isEmpty()) {
             ReflectionSorter.sortList(list, entityType, sort);
         }
 
         return list;
+    }
+
+    private boolean matchesCriteria(T entity, Object criteria) {
+        Class<?> criteriaClass = criteria.getClass();
+
+        for (Field criteriaField : criteriaClass.getDeclaredFields()) {
+            criteriaField.setAccessible(true);
+            try {
+                Object criteriaValue = criteriaField.get(criteria);
+                String criteriaName = criteriaField.getName();
+
+                if (criteriaValue != null && criteriaValue instanceof String && !((String) criteriaValue).isEmpty()) {
+
+                    try {
+                        Field entityField = entityType.getDeclaredField(criteriaName);
+                        entityField.setAccessible(true);
+                        Object entityValue = entityField.get(entity);
+
+                        if (entityValue != null) {
+                            String entityString = entityValue.toString().toLowerCase();
+                            String criteriaString = ((String) criteriaValue).toLowerCase();
+
+                            if (!entityString.contains(criteriaString)) {
+                                return false;
+                            }
+                        }
+                    } catch (NoSuchFieldException ignored) {
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 }

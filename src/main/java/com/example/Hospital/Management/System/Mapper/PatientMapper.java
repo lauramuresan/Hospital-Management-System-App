@@ -3,13 +3,15 @@ package com.example.Hospital.Management.System.Mapper;
 import com.example.Hospital.Management.System.Model.GeneralModel.Patient;
 import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
 import com.example.Hospital.Management.System.Model.DBModel.PatientEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+@Component
 public class PatientMapper {
 
-    public static PatientEntity toEntity(Patient domain) {
+    public PatientEntity toEntity(Patient domain) {
         if (domain == null) return null;
         PatientEntity entity = new PatientEntity();
         String idString = domain.getPatientID();
@@ -28,7 +30,7 @@ public class PatientMapper {
         return entity;
     }
 
-    public static Patient toDomain(PatientEntity entity) {
+    public Patient toDomain(PatientEntity entity) {
         if (entity == null) return null;
         Patient domain = new Patient();
         domain.setPatientID(entity.getId() != null ? String.valueOf(entity.getId()) : null);
@@ -36,7 +38,7 @@ public class PatientMapper {
         domain.setPacientEmail(entity.getPacientEmail());
         domain.setPatientBirthDate(entity.getPatientBirthDate());
 
-        // --- FIX: Creăm obiecte Appointment "sumare" (doar cu ID) ---
+
         if (entity.getAppointmentList() != null) {
             domain.setAppointmentList(entity.getAppointmentList().stream()
                     .map(appEntity -> {

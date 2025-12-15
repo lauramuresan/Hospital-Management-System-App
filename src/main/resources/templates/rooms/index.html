@@ -5,67 +5,126 @@
     <title>Lista Camere</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        /* Stil pentru săgeata neutră */
-        .sort-neutral {
-            color: #ccc;
-            font-size: 0.8em;
-            margin-left: 5px;
-        }
+        .sort-neutral { color: #ccc; font-size: 0.8em; margin-left: 5px; }
+        a { text-decoration: none; }
     </style>
 </head>
 <body class="container mt-4">
 <h2>Camere</h2>
-<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
-<a th:href="@{/rooms/new}" class="btn btn-success mb-3">+ Adauga Camera</a>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a th:href="@{/}" class="btn btn-secondary">Înapoi la meniu</a>
+</div>
+
+<form th:action="@{/rooms}" method="get" th:object="${searchCriteria}" class="mb-4 p-3 border rounded bg-light">
+    <h4>Filtrare</h4>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Număr:</label>
+            <input type="text" class="form-control" th:field="*{number}" placeholder="Ex: 101">
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Spital:</label>
+            <select class="form-select" th:field="*{hospitalID}">
+                <option value="">-- Toate --</option>
+                <option th:each="h : ${hospitals}" th:value="${h.hospitalID}" th:text="${h.hospitalName}"></option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Status:</label>
+            <select class="form-select" th:field="*{status}">
+                <option value="">-- Toate --</option>
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Capacitate (Min - Max):</label>
+            <div class="input-group">
+                <input type="number" class="form-control" th:field="*{minCapacity}" placeholder="Min">
+                <input type="number" class="form-control" th:field="*{maxCapacity}" placeholder="Max">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 d-flex justify-content-end">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <button type="submit" class="btn btn-primary me-2">Filtrează</button>
+            <a th:href="@{/rooms}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
+<a th:href="@{/rooms/new}" class="btn btn-success mb-3">+ Adaugă Cameră</a>
 
 <table class="table table-bordered table-hover">
-    <thead>
+    <thead class="table-light">
     <tr>
         <th>
-            <a th:href="@{/rooms(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/rooms(
+                sortField='roomID',
+                sortDir=${sortField == 'roomID' ? reverseSortDir : 'asc'},
+                number=${searchCriteria.number},
+                hospitalID=${searchCriteria.hospitalID},
+                status=${searchCriteria.status},
+                minCapacity=${searchCriteria.minCapacity},
+                maxCapacity=${searchCriteria.maxCapacity}
+            )}">
                 ID
-                <span th:if="${sortField == 'id'}">
+                <span th:if="${sortField == 'roomID'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/rooms(sortField='number', sortDir=${sortField == 'number' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/rooms(
+                sortField='number',
+                sortDir=${sortField == 'number' ? reverseSortDir : 'asc'},
+                number=${searchCriteria.number},
+                hospitalID=${searchCriteria.hospitalID},
+                status=${searchCriteria.status},
+                minCapacity=${searchCriteria.minCapacity},
+                maxCapacity=${searchCriteria.maxCapacity}
+            )}">
                 Număr
                 <span th:if="${sortField == 'number'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'number'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/rooms(sortField='hospital.id', sortDir=${sortField == 'hospital.id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/rooms(
+                sortField='hospital.id',
+                sortDir=${sortField == 'hospital.id' ? reverseSortDir : 'asc'},
+                number=${searchCriteria.number},
+                hospitalID=${searchCriteria.hospitalID},
+                status=${searchCriteria.status},
+                minCapacity=${searchCriteria.minCapacity},
+                maxCapacity=${searchCriteria.maxCapacity}
+            )}">
                 ID Spital
                 <span th:if="${sortField == 'hospital.id'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'hospital.id'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/rooms(sortField='capacity', sortDir=${sortField == 'capacity' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/rooms(
+                sortField='capacity',
+                sortDir=${sortField == 'capacity' ? reverseSortDir : 'asc'},
+                number=${searchCriteria.number},
+                hospitalID=${searchCriteria.hospitalID},
+                status=${searchCriteria.status},
+                minCapacity=${searchCriteria.minCapacity},
+                maxCapacity=${searchCriteria.maxCapacity}
+            )}">
                 Capacitate
                 <span th:if="${sortField == 'capacity'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'capacity'}" class="sort-neutral">↑↓</span>
             </a>
         </th>
-        <th>
-            <a th:href="@{/rooms(sortField='status', sortDir=${sortField == 'status' ? reverseSortDir : 'asc'})}">
-                Status
-                <span th:if="${sortField == 'status'}">
-                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
-                </span>
-                <span th:unless="${sortField == 'status'}" class="sort-neutral">↑↓</span>
-            </a>
-        </th>
+        <th>Status</th>
         <th>Acțiuni</th>
     </tr>
     </thead>
@@ -74,15 +133,16 @@
         <td th:text="${r.roomID}"></td>
         <td th:text="${r.number}"></td>
         <td th:text="${r.hospitalID}"></td>
-
         <td th:text="${r.capacity}"></td>
         <td th:text="${r.status}"></td>
         <td>
-            <a th:href="@{'/rooms/' + ${r.roomID}}" class="btn btn-info btn-sm">Detalii</a>
-            <a th:href="@{'/rooms/' + ${r.roomID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-            <form th:action="@{'/rooms/' + ${r.roomID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
-            </form>
+            <div class="btn-group">
+                <a th:href="@{'/rooms/' + ${r.roomID}}" class="btn btn-info btn-sm">Detalii</a>
+                <a th:href="@{'/rooms/' + ${r.roomID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+                <form th:action="@{'/rooms/' + ${r.roomID} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

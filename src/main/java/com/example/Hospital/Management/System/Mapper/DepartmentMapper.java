@@ -3,10 +3,12 @@ package com.example.Hospital.Management.System.Mapper;
 import com.example.Hospital.Management.System.Model.DBModel.DepartmentEntity;
 import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Department;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DepartmentMapper {
 
-    public static DepartmentEntity toEntity(Department domain) {
+    public DepartmentEntity toEntity(Department domain) {
         if (domain == null) return null;
         DepartmentEntity entity = new DepartmentEntity();
 
@@ -17,7 +19,7 @@ public class DepartmentMapper {
         return entity;
     }
 
-    public static Department toDomain(DepartmentEntity entity) {
+    public Department toDomain(DepartmentEntity entity) {
         if (entity == null) return null;
         Department domain = new Department();
 

@@ -2,10 +2,13 @@ package com.example.Hospital.Management.System.Mapper;
 
 import com.example.Hospital.Management.System.Model.GeneralModel.Nurse;
 import com.example.Hospital.Management.System.Model.DBModel.NurseEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NurseMapper extends MedicalStaffMapper {
 
-    public static NurseEntity toEntity(Nurse domain) {
+
+    public NurseEntity toEntity(Nurse domain) {
         if (domain == null) return null;
         NurseEntity entity = new NurseEntity();
         mapBaseToEntity(domain, entity);
@@ -13,10 +16,9 @@ public class NurseMapper extends MedicalStaffMapper {
         return entity;
     }
 
-    public static Nurse toDomain(NurseEntity entity) {
+    public Nurse toDomain(NurseEntity entity) {
         if (entity == null) return null;
         Nurse domain = new Nurse();
-        // Apelează logica de bază care acum gestionează corect lista (doar ID-uri)
         mapBaseToDomain(entity, domain);
         domain.setQualificationLevel(entity.getNurseCategory());
         return domain;

@@ -5,67 +5,109 @@
     <title>Lista Departamente</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        .sort-neutral {
-            color: #ccc;
-            font-size: 0.8em;
-            margin-left: 5px;
-        }
+        .sort-neutral { color: #ccc; font-size: 0.8em; margin-left: 5px; }
+        a { text-decoration: none; }
     </style>
 </head>
 <body class="container mt-4">
-<h2>Departamente</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Departamente</h2>
+    <a th:href="@{/}" class="btn btn-secondary">Înapoi la meniu</a>
+</div>
+
+<form th:action="@{/departments}" method="get" th:object="${searchCriteria}" class="mb-4 p-3 border rounded bg-light">
+    <h4>Filtrare</h4>
+    <div class="row">
+        <div class="col-md-5 mb-3">
+            <label class="form-label">Nume Departament:</label>
+            <input type="text" class="form-control" th:field="*{departmentName}" placeholder="Caută nume...">
+        </div>
+        <div class="col-md-5 mb-3">
+            <label class="form-label">Spital:</label>
+            <select class="form-select" th:field="*{hospitalID}">
+                <option value="">-- Toate Spitalele --</option>
+                <option th:each="h : ${hospitals}" th:value="${h.hospitalID}" th:text="${h.hospitalName}"></option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end mb-3">
+            <input type="hidden" name="sortField" th:value="${sortField}">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+            <button type="submit" class="btn btn-primary w-100 me-2">Filtrează</button>
+            <a th:href="@{/departments}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+</form>
 
 <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-
-<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
-<a th:href="@{/departments/new}" class="btn btn-success mb-3">+ Adauga Departament</a>
+<a th:href="@{/departments/new}" class="btn btn-success mb-3">+ Adaugă Departament</a>
 
 <table class="table table-bordered table-hover">
-    <thead>
+    <thead class="table-light">
     <tr>
         <th>
-            <a th:href="@{/departments(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/departments(
+                sortField='departmentID',
+                sortDir=${sortField == 'departmentID' ? reverseSortDir : 'asc'},
+                departmentName=${searchCriteria.departmentName},
+                hospitalID=${searchCriteria.hospitalID}
+            )}">
                 ID
-                <span th:if="${sortField == 'id'}">
+                <span th:if="${sortField == 'departmentID'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+                <span th:unless="${sortField == 'departmentID'}" class="sort-neutral">↕</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/departments(sortField='departmentName', sortDir=${sortField == 'departmentName' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/departments(
+                sortField='departmentName',
+                sortDir=${sortField == 'departmentName' ? reverseSortDir : 'asc'},
+                departmentName=${searchCriteria.departmentName},
+                hospitalID=${searchCriteria.hospitalID}
+            )}">
                 Nume
                 <span th:if="${sortField == 'departmentName'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'departmentName'}" class="sort-neutral">↑↓</span>
+                <span th:unless="${sortField == 'departmentName'}" class="sort-neutral">↕</span>
             </a>
         </th>
         <th>
-            <a th:href="@{/departments(sortField='hospital.id', sortDir=${sortField == 'hospital.id' ? reverseSortDir : 'asc'})}">
+            <a th:href="@{/departments(
+                sortField='hospital.id',
+                sortDir=${sortField == 'hospital.id' ? reverseSortDir : 'asc'},
+                departmentName=${searchCriteria.departmentName},
+                hospitalID=${searchCriteria.hospitalID}
+            )}">
                 Spital ID
                 <span th:if="${sortField == 'hospital.id'}">
                     <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
                 </span>
-                <span th:unless="${sortField == 'hospital.id'}" class="sort-neutral">↑↓</span>
+                <span th:unless="${sortField == 'hospital.id'}" class="sort-neutral">↕</span>
             </a>
         </th>
-        <th>Actiuni</th>
+        <th>Acțiuni</th>
     </tr>
     </thead>
     <tbody>
+    <tr th:if="${#lists.isEmpty(departments)}">
+        <td colspan="4" class="text-center">Nu au fost găsite departamente.</td>
+    </tr>
     <tr th:each="d : ${departments}">
         <td th:text="${d.departmentID}"></td>
         <td th:text="${d.departmentName}"></td>
         <td th:text="${d.hospitalID}"></td>
         <td>
-            <a th:href="@{'/departments/' + ${d.departmentID}}" class="btn btn-info btn-sm">Detalii</a>
-            <a th:href="@{'/departments/' + ${d.departmentID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
-            <form th:action="@{'/departments/' + ${d.departmentID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur?');">Sterge</button>
-            </form>
+            <div class="btn-group">
+                <a th:href="@{'/departments/' + ${d.departmentID}}" class="btn btn-info btn-sm">Detalii</a>
+                <a th:href="@{'/departments/' + ${d.departmentID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
+                <form th:action="@{'/departments/' + ${d.departmentID} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur că vrei să ștergi acest departament?');">Șterge</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

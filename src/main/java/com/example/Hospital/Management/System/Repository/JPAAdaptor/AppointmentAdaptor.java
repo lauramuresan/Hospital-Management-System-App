@@ -4,15 +4,19 @@ import com.example.Hospital.Management.System.Mapper.AppointmentMapper;
 import com.example.Hospital.Management.System.Mapper.MapperUtils;
 import com.example.Hospital.Management.System.Model.DBModel.AppointmentEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Appointment;
+import com.example.Hospital.Management.System.SearchCriteria.AppointmentSearchCriteria; // IMPORT
+import com.example.Hospital.Management.System.Repository.JPA.AppointmentSpecification; // IMPORT
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBAppointmentRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBPatientRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBRoomRepository;
-import org.springframework.data.domain.Sort; // IMPORT NOU
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -21,18 +25,21 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
     private final DBAppointmentRepository jpaRepository;
     private final DBRoomRepository roomJpaRepository;
     private final DBPatientRepository patientJpaRepository;
+    private final AppointmentMapper mapper;
 
-    public AppointmentAdaptor(DBAppointmentRepository jpaRepository, DBRoomRepository roomJpaRepository, DBPatientRepository patientJpaRepository) {
+    public AppointmentAdaptor(DBAppointmentRepository jpaRepository,
+                              DBRoomRepository roomJpaRepository,
+                              DBPatientRepository patientJpaRepository,
+                              AppointmentMapper mapper) {
         this.jpaRepository = jpaRepository;
         this.roomJpaRepository = roomJpaRepository;
         this.patientJpaRepository = patientJpaRepository;
+        this.mapper = mapper;
     }
 
     @Override
     @Transactional
     public void save(Appointment domain) {
-
-        // 1. Validare Data/Ora (Business Validation: trecut)
         if (domain.getAdmissionDate() != null && domain.getAdmissionDate().isBefore(LocalDateTime.now().minusMinutes(1))) {
             throw new RuntimeException("Programarea nu poate fi stabilita pentru o data/ora din trecut.");
         }
@@ -40,7 +47,6 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
         Long roomId = MapperUtils.parseLong(domain.getRoomID());
         Long patientId = MapperUtils.parseLong(domain.getPatientID());
 
-        // 2. Validare existenta FK (ID invalid sau inexistent)
         if (roomId == null || !roomJpaRepository.existsById(roomId)) {
             throw new RuntimeException("Camera specificata nu exista sau ID-ul este invalid.");
         }
@@ -48,18 +54,16 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
             throw new RuntimeException("Pacientul specificat nu exista sau ID-ul este invalid.");
         }
 
-        // 3. Validare Suprapunere Programari
         if (isRoomOccupied(roomId, domain.getAdmissionDate(), domain.getAppointmentID())) {
             throw new RuntimeException("Camera " + domain.getRoomID() + " este ocupata la data si ora specificata.");
         }
 
-        jpaRepository.save(AppointmentMapper.toEntity(domain));
+        jpaRepository.save(mapper.toEntity(domain)); // Folosim instanța mapper
     }
 
     private boolean isRoomOccupied(Long roomId, LocalDateTime appointmentDateTime, String currentAppointmentId) {
         LocalDateTime startTime = appointmentDateTime;
         LocalDateTime endTime = appointmentDateTime.plusHours(1);
-
         LocalDateTime startWindow = startTime.minusHours(1).plusMinutes(1);
         LocalDateTime endWindow = endTime.minusMinutes(1);
 
@@ -75,7 +79,6 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
         return !overlappingAppointments.isEmpty();
     }
 
-
     @Override
     public void delete(Appointment domain) {
         if (domain.getAppointmentID() != null) {
@@ -87,7 +90,7 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
     public Appointment findById(String id) {
         try {
             return jpaRepository.findById(MapperUtils.parseLong(id))
-                    .map(AppointmentMapper::toDomain)
+                    .map(mapper::toDomain) // Folosim instanța mapper
                     .orElse(null);
         } catch (NumberFormatException e) { return null; }
     }
@@ -95,18 +98,25 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
     @Override
     public List<Appointment> findAll() {
         return jpaRepository.findAll().stream()
-                .map(AppointmentMapper::toDomain)
+                .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Appointment> findAll(Sort sort) {
-        if (sort == null) {
-            return findAll();
+        return findAll(null, sort);
+    }
+
+    @Override
+    public List<Appointment> findAll(Object searchCriteria, Sort sort) {
+        Specification<AppointmentEntity> spec = null;
+
+        if (searchCriteria instanceof AppointmentSearchCriteria) {
+            spec = AppointmentSpecification.filterByCriteria((AppointmentSearchCriteria) searchCriteria);
         }
 
-        return jpaRepository.findAll(sort).stream()
-                .map(AppointmentMapper::toDomain)
+        return jpaRepository.findAll(spec, sort).stream()
+                .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
 }

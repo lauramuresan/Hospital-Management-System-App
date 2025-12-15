@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public abstract class MedicalStaffMapper {
 
+
     protected static <D extends MedicalStaff, E extends MedicalStaffEntity> E mapBaseToEntity(D domain, E entity) {
         String idString = domain.getStaffID();
         if (idString != null && !idString.trim().isEmpty()) {
@@ -34,7 +35,6 @@ public abstract class MedicalStaffMapper {
         if (entity.getDepartment() != null && entity.getDepartment().getId() != null)
             domain.setDepartmentID(String.valueOf(entity.getDepartment().getId()));
 
-        // --- FIX: Creăm obiecte Appointment "sumare" (doar cu ID) ---
         if (entity.getMedicalStaffAppointments() != null) {
             domain.setAppointments(entity.getMedicalStaffAppointments().stream()
                     .map(msa -> {

@@ -1,9 +1,10 @@
 package com.example.Hospital.Management.System.Repository.InMemory;
 
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
-import com.example.Hospital.Management.System.Utils.ReflectionSorter; // ⬅️ IMPORT NOU
-import org.springframework.data.domain.Sort; // ⬅️ IMPORT NOU
+import com.example.Hospital.Management.System.Utils.ReflectionSorter;
+import org.springframework.data.domain.Sort;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -43,7 +44,16 @@ public abstract class InMemoryRepository<T> implements AbstractRepository<T> {
 
     @Override
     public List<T> findAll(Sort sort) {
+        return findAll(null, sort);
+    }
+
+    @Override
+    public List<T> findAll(Object searchCriteria, Sort sort) {
         List<T> list = findAll();
+
+        if (searchCriteria != null) {
+            list = list.stream().filter(entity -> matchesCriteria(entity, searchCriteria)).collect(Collectors.toList());
+        }
 
         if (sort != null && sort.isSorted() && !list.isEmpty()) {
             @SuppressWarnings("unchecked")
@@ -52,6 +62,40 @@ public abstract class InMemoryRepository<T> implements AbstractRepository<T> {
         }
 
         return list;
+    }
+
+    private boolean matchesCriteria(T entity, Object criteria) {
+        Class<?> criteriaClass = criteria.getClass();
+
+        for (Field criteriaField : criteriaClass.getDeclaredFields()) {
+            criteriaField.setAccessible(true);
+            try {
+                Object criteriaValue = criteriaField.get(criteria);
+                String criteriaName = criteriaField.getName();
+
+                if (criteriaValue != null && criteriaValue instanceof String && !((String) criteriaValue).isEmpty()) {
+
+                    try {
+                        Field entityField = entity.getClass().getDeclaredField(criteriaName);
+                        entityField.setAccessible(true);
+                        Object entityValue = entityField.get(entity);
+
+                        if (entityValue != null) {
+                            String entityString = entityValue.toString().toLowerCase();
+                            String criteriaString = ((String) criteriaValue).toLowerCase();
+
+                            if (!entityString.contains(criteriaString)) {
+                                return false;
+                            }
+                        }
+                    } catch (NoSuchFieldException ignored) {
+                    }
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
     }
 
     public void loadAll(List<T> list) {
