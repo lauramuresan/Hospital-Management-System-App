@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>Lista Pacienți</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        /* Stil pentru săgeata neutră */
+        .sort-neutral {
+            color: #ccc;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body class="container mt-4">
 <h2>Pacienți</h2>
@@ -11,17 +19,49 @@
 <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
-<a th:href="@{/patients/new}" class="btn btn-success mb-3">+ Adaugă Pacient</a>
+<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
+<a th:href="@{/patients/new}" class="btn btn-success mb-3">+ Adauga Pacient</a>
 
 <table class="table table-bordered table-hover">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Nume</th>
-        <th>Email</th>
-        <th>Data Nașterii</th>
-        <th>Acțiuni</th>
+        <th>
+            <a th:href="@{/patients(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+                ID
+                <span th:if="${sortField == 'id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/patients(sortField='patientName', sortDir=${sortField == 'patientName' ? reverseSortDir : 'asc'})}">
+                Nume
+                <span th:if="${sortField == 'patientName'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'patientName'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/patients(sortField='pacientEmail', sortDir=${sortField == 'pacientEmail' ? reverseSortDir : 'asc'})}">
+                Email
+                <span th:if="${sortField == 'pacientEmail'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'pacientEmail'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/patients(sortField='patientBirthDate', sortDir=${sortField == 'patientBirthDate' ? reverseSortDir : 'asc'})}">
+                Data Nasterii
+                <span th:if="${sortField == 'patientBirthDate'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'patientBirthDate'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>Actiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -34,7 +74,7 @@
             <a th:href="@{'/patients/' + ${p.patientID}}" class="btn btn-info btn-sm">Detalii</a>
             <a th:href="@{'/patients/' + ${p.patientID} + '/edit'}" class="btn btn-warning btn-sm">Editare</a>
             <form th:action="@{'/patients/' + ${p.patientID} + '/delete'}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Ești sigur?');">Șterge</button>
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Esti sigur?');">Sterge</button>
             </form>
         </td>
     </tr>

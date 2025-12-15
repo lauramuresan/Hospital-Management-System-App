@@ -4,10 +4,11 @@ import com.example.Hospital.Management.System.Mapper.NurseMapper;
 import com.example.Hospital.Management.System.Mapper.MapperUtils;
 import com.example.Hospital.Management.System.Model.DBModel.NurseEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Nurse;
-import com.example.Hospital.Management.System.Model.GeneralModel.Department; // << NOU
+import com.example.Hospital.Management.System.Model.GeneralModel.Department;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBNurseRepository;
-import org.springframework.beans.factory.annotation.Qualifier; // << NECESAR
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort; // IMPORT NOU
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,12 +18,11 @@ import java.util.stream.Collectors;
 public class NurseAdaptor implements AbstractRepository<Nurse> {
 
     private final DBNurseRepository jpaRepository;
-    // 💡 Injectăm repository-ul pentru Departament pentru validarea FK
-    private final AbstractRepository<Department> departmentRepository; // << NOU
+    private final AbstractRepository<Department> departmentRepository;
 
     public NurseAdaptor(
             DBNurseRepository jpaRepository,
-            @Qualifier("departmentAdaptor") AbstractRepository<Department> departmentRepository // << Constructor Modificat
+            @Qualifier("departmentAdaptor") AbstractRepository<Department> departmentRepository
     ) {
         this.jpaRepository = jpaRepository;
         this.departmentRepository = departmentRepository;
@@ -30,7 +30,13 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
 
     @Override
     public void save(Nurse domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Asistentul Medical");
+        if (domain == null) {
+            throw new IllegalArgumentException("Asistentul Medical nu poate fi null.");
+        }
+
+        if (domain.getQualificationLevel() == null) {
+            throw new RuntimeException("Categoria (Nivelul de Calificare) este obligatorie.");
+        }
 
         // 1. VALIDARE FK: Verificarea existenței Departamentului
         validateDepartmentExists(domain.getDepartmentID());
@@ -38,25 +44,19 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
         // 2. VALIDARE BUSINESS: Unicitatea Email-ului
         if (domain.getStaffID() == null || !isExistingEmail(domain)) {
             if (jpaRepository.existsByStaffEmail(domain.getStaffEmail())) {
-                throw new RuntimeException("Adresa de email '" + domain.getStaffEmail() + "' este deja utilizată de un alt membru al personalului.");
+                throw new RuntimeException("Adresa de email '" + domain.getStaffEmail() + "' este deja utilizata de un alt membru al personalului.");
             }
         }
         jpaRepository.save(NurseMapper.toEntity(domain));
     }
 
-    /**
-     * Verifică dacă ID-ul de Departament furnizat există. Aruncă excepție
-     * dacă departamentul nu este găsit.
-     */
     private void validateDepartmentExists(String departmentId) {
         if (departmentId != null) {
-            // Caută departamentul după ID folosind repository-ul injectat
             Department department = departmentRepository.findById(departmentId);
 
-            // Dacă departamentul nu este găsit, aruncă o eroare lizibilă
             if (department == null) {
                 throw new RuntimeException("Departamentul cu ID-ul '" + departmentId +
-                        "' nu există. Vă rugăm să introduceți un ID de departament valid pentru asistentul medical.");
+                        "' nu exista. Va rugam sa introduceti un ID de departament valid pentru asistentul medical.");
             }
         }
     }
@@ -76,16 +76,24 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
 
     @Override
     public void delete(Nurse domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Asistentul Medical");
-        RepositoryValidationUtils.requireIdForDelete(domain.getStaffID(), "ID-ul asistentului");
+        if (domain == null) {
+            throw new IllegalArgumentException("Asistentul Medical nu poate fi null.");
+        }
+        if (domain.getStaffID() == null || domain.getStaffID().trim().isEmpty()) {
+            throw new IllegalArgumentException("ID-ul asistentului trebuie specificat pentru stergere.");
+        }
 
-        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getStaffID(), "ID-ul asistentului este invalid.");
+        Long id = MapperUtils.parseLong(domain.getStaffID());
+        if (id == null) {
+            throw new IllegalArgumentException("ID-ul asistentului este invalid.");
+        }
+
         jpaRepository.deleteById(id);
     }
 
     @Override
     public Nurse findById(String id) {
-        Long parsed = RepositoryValidationUtils.parseIdOrNull(id);
+        Long parsed = MapperUtils.parseLong(id);
         if (parsed == null) return null;
         return jpaRepository.findById(parsed).map(NurseMapper::toDomain).orElse(null);
     }
@@ -93,5 +101,15 @@ public class NurseAdaptor implements AbstractRepository<Nurse> {
     @Override
     public List<Nurse> findAll() {
         return jpaRepository.findAll().stream().map(NurseMapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Nurse> findAll(Sort sort) {
+        if (sort == null) {
+            return findAll();
+        }
+        return jpaRepository.findAll(sort).stream()
+                .map(NurseMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

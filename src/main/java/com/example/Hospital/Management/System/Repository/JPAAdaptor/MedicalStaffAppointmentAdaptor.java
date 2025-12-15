@@ -5,6 +5,7 @@ import com.example.Hospital.Management.System.Model.DBModel.MedicalStaffAppointm
 import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffAppointment;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBMedicalStaffAppointmentRepository;
+import org.springframework.data.domain.Sort; // IMPORT NOU
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,28 +39,25 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
         // Aplicăm validarea doar dacă este o intrare nouă (INSERT)
         if (existingId == null) {
             // Verificarea de unicitate: Programare + Personal Medical
+            // Notă: Logica de unicitate din Adaptor ar trebui să fie mai robustă (verificând doctor_id ȘI nurse_id).
+            // Aici ne bazăm pe presupunerea că Mapper-ul a setat doctor_id conform logicii stabilite anterior.
             if (jpaRepository.existsByAppointmentIdAndDoctorId(appointmentIdLong, medicalStaffIdLong)) {
                 throw new RuntimeException("Eroare: Personalul medical cu ID-ul " + medicalStaffIdString + " este deja alocat programării " + appointmentIdString + ".");
             }
         }
 
-        // 4. MAPARE ȘI SALVARE (Logică UPDATE/INSERT)
-
+        // 4. MAPARE ȘI SALVARE
         MedicalStaffAppointmentEntity entity;
 
         if (existingId != null) {
-            // OPERAȚIE UPDATE: Încărcăm entitatea existentă din DB
             entity = jpaRepository.findById(existingId)
                     .orElseThrow(() -> new RuntimeException("Alocarea cu ID-ul " + existingId + " nu a fost găsită pentru actualizare."));
 
-            // Mapăm noile date pe entitatea existentă
             MedicalStaffAppointmentMapper.mapDomainToEntity(domain, entity);
         } else {
-            // OPERAȚIE INSERT: Cream o entitate nouă și o mapăm
             entity = MedicalStaffAppointmentMapper.mapDomainToEntity(domain, null);
         }
 
-        // Salvarea va face UPDATE sau INSERT în funcție de prezența ID-ului pe entitate
         jpaRepository.save(entity);
     }
 
@@ -82,5 +80,15 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
     @Override
     public List<MedicalStaffAppointment> findAll() {
         return jpaRepository.findAll().stream().map(MedicalStaffAppointmentMapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MedicalStaffAppointment> findAll(Sort sort) {
+        if (sort == null) {
+            return findAll();
+        }
+        return jpaRepository.findAll(sort).stream()
+                .map(MedicalStaffAppointmentMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

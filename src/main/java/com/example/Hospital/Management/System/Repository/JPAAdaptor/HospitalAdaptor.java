@@ -1,11 +1,13 @@
 package com.example.Hospital.Management.System.Repository.JPAAdaptor;
 
 import com.example.Hospital.Management.System.Mapper.HospitalMapper;
+import com.example.Hospital.Management.System.Mapper.MapperUtils; // Folosim MapperUtils
 import com.example.Hospital.Management.System.Model.DBModel.HospitalEntity;
 import com.example.Hospital.Management.System.Model.GeneralModel.Hospital;
 import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBHospitalRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +23,10 @@ public class HospitalAdaptor implements AbstractRepository<Hospital> {
 
     @Override
     public void save(Hospital domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Spitalul");
+        if (domain == null) {
+            throw new IllegalArgumentException("Spitalul nu poate fi null.");
+        }
 
-        // 1. Unicitatea Numelui Spitalului
         if (domain.getHospitalID() == null || !isExistingHospitalName(domain)) {
             if (jpaRepository.existsByHospitalName(domain.getHospitalName())) {
                 throw new RuntimeException("Numele spitalului '" + domain.getHospitalName() + "' există deja. Fiecare spital trebuie să aibă un nume unic.");
@@ -36,7 +39,7 @@ public class HospitalAdaptor implements AbstractRepository<Hospital> {
     private boolean isExistingHospitalName(Hospital domain) {
         if (domain.getHospitalID() == null) return false;
         try {
-            Long id = RepositoryValidationUtils.parseIdOrNull(domain.getHospitalID());
+            Long id = MapperUtils.parseLong(domain.getHospitalID());
             if (id == null) return false;
             return jpaRepository.findById(id)
                     .map(HospitalEntity::getHospitalName)
@@ -50,16 +53,24 @@ public class HospitalAdaptor implements AbstractRepository<Hospital> {
 
     @Override
     public void delete(Hospital domain) {
-        RepositoryValidationUtils.requireDomainNonNull(domain, "Spitalul");
-        RepositoryValidationUtils.requireIdForDelete(domain.getHospitalID(), "ID-ul spitalului");
+        if (domain == null) {
+            throw new IllegalArgumentException("Spitalul nu poate fi null.");
+        }
+        if (domain.getHospitalID() == null || domain.getHospitalID().trim().isEmpty()) {
+            throw new IllegalArgumentException("ID-ul spitalului trebuie specificat pentru ștergere.");
+        }
 
-        Long id = RepositoryValidationUtils.parseIdOrThrow(domain.getHospitalID(), "ID-ul spitalului este invalid.");
+        Long id = MapperUtils.parseLong(domain.getHospitalID());
+        if (id == null) {
+            throw new IllegalArgumentException("ID-ul spitalului este invalid.");
+        }
+
         jpaRepository.deleteById(id);
     }
 
     @Override
     public Hospital findById(String id) {
-        Long parsed = RepositoryValidationUtils.parseIdOrNull(id);
+        Long parsed = MapperUtils.parseLong(id);
         if (parsed == null) return null;
         return jpaRepository.findById(parsed).map(HospitalMapper::toDomain).orElse(null);
     }
@@ -67,5 +78,17 @@ public class HospitalAdaptor implements AbstractRepository<Hospital> {
     @Override
     public List<Hospital> findAll() {
         return jpaRepository.findAll().stream().map(HospitalMapper::toDomain).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Hospital> findAll(Sort sort) {
+
+        if (sort == null) {
+            return findAll();
+        }
+
+        return jpaRepository.findAll(sort).stream()
+                .map(HospitalMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

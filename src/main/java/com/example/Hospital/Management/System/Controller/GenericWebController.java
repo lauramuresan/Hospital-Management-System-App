@@ -2,6 +2,7 @@ package com.example.Hospital.Management.System.Controller;
 
 import com.example.Hospital.Management.System.Service.BaseService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,20 @@ public abstract class GenericWebController<T> {
     }
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute(listName, service.getAll());
+    public String list(
+            Model model,
+            @RequestParam(defaultValue = "hospitalID") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortField);
+
+        model.addAttribute(listName, service.getAll(sort));
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+
+
         return viewPath + "/index";
     }
 

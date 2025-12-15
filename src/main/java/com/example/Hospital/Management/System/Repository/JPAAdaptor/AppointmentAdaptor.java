@@ -8,6 +8,7 @@ import com.example.Hospital.Management.System.Repository.AbstractRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBAppointmentRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBPatientRepository;
 import com.example.Hospital.Management.System.Repository.DBRepository.DBRoomRepository;
+import org.springframework.data.domain.Sort; // IMPORT NOU
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -33,23 +34,23 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
 
         // 1. Validare Data/Ora (Business Validation: trecut)
         if (domain.getAdmissionDate() != null && domain.getAdmissionDate().isBefore(LocalDateTime.now().minusMinutes(1))) {
-            throw new RuntimeException("Programarea nu poate fi stabilită pentru o dată/oră din trecut.");
+            throw new RuntimeException("Programarea nu poate fi stabilita pentru o data/ora din trecut.");
         }
 
         Long roomId = MapperUtils.parseLong(domain.getRoomID());
         Long patientId = MapperUtils.parseLong(domain.getPatientID());
 
-        // 2. Validare existență FK (ID invalid sau inexistent)
+        // 2. Validare existenta FK (ID invalid sau inexistent)
         if (roomId == null || !roomJpaRepository.existsById(roomId)) {
-            throw new RuntimeException("Camera specificată nu există sau ID-ul este invalid.");
+            throw new RuntimeException("Camera specificata nu exista sau ID-ul este invalid.");
         }
         if (patientId == null || !patientJpaRepository.existsById(patientId)) {
-            throw new RuntimeException("Pacientul specificat nu există sau ID-ul este invalid.");
+            throw new RuntimeException("Pacientul specificat nu exista sau ID-ul este invalid.");
         }
 
-        // 3. Validare Suprapunere Programări
+        // 3. Validare Suprapunere Programari
         if (isRoomOccupied(roomId, domain.getAdmissionDate(), domain.getAppointmentID())) {
-            throw new RuntimeException("Camera " + domain.getRoomID() + " este ocupată la data și ora specificată.");
+            throw new RuntimeException("Camera " + domain.getRoomID() + " este ocupata la data si ora specificata.");
         }
 
         jpaRepository.save(AppointmentMapper.toEntity(domain));
@@ -94,6 +95,17 @@ public class AppointmentAdaptor implements AbstractRepository<Appointment> {
     @Override
     public List<Appointment> findAll() {
         return jpaRepository.findAll().stream()
+                .map(AppointmentMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Appointment> findAll(Sort sort) {
+        if (sort == null) {
+            return findAll();
+        }
+
+        return jpaRepository.findAll(sort).stream()
                 .map(AppointmentMapper::toDomain)
                 .collect(Collectors.toList());
     }

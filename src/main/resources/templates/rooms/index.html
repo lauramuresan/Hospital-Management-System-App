@@ -4,25 +4,68 @@
     <meta charset="UTF-8">
     <title>Lista Camere</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        /* Stil pentru săgeata neutră */
+        .sort-neutral {
+            color: #ccc;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body class="container mt-4">
 <h2>Camere</h2>
-
-<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-
-<a th:href="@{/}" class="btn btn-secondary mb-3">Înapoi la meniu</a>
-<a th:href="@{/rooms/new}" class="btn btn-success mb-3">+ Adaugă Cameră</a>
+<a th:href="@{/}" class="btn btn-secondary mb-3">Inapoi la meniu</a>
+<a th:href="@{/rooms/new}" class="btn btn-success mb-3">+ Adauga Camera</a>
 
 <table class="table table-bordered table-hover">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>Număr</th>
-        <th>ID Spital</th>
-        <th>Capacitate</th>
-        <th>Status</th>
+        <th>
+            <a th:href="@{/rooms(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+                ID
+                <span th:if="${sortField == 'id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/rooms(sortField='number', sortDir=${sortField == 'number' ? reverseSortDir : 'asc'})}">
+                Număr
+                <span th:if="${sortField == 'number'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'number'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/rooms(sortField='hospital.id', sortDir=${sortField == 'hospital.id' ? reverseSortDir : 'asc'})}">
+                ID Spital
+                <span th:if="${sortField == 'hospital.id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'hospital.id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/rooms(sortField='capacity', sortDir=${sortField == 'capacity' ? reverseSortDir : 'asc'})}">
+                Capacitate
+                <span th:if="${sortField == 'capacity'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'capacity'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/rooms(sortField='status', sortDir=${sortField == 'status' ? reverseSortDir : 'asc'})}">
+                Status
+                <span th:if="${sortField == 'status'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'status'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
         <th>Acțiuni</th>
     </tr>
     </thead>
@@ -31,6 +74,7 @@
         <td th:text="${r.roomID}"></td>
         <td th:text="${r.number}"></td>
         <td th:text="${r.hospitalID}"></td>
+
         <td th:text="${r.capacity}"></td>
         <td th:text="${r.status}"></td>
         <td>

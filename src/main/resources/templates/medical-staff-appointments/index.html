@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Lista Alocări Personal Medical</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        .sort-neutral {
+            color: #ccc;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body class="container mt-4">
 <h2>Alocări Personal Medical la Programări</h2>
@@ -18,9 +25,33 @@
 <table class="table table-bordered table-hover">
     <thead>
     <tr>
-        <th>ID Alocare</th>
-        <th>ID Programare</th>
-        <th>ID Personal Medical</th>
+        <th>
+            <a th:href="@{/medical-staff-appointments(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+                ID Alocare
+                <span th:if="${sortField == 'id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/medical-staff-appointments(sortField='appointment.id', sortDir=${sortField == 'appointment.id' ? reverseSortDir : 'asc'})}">
+                ID Programare
+                <span th:if="${sortField == 'appointment.id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'appointment.id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/medical-staff-appointments(sortField='id', sortDir=${sortField == 'id' ? reverseSortDir : 'asc'})}">
+                ID Personal Medical
+                <span th:if="${sortField == 'id'}">
+                    <span th:text="${sortDir == 'asc' ? '↑' : '↓'}"></span>
+                </span>
+                <span th:unless="${sortField == 'id'}" class="sort-neutral">↑↓</span>
+            </a>
+        </th>
         <th>Acțiuni</th>
     </tr>
     </thead>
