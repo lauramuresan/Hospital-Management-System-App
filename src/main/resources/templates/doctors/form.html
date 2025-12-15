@@ -2,59 +2,115 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${doctor != null and doctor.staffID != null and doctor.staffID != ''} ? 'Edit Doctor' : 'Create Doctor'">Create/Edit Doctor</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${doctor != null and doctor.staffID != null and doctor.staffID != ''} ? 'Editează Doctor' : 'Adaugă Doctor'"></title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link th:href="@{/css/custom.css}" rel="stylesheet">
+
+    <style>
+        /* [Stilurile Teal copiate] */
+        .text-primary-discreet { color: #495057 !important; }
+        .text-primary { color: #004c4c !important; }
+        .bg-primary { background-color: #00796b !important; }
+        .border-primary { border-color: #00796b !important; }
+        .btn-primary { background-color: #00796b; border-color: #00796b; }
+        .btn-primary:hover { background-color: #004c4c; border-color: #004c4c; }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
 
-    <h2 th:text="${doctor != null and doctor.staffID != null and doctor.staffID != ''} ? 'Edit Doctor' : 'Create Doctor'">Create/Edit Doctor</h2>
-
-    <div th:if="${globalError}" class="alert alert-danger mt-3" th:text="${globalError}"></div>
-
-    <form th:object="${doctor}" th:action="@{/doctors}" method="post">
-
-        <input type="hidden" th:if="${doctor != null and doctor.staffID != null and doctor.staffID != ''}" th:field="*{staffID}" />
-
-        <div class="mb-3">
-            <label for="staffName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="staffName" th:field="*{staffName}" required>
-            <div class="alert alert-warning" th:if="${#fields.hasErrors('staffName')}" th:errors="*{staffName}"></div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            🏥 **HMS** (Hospital Management System)
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/hospitals}">Spitale</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/doctors}">Doctori</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/patients}">Pacienți</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-sm btn-outline-light ms-3" th:href="@{/}">Meniu Principal</a>
+                </li>
+            </ul>
         </div>
+    </div>
+</nav>
 
-        <div class="mb-3">
-            <label for="staffEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="staffEmail" th:field="*{staffEmail}" required>
-            <div class="alert alert-warning" th:if="${#fields.hasErrors('staffEmail')}" th:errors="*{staffEmail}"></div>
+<div class="container mt-4 mb-5">
+
+    <h1 class="fw-semibold mb-4 text-primary" th:text="${doctor.staffID != null and doctor.staffID != ''} ? '📝 Editează Doctor' : '➕ Adaugă Doctor Nou'"></h1>
+
+    <div th:if="${globalError}" class="alert alert-danger" th:text="${globalError}"></div>
+
+    <div class="card shadow-lg border-primary border-3">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0" th:text="${doctor.staffID != null and doctor.staffID != ''} ? 'Editează Detaliile Doctorului' : 'Introduceți Detaliile Doctorului'"></h5>
         </div>
+        <form th:object="${doctor}" th:action="@{/doctors}" method="post" class="card-body">
 
-        <div class="mb-3">
-            <label for="departmentID" class="form-label">Department ID</label>
-            <input type="text" class="form-control" id="departmentID" th:field="*{departmentID}" required>
-            <div class="alert alert-warning" th:if="${#fields.hasErrors('departmentID')}" th:errors="*{departmentID}"></div>
-        </div>
+            <input type="hidden" th:if="${doctor.staffID != null and doctor.staffID != ''}" th:field="*{staffID}" />
 
-        <div class="mb-3">
-            <label for="licenseNumber" class="form-label">License Number</label>
-            <input type="text" class="form-control" id="licenseNumber" th:field="*{licenseNumber}" required>
-            <div class="alert alert-warning" th:if="${#fields.hasErrors('licenseNumber')}" th:errors="*{licenseNumber}"></div>
-        </div>
+            <div class="mb-3">
+                <label for="staffName" class="form-label fw-semibold">Nume</label>
+                <input type="text" class="form-control" id="staffName" th:field="*{staffName}" required
+                       th:classappend="${#fields.hasErrors('staffName')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{staffName}"></div>
+            </div>
 
-        <div class="mb-3">
-            <label for="medicalSpeciality" class="form-label">Specialty</label>
-            <select id="medicalSpeciality" class="form-control" th:field="*{medicalSpeciality}" required>
-                <option value="">Select Specialty</option>
-                <option th:each="spec : ${T(com.example.Hospital.Management.System.Model.Enums.MedicalSpecialty).values()}"
-                        th:value="${spec}" th:text="${spec}">
-                </option>
-            </select>
-            <div class="alert alert-warning" th:if="${#fields.hasErrors('medicalSpeciality')}" th:errors="*{medicalSpeciality}"></div>
-        </div>
+            <div class="mb-3">
+                <label for="staffEmail" class="form-label fw-semibold">Email</label>
+                <input type="email" class="form-control" id="staffEmail" th:field="*{staffEmail}" required
+                       th:classappend="${#fields.hasErrors('staffEmail')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{staffEmail}"></div>
+            </div>
 
-        <button type="submit" class="btn btn-success">Save</button>
-        <a th:href="@{/doctors}" class="btn btn-secondary">Cancel</a>
-    </form>
+            <div class="mb-3">
+                <label for="departmentID" class="form-label fw-semibold">Departament</label>
+                <select id="departmentID" class="form-select" th:field="*{departmentID}" required
+                        th:classappend="${#fields.hasErrors('departmentID')} ? 'is-invalid'">
+                    <option value="">Selectează Departamentul</option>
+                    <option th:each="d : ${departments}" th:value="${d.departmentID}" th:text="${d.departmentName}"></option>
+                </select>
+                <div class="invalid-feedback" th:errors="*{departmentID}"></div>
+            </div>
 
+            <div class="mb-3">
+                <label for="licenseNumber" class="form-label fw-semibold">Număr Licență</label>
+                <input type="text" class="form-control" id="licenseNumber" th:field="*{licenseNumber}" required
+                       th:classappend="${#fields.hasErrors('licenseNumber')} ? 'is-invalid'">
+                <div class="invalid-feedback" th:errors="*{licenseNumber}"></div>
+            </div>
+
+            <div class="mb-4">
+                <label for="medicalSpeciality" class="form-label fw-semibold">Specialitate</label>
+                <select id="medicalSpeciality" class="form-select" th:field="*{medicalSpeciality}" required
+                        th:classappend="${#fields.hasErrors('medicalSpeciality')} ? 'is-invalid'">
+                    <option value="">Selectează Specialitatea</option>
+                    <option th:each="spec : ${specialties}" th:value="${spec}" th:text="${spec}"></option>
+                </select>
+                <div class="invalid-feedback" th:errors="*{medicalSpeciality}"></div>
+            </div>
+
+            <div class="d-flex gap-2 pt-2 border-top">
+                <button type="submit" class="btn btn-primary shadow-sm"><i class="fas fa-save me-1"></i> Salvează</button>
+                <a th:href="@{/doctors}" class="btn btn-outline-secondary shadow-sm"><i class="fas fa-times-circle me-1"></i> Anulează</a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
