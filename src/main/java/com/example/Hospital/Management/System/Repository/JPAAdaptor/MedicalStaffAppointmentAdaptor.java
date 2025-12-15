@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
+// FIX CRITIC: Specificăm numele manual pentru a fi găsit de Factory
+@Component("medicalstaffappointmentAdaptor")
 public class MedicalStaffAppointmentAdaptor implements AbstractRepository<MedicalStaffAppointment> {
 
     private final DBMedicalStaffAppointmentRepository jpaRepository;
@@ -57,15 +57,13 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
             throw new RuntimeException("Programarea specificată nu există.");
         }
 
-        // Determinăm dacă staffId aparține unui Doctor sau Asistent
         boolean isDoctor = doctorRepository.existsById(staffId);
         boolean isNurse = nurseRepository.existsById(staffId);
 
         if (!isDoctor && !isNurse) {
-            throw new RuntimeException("ID-ul personalului medical nu este valid (nu există nici ca Doctor, nici ca Asistent).");
+            throw new RuntimeException("ID-ul personalului medical nu este valid.");
         }
 
-        // Verificăm duplicat
         if (isDoctor && jpaRepository.existsByAppointmentIdAndDoctorId(appId, staffId)) {
             throw new RuntimeException("Acest doctor este deja alocat la această programare.");
         }
@@ -107,7 +105,7 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
 
     @Override
     public List<MedicalStaffAppointment> findAll() {
-        return jpaRepository.findAllWithStaffAndAppointment().stream()
+        return jpaRepository.findAll().stream()
                 .map(mapper::toDomain)
                 .collect(Collectors.toList());
     }
@@ -123,6 +121,12 @@ public class MedicalStaffAppointmentAdaptor implements AbstractRepository<Medica
 
         if (searchCriteria instanceof MedicalStaffAppointmentSearchCriteria) {
             spec = MedicalStaffAppointmentSpecification.filterByCriteria((MedicalStaffAppointmentSearchCriteria) searchCriteria);
+        }
+
+        if (sort == null) {
+            return jpaRepository.findAll(spec).stream()
+                    .map(mapper::toDomain)
+                    .collect(Collectors.toList());
         }
 
         return jpaRepository.findAll(spec, sort).stream()

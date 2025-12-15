@@ -2,13 +2,12 @@ package com.example.Hospital.Management.System.Mapper;
 
 import com.example.Hospital.Management.System.Model.DBModel.*;
 import com.example.Hospital.Management.System.Model.GeneralModel.MedicalStaffAppointment;
-import org.springframework.stereotype.Component; // IMPORT
+import org.springframework.stereotype.Component;
 
 @Component
 public class MedicalStaffAppointmentMapper {
 
-
-    public MedicalStaffAppointmentEntity mapDomainToEntity(MedicalStaffAppointment domain, MedicalStaffAppointmentEntity entity) {
+    private MedicalStaffAppointmentEntity mapDomainToEntity(MedicalStaffAppointment domain, MedicalStaffAppointmentEntity entity) {
         if (domain == null) return null;
         if (entity == null) entity = new MedicalStaffAppointmentEntity();
 
@@ -21,9 +20,9 @@ public class MedicalStaffAppointmentMapper {
             }
         }
 
-        entity.setAppointment(MapperUtils.createEntityProxy(AppointmentEntity.class, domain.getAppointmentID()));
-
-
+        if (domain.getAppointmentID() != null) {
+            entity.setAppointment(MapperUtils.createEntityProxy(AppointmentEntity.class, domain.getAppointmentID()));
+        }
         return entity;
     }
 
@@ -36,15 +35,20 @@ public class MedicalStaffAppointmentMapper {
 
         MedicalStaffAppointment domain = new MedicalStaffAppointment();
 
+        // 1. ID Alocare
         domain.setMedicalStaffAppointmentID(entity.getId() != null ? String.valueOf(entity.getId()) : null);
 
+        // 2. ID Programare
         if (entity.getAppointment() != null && entity.getAppointment().getId() != null) {
             domain.setAppointmentID(String.valueOf(entity.getAppointment().getId()));
         }
 
+        // 3. ID Personal Medical
+        // Logica unificată: Verificăm Doctorul, apoi Asistentul
         if (entity.getDoctor() != null && entity.getDoctor().getId() != null) {
             domain.setMedicalStaffID(String.valueOf(entity.getDoctor().getId()));
-        } else if (entity.getNurse() != null && entity.getNurse().getId() != null) {
+        }
+        else if (entity.getNurse() != null && entity.getNurse().getId() != null) {
             domain.setMedicalStaffID(String.valueOf(entity.getNurse().getId()));
         }
 
